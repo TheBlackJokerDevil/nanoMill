@@ -14,6 +14,8 @@ class WorkspaceMaster {
 		
 		this.opened = []
 		
+		this.viewOpened = require(path.join(__rootdir, "js", "lib", "navilist.js"))
+		
 		// remove finfo from file opened list
 		hook.in("onFileClosed", (finfo) => {
 			removeArrayItem(this.opened, finfo)
@@ -39,7 +41,7 @@ class WorkspaceMaster {
 			return true
 		}
 		
-		this.opened.push(finfo)
+		this.viewOpened.add(finfo)
 		hook.exec("onFileOpen", finfo)
 		
 		return false
@@ -51,9 +53,10 @@ class WorkspaceMaster {
 		@param {string} p - path to check
 	*/
 	fileOpened(p) {
-		for(let i = 0; i < this.opened.length; i++)
-			if(this.opened[i].path === p)
-				return this.opened[i]
+		let finfos = this.viewOpened.getValues()
+		for(let finfo of finfos)
+			if(finfo.path === p)
+				return true
 		
 		return false
 	}
@@ -62,7 +65,7 @@ class WorkspaceMaster {
 		Returns the opened files
 	*/
 	getOpenedFiles() {
-		return this.opened
+		// return this.opened
 	}
 	
 	/**

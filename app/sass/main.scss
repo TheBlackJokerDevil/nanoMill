@@ -131,63 +131,6 @@ textarea::-webkit-input-placeholder {
 	background-color: grey;
 }
 
-@mixin abstractList() {	
-	color: $font-clr;
-	cursor: default;
-	
-	@include noUserSelect();
-	@include flex-col();
-	
-	.ALE-label {
-		flex: 1;
-		font-size: 14px;
-		padding: 2px 5px;
-		&:hover {
-			background-color: $hvr;
-		}
-		
-		font-family: $font-stack;
-	}
-}
-
-@mixin abstractListEntry() {
-	color: $font-clr;
-	cursor: default;
-	
-	@include noUserSelect();
-	@include flex-row();
-}
-
-.ALE-entry {
-	@include abstractListEntry();
-}
-
-.ALE-label {
-	flex: 1;
-	font-size: 14px;
-	padding: 2px 5px;
-	@include flex-row();
-	
-	&:hover {
-		background-color: $hvr;
-	}
-	
-	&:active {
-		background-color: $bg-ui-active;
-		color: whitesmoke;
-	}
-	
-	font-family: $font-stack;
-	overflow: hidden;
-}
-
-.ALE-icon-w {
-	@include flex-col();
-	justify-content: center;
-	display: inline-block;
-	font-size: 16px;
-}
-
 .icon {
 	font-size: 16px;
 }
@@ -238,7 +181,7 @@ textarea::-webkit-input-placeholder {
 }
 
 
-$list-in-dur: 0.3s;
+$list-in-dur: 0.2s;
 
 @keyframes list-item-in {
 	0% {
@@ -260,84 +203,7 @@ $list-in-dur: 0.3s;
 	}
 }
 
-#modal {
-	z-index: 200;
-	padding: 25px 50px;
-	@include absoluteFill();
-}
-
-.modal-title {
-	font-size: 32px;
-	text-shadow: 0 1px 0 black;
-	text-align: center;
-	cursor: default;
-	font-weight: 100;
-	margin-bottom: 50px;
-}
-
-.modal-close {
-	position: absolute;
-	line-height: 48px;
-	font-size: 48px;
-	align-self: flex-end;
-	
-	&:hover {
-		background-color: rgb(80, 80, 80);
-	}
-	
-	&:active {
-		background-color: $bg-ui-active;
-	}
-	
-	&::before {
-		min-width: 48px;
-		font-weight: 100;
-		display: block;
-		text-align: center;
-		text-shadow: 0 1px 0 grey;
-	}
-}
-
-
 /* ui object stuff */
 
 .url-browse {
-}
-
-
-/* logo animation */
-
-@keyframes windmill {
-	0%  { transform: rotate(0deg);}
-	100%  { transform: rotate(360deg);}
-}
-
-@keyframes circle {
-	0% { transform: scale(0);}
-	25% { transform: scale(1); }
-	50% { transform: scale(0); opacity: 1;}
-	50.01% { opacity: 0; }
-	100% { opacity: 0; }
-}
-
-@keyframes pop-up {
-	0% { opacity: 0; }
-	24.9% { opacity: 0; }
-	25% { opacity: 1; }
-}
-
-.the-mill {
-	animation: windmill 3s;
-	transform-origin: center;
-	
-	path {
-		animation: pop-up 3s;
-		animation-fill-mode: forwards;
-	}
-	
-	circle {
-		animation: circle 3s;
-		transform-origin: center;
-		animation-fill-mode: forwards;
-	}
 }

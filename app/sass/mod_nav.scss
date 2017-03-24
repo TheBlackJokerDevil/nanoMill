@@ -1,62 +1,53 @@
 
+.navi-view {
+	@include flex-col();
+}
 
-.--NAV-entry {
-	@include abstractListEntry();
-	
-	&:hover .--NAV-entry-close {
-		opacity: 1;
-	}
+.navi-view-item {;
+	white-space: nowrap;
+	@include noUserSelect();
 	
 	animation-fill-mode: both;
 	animation: list-item-in $list-in-dur ease-out;
 	
-	&.current-file {
-		&::before {
-			width: 5px;
-			height: 5px;
-			border-radius: 5px;
-			display: block;
-			position: absolute;
-			content: " ";
-			background-color: orange;
-			align-self: center;
-			margin-left: 1px;
-		}
+	&:hover .navi-view-item-close {
+		visibility: visible;
 	}
-	
-	&.selected-file {
-		font-style: oblique;
-	}
-	
-	.unsaved-mark {
-		display: none;
-	}
-	
-	&.unsaved .unsaved-mark {
-		display: initial;
-	}
-	
-	.ALE-label {
-		padding: 5px $mod-x-padding;
-	}
-	
-	white-space: nowrap;
 }
 
-.--NAV-fdir {
-	color: grey;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-}
-
-
-.--NAV-entry-close {
-	opacity: 0;
-	font-size: 16px;
-	width: 18px;
-	justify-content: center;
-
+.navi-view-item-label {
+	@include flex-row();
+	font-size: 14px;
+	flex: 1;
+	overflow-x: hidden;
+	padding: 5px 10px;
+	
 	&:hover {
 		background-color: $hvr;
 	}
+	
+	&:active {
+		background-color: $bg-ui-active;
+		color: whitesmoke;
+	}
+}
+
+.navi-view-item-close {
+	visibility: hidden;
+	font-size: 16px;
+	width: 18px;
+	justify-content: center;
+	@include flex-col();
+
+	padding: 0 5px;
+	&:hover {
+		background-color: $hvr;
+	}
+}
+
+.navi-view-fdir {
+	color: grey;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

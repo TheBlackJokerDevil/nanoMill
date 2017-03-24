@@ -7,8 +7,10 @@ Close workspace option
 Workspace name
 removing files recursively
 lazy load more things (ace would save us 200ms)
-some config handling
+some config tweaking
 custom keybinding
+rename submodule to deckitem to fit proper naming
+make blueish logo or rebrand nanoMill completely
 
 things that one could do:
 replacing c4group usage by nodejs gzip stream preceding a custom transform-stream (to make things valid for gzip) and vice versa

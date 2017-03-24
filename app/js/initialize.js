@@ -60,8 +60,14 @@ let lyt
 	document.getElementById("tb-file").addEventListener("click", function(e) {
 		let rect = this.getBoundingClientRect()
 		new Contextmenu(rect.left, rect.bottom, [{
-			label: "Open file",
-			onclick: _ => openFilePicker()
+				label: "Open file",
+				onclick: _ => openFilePicker()
+			}, {
+				label: "Save ...",
+				onclick: _=> {}
+				}, {
+				label: "Save all",
+				onclick: _=> {}
 		}])
 	})
 	

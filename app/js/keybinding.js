@@ -1,17 +1,17 @@
 
 const
-	_ALT = 1,
-	_SHIFT = 2,
-	_CTRL = 4
+	KEY_ALT = 1,
+	KEY_SHIFT = 2,
+	KEY_CTRL = 4
 
-const _keyCodeMap = {
+const keyCodeMap = {
 	"backspace": 8,
 	"tab": 9,
 	"enter": 13,
 	"shift": 16,
 	"ctrl": 17,
 	"alt": 18,
-	"pause/break": 19,
+	"pause": 19,
 	"caps lock": 20,
 	"escape": 27,
 	"page up": 33,
@@ -101,57 +101,57 @@ const _keyCodeMap = {
 	"grave accent": 192,
 	"open bracket": 219,
 	"back slash": 220,
-	"close braket": 221,
+	"close bracket": 221,
 	"single quote": 222
 }
 
-let _bindings = {}
-
-function regKb(keyString, fn) {
+class KeyMapper {
+	constructor() {
+		this.bindings = []
+		
+		this.regKb("ctrl-o", openFilePicker)
+		this.regKb("ctrl-s", save)
+		
+		document.addEventListener("keyup", e => {
+			let mods = 0
+			if(e.altKey === true)
+				mods += KEY_ALT
+			if(e.shiftKey === true)
+				mods += KEY_SHIFT
+			if(e.ctrlKey === true)
+				mods += KEY_CTRL
+			
+			// keybinding is only allowed in conjunction with
+			// modulate buttons e.g. shift, ctrl and alt
+			if(!mods)
+				return
+			
+			let code = (e.keyCode << 3) + mods
+			
+			if(this.bindings[code])
+				this.bindings[code]()
+		})
+	}
 	
-	let code = 0
-	if(keyString.match(/alt/i))
-		code += _ALT
-	if(keyString.match(/shift/i))
-		code += _SHIFT
-	if(keyString.match(/ctrl/i))
-		code += _CTRL
-	
-	let key = keyString.replace(/(ctrl|shift|alt)/gi, "").trim().toLowerCase()
-	
-	if(!_keyCodeMap[key])
-		return warn(`unknown keybinding input '${key}' of '${keyString}'`)
-	
-	code = (_keyCodeMap[key] << 3) + code
-	
-	if(code)
-		_bindings[code] = fn
+	regKb(keyString, cb) {
+		let code = 0
+		if(keyString.match(/alt/i))
+			code += KEY_ALT
+		if(keyString.match(/shift/i))
+			code += KEY_SHIFT
+		if(keyString.match(/ctrl/i))
+			code += KEY_CTRL
+		
+		let key = keyString.replace(/(ctrl|shift|alt|-)/gi, "").trim().toLowerCase()
+		
+		if(!keyCodeMap[key])
+			return warn(`Cannot parse keybinding notation '${key}' of '${keyString}'`)
+		
+		code = (keyCodeMap[key] << 3) + code
+		
+		if(code)
+			this.bindings[code] = cb
+	}
 }
 
-document.addEventListener("keyup", function(e) {
-	let mods = 0
-	if(e.altKey)
-		mods += _ALT
-	if(e.shiftKey)
-		mods += _SHIFT
-	if(e.ctrlKey)
-		mods += _CTRL
-	
-	let code = (e.keyCode << 3) + mods
-	
-	if(_bindings[code])
-		_bindings[code]()
-})
-
-{
-	regKb("Ctrl O", openFilePicker)
-	if(!inDevMode) {
-		regKb("Ctrl R", _ => { RuntimeInterface.interpretCommand("run --sel")})
-		regKb("Ctrl Q", _ => { RuntimeInterface.interpretCommand("kill")})
-	}
-	else {
-		regKb("Ctrl Shift R", _ => { RuntimeInterface.interpretCommand("run --sel")})
-		regKb("Ctrl Shift Q", _ => { RuntimeInterface.interpretCommand("kill")})
-	}
-	regKb("Ctrl S", save)
-}
+module.exports = new KeyMapper()

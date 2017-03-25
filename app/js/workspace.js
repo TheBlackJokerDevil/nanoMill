@@ -7,7 +7,7 @@ class WorkspaceMaster {
 		this.wspaces = []
 		
 		// restore workspaces by config
-		let a = getConfig("workspaces")
+		let a = config.get("workspaces")
 		
 		if(a)
 			a.forEach(this.addWorkspace.bind(this))
@@ -121,7 +121,7 @@ class WorkspaceMaster {
 		for(let w of this.wspaces)
 			a.push(w.path)
 		
-		setConfig('workspaces', a)
+		config.set('workspaces', a)
 	}
 	
 	/**

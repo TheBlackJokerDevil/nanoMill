@@ -27,12 +27,12 @@ class TextEditor extends layout.SubModule {
 		editor.$blockScrolling = Infinity
 		
         editor.setOptions({
+			fontSize: config.get("acefontsize") + "px" || "12px",
             enableBasicAutocompletion: true,
             enableSnippets: true,
             enableLiveAutocompletion: true,
             wrapBehavioursEnabled: true,
-			fontFamily: "SpaceMono",
-			fontSize: getConfig("acefontsize") + "px" || "12px"
+			fontFamily: "SpaceMono"
         })
 
         editor.getSession().setUseWrapMode(true)

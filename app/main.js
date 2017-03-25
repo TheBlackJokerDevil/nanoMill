@@ -1,7 +1,8 @@
 const {app, BrowserWindow, dialog} = require('electron')
 const fs = require('fs')
+const __appdata = app.getPath('userData')
 
-let output = fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
+let output = fs.createWriteStream(`${__appdata}/error.log`, {flags: "w", })
 
 output.write(`Detected platform: ${process.platform}\n`)
 
@@ -10,114 +11,89 @@ process.on('uncaughtException', function (err) {
 	dialog.showErrorBox("Failed to launch app", `Error: ${err}`)
 })
 
-let defaultConfigVal = {
-	author: "Twonky",
-	ocver: "7,0",
-	dftTempDir: "...",
-	focussedRes: ""
-}
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-let config = {}
+let windata = {}
+
 function createWindow () {
 	
 	communicator = {
-		__appdir: app.getPath('userData'),
+		__appdata,
 		printLog: (str) => {
 			output.write(`${str}\n`)
 		},
-		setConfig: (key, value) => {
-			config.config[key] = value
-		},
-		wipeConfig: (key) => {
-			if(!key)
-				return
-			config.config[key] = undefined
-		},
-		getConfig: (key) => {
-			return config.config[key] || defaultConfigVal[key]
-		},
-		hideMenu: _ => {
-			win.setMenu(null)
-		},
-		toggleDevMode: _ => {
-			config.inDevMode = !config.inDevMode;
-		},
-		dialog: dialog
+		dialog
 	}
 	
-	// Make sure to have valid values
+	let winops
 	try {
-		let str = fs.readFileSync(`${app.getPath('userData')}/config.json`)
+		// load window data
+		let str = fs.readFileSync(`${__appdata}/window.json`)
 
 		if(!str)
-			throw "Cannot read config file"
+			throw "No window.json given"
 		
-		config = JSON.parse(str)
+		windata = JSON.parse(str)
 
-		if(!config)
-			throw "Failed to JSON.parse config"
+		if(!windata)
+			throw "Failed to parse window.json"
 		
-		if((typeof config.window.x === "number" && typeof config.window.y !== "number") ||
-			(typeof config.window.x !== "number" && typeof config.window.y === "number")) {
-			config.window.x = undefined
-			config.window.y = undefined
+		winopts = {
+			width: windata.width,
+			height: windata.height,
+			x: windata.x,
+			y: windata.y,
+			maximized: windata.maximized
 		}
-
-		config.window.width = parseInt(config.window.width) || 800
-		config.window.height = parseInt(config.window.height) || 600
+		
+		communicator.devmode = windata.devmode
 	}
 	catch(e) {
-		output.write(`Failed to load config:\n(${e})\n`)
-		config.window = {width: 800, height: 600, frame: true}
-		config.inDevMode = false
-		config.config = {
-			resources: [],
-			layout: []
+		output.write("ERR: Loading window.json:\n" + e + "\n")
+		// default values
+		winopts = {
+			width: 800,
+			height: 600
 		}
 	}
-
-	config.window.icon = `${__dirname}/the-mill.ico`
-	config.window.show = false
-	config.window.backgroundColor = "#282828"
-	config.window.frame = false
 	
-	communicator.config = config.config
-	communicator.inDevMode = config.inDevMode
+	winopts.icon = `${__dirname}/the-mill.ico`
+	winopts.show = false
+	winopts.backgroundColor = "#282828"
+	winopts.frame = false
 	
 	global.communicator = communicator
 	
 	// Create the browser window.
-	win = new BrowserWindow(config.window)
+	win = new BrowserWindow(winopts)
 	
 	win.webContents.on('did-finish-load', _ => {
 		win.show()
 	})
 	
-	if(!config.inDevMode)
+	if(!windata.devmode)
 		win.setMenu(null)
 	
-	if(config.window.maximized)
+	if(windata.maximized)
 		win.maximize()
 
 	// and load the index.html of the app.
 	win.loadURL(`file://${__dirname}/index.html`)
 
 	// Open the DevTools.
-	if(config.inDevMode)
+	if(windata.devmode)
 		win.webContents.openDevTools()
 
 	// Emitted when the window is closed.
   
 	win.on("close", () => {
 		let bounds = win.getBounds()
-		config.window.width = bounds.width
-		config.window.height = bounds.height
-		config.window.x = bounds.x
-		config.window.y = bounds.y
-		config.window.maximized = win.isMaximized()
+		windata.width = bounds.width
+		windata.height = bounds.height
+		windata.x = bounds.x
+		windata.y = bounds.y
+		windata.maximized = win.isMaximized()
 	})
   
 	win.on('closed', () => {
@@ -149,6 +125,6 @@ app.on('activate', () => {
 })
 
 app.on('before-quit', () => {
-	fs.writeFileSync(`${app.getPath('userData')}/config.json`, JSON.stringify(config))
+	fs.writeFileSync(`${__appdata}/window.json`, JSON.stringify(windata))
 	output.end()
 })

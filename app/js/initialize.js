@@ -96,7 +96,7 @@ let lyt
 		
 		e.preventDefault()
 	}
-	
+	/*
 	document.getElementById("c4GroupPath").innerHTML = getConfig("c4group") || "not set"
 	
 	document.getElementById("c4GroupPicker").onchange = function(e) {
@@ -133,38 +133,19 @@ let lyt
 					cp.kill()
 			})
 		}
-	}
+	}*/
 	
 	// setting up settings-page visibilty toggle
 	document.getElementById("sett-page-toggle").addEventListener("click", function () {
-		let el = document.getElementById("settings")
-		el.style.display = ""
-		Elem.toggleClass(el, 'visible')
+		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "settings.js"))
+		new Dialog_SelectWorkspace(800, 600)
 	})
-	
-	document.getElementById("author-input").onchange = function(e) {
-		if(!this.value || !this.value.length)
-			this.value = getConfig("author")
-		else
-			setConfig("author", this.value)
-	}
-	
-	document.getElementById("author-input").value = getConfig("author")
-	
-	document.getElementById("version-input").onchange = function(e) {
-		if(!this.value || !this.value.length)
-			this.value = getConfig("ocver")
-		else
-			setConfig("ocver", this.value)
-	}
-	
-	document.getElementById("version-input").value = getConfig("ocver")
-	
+
 	document.getElementById("ace-font-size").onchange = function(e) {
 		if(!this.value || !this.value.length)
-			this.value = getConfig("acefontsize") || "12"
+			this.value = config.get("acefontsize") || "12"
 		else {
-			setConfig("acefontsize", this.value)
+			config.set("acefontsize", this.value)
 			
 			// delegate new value
 			// don't use instance of, but check for equal alias since instanceof would throw
@@ -175,13 +156,13 @@ let lyt
 		}
 	}
 	
-	document.getElementById("ace-font-size").value = getConfig("acefontsize") || "12"
+	document.getElementById("ace-font-size").value = config.get("acefontsize") || "12"
 	
 	try {
 		if(!config)
 			throw "No config given"
 		
-		let pages = getConfig("pages")
+		let pages = config.get("pages")
 		lyt = layout.Layout.fromData(pages)[0]
 		document.getElementById("mod-wrapper").appendChild(lyt.root)
 	}
@@ -193,7 +174,7 @@ let lyt
 	}
 	
 	window.addEventListener("beforeunload", _ => {
-		setConfig("pages", [lyt.getLayoutInfo()])
+		config.set("pages", [lyt.getLayoutInfo()])
 	})
 	
 	require("./js/keybinding.js")
@@ -203,6 +184,8 @@ let lyt
 	})
 	
     log("end of initialize")
+	
+	window.addEventListener("beforeunload", _ => config.save())
 }
 
 /**
@@ -220,9 +203,9 @@ function receiveLocalResource(p) {
 		ext = path.extname(p)
 	
 	if(name.match(/^c4group/gi))
-		return setConfig("c4group", p)
+		return config.set("c4group", p)
 	else if(name.match(/^openclonk/gi))
-		return setConfig("ocexe", p)
+		return config.set("ocexe", p)
 	
 	wmaster.openFileByPath(p)
 }
@@ -239,7 +222,7 @@ function openFiles(paths) {
 }
 
 function insertTemplateSpecials(s) {
-	let author = getConfig("author")
+	let author = config.get("author")
 	
 	return s.replace(/<<\$(.*?)>>/gi, function(m, p1) {
 		if(p1 === "author")
@@ -271,13 +254,13 @@ function openFilePicker() {
 // checks weather "ocexe" is set in configs,
 // to indicate that we can give operations to it (e.g. running the game)
 function hasExecutable() {
-	return !!getConfig("ocexe")
+	return !!config.has("ocexe")
 }
 
 // checks weather "c4group" is set in configs,
 // to indicate that we can give operations to it (e.g. unpacking, ...)
 function hasC4group() {
-	return !!getConfig("c4group")
+	return !!config.has("c4group")
 }
 
 /** ui object containing small layout items to fill any page */
@@ -308,9 +291,9 @@ let editor_proc
 function runOCEditor(args) {
 	if(!editor_proc) {
 		if(args)
-			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`, ...args])
+			editor_proc = cprocess.spawn(config.get("ocexe"), [`--editor`, ...args])
 		else
-			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`])
+			editor_proc = cprocess.spawn(config.get("ocexe"), [`--editor`])
 		
 		editor_proc.stdout.on('data', function (data) {
 			hook.exec("onStdOut", ConsoleView.validateStdout(data.toString()))
@@ -345,7 +328,7 @@ function runC4Group(args, fListenStdOut, callback) {
 	if(!args)
 		return false
 	
-	let proc = cprocess.spawn(getConfig("c4group"), args)
+	let proc = cprocess.spawn(config.get("c4group"), args)
 	
 		
 	if(fListenStdOut) {

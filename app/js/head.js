@@ -3,12 +3,14 @@ const __rootdir = __dirname
 const fs = require('fs')
 const path = require('path')
 const {remote} = require('electron')
+const dialog = remote.dialog
 
 // get constants and functions from main process
-const {__appdir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
+const {__appdata, printLog, devmode} = remote.getGlobal("communicator")
 
 const layout = require(path.join(__rootdir, "js", "modules", "layout.js"))
 const hook = require(path.join(__rootdir, "js", "hook.js"))
+const config = require(path.join(__rootdir, "js", "config.js"))
 
 const MOUSE_LEFT = 1
 
@@ -21,7 +23,7 @@ function writeConsoleOutputToFile() {
 	window.onerror = (msg, file, line) => error(msg + "\n" + file + " in line: " + line)
 }
 
-if(inDevMode) {
+if(devmode) {
 	log = console.log.bind(console)
 	warn = console.warn.bind(console)
 	error = console.error.bind(console)

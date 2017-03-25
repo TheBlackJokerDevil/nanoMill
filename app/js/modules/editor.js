@@ -13,7 +13,7 @@ class EditorView extends layout.Deck {
 				
 				if(this.openFileInModule(finfo, text)) {
 					hook.exec("onFileOpened", finfo)
-					hook.exec("onOpenedFileSelect", finfo)
+					hook.exec("onFileShow", finfo)
 				}
 			})
 			
@@ -21,7 +21,7 @@ class EditorView extends layout.Deck {
 			return true
 		})
 
-		this.hookIn("onOpenedFileSelect", (file) => {
+		this.hookIn("onFileShow", (file) => {
 			this.showFile(file)
 		})
 		

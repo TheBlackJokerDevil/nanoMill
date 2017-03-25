@@ -13,6 +13,14 @@
 	&:hover .navi-view-item-close {
 		visibility: visible;
 	}
+	
+	&.shown {
+		border-left: 5px solid steelblue;
+		
+		.navi-view-item-label {
+			padding-left: 5px;
+		}
+	}
 }
 
 .navi-view-item-label {

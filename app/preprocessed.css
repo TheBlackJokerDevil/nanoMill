@@ -665,6 +665,10 @@ textarea::-webkit-input-placeholder {
   animation: list-item-in 0.2s ease-out; }
   .navi-view-item:hover .navi-view-item-close {
     visibility: visible; }
+  .navi-view-item.shown {
+    border-left: 5px solid steelblue; }
+    .navi-view-item.shown .navi-view-item-label {
+      padding-left: 5px; }
 
 .navi-view-item-label {
   display: flex;

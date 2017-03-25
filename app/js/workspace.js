@@ -78,7 +78,7 @@ class WorkspaceMaster {
 		let finfo = this.fileOpened(p)
 		
 		if(finfo) {
-			hook.exec("onOpenedFileSelect", finfo)
+			hook.exec("onFileShow", finfo)
 			return
 		}
 		

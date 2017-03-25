@@ -9,18 +9,37 @@ class NaviList {
 		this.views = new Set()
 		
 		hook.in("onFileClosed", (finfo) => {
-			let idx = 0
-			for(let val of this.values)
-				if(val === finfo)
-					break
-				else
-					idx++
+			let idx = this.getValueIndex(finfo)
+			
+			if(idx === -1)
+				return
 			
 			for(let view of this.views)
 				view.removeItemByIndex(idx)
 			
 			this.values.delete(finfo)
 		})
+		
+		hook.in("onFileShow", (finfo) => {
+			let idx = this.getValueIndex(finfo)
+			
+			if(idx === -1)
+				return
+			
+			for(let view of this.views)
+				view.selectItemByIndex(idx)
+		})
+	}
+	
+	getValueIndex(val) {
+		let idx = 0
+		for(let val2 of this.values)
+			if(val2 === val)
+				return idx
+			else
+				idx++
+		
+		return -1
 	}
 	
 	has(finfo) {
@@ -43,7 +62,7 @@ class NaviList {
 	}
 	
 	getView() {
-		let view = new View(this.values)
+		let view = new NaviView(this.values)
 		
 		this.views.add(view)
 		
@@ -51,7 +70,7 @@ class NaviList {
 	}
 }
 
-class View {
+class NaviView {
 	constructor(finfos) {
 		this.root = document.createElement("div")
 		this.root.className = "navi-view"
@@ -70,6 +89,8 @@ class View {
 		let el = document.createElement("div")
 		el.className = "navi-view-item flex-row"
 		
+		// format to
+		// dirname.../filename.ext
 		let dirname = path.basename(path.dirname(finfo.path))
 		
 		el.innerHTML = 
@@ -78,10 +99,16 @@ class View {
 			</div>
 			<div class="navi-view-item-close"><div class="icon-close"></div></div>`
 		
+		// click the label -> show corresponding file
 		el.addEventListener("click", _ => {
-			hook.exec("onOpenedFileSelect", finfo)
+			// only do something if we would change anything
+			if(Elem.hasClass(el, "shown"))
+				return
+			
+			hook.exec("onFileShow", finfo)
 		})
 		
+		// click the close button -> close the correpsonding file
 		el.lastElementChild.addEventListener("click", e => {
 			if(finfo.mod) {
 				// only close call hook.exec when the file actually has been closed
@@ -92,24 +119,28 @@ class View {
 			else
 				hook.exec("onFileClosed", finfo)
 			
+			// prevent triggering the show-file-handler from above
 			e.stopPropagation()
 		})
 		
 		this.root.appendChild(el)
 	}
 	
-	removeItemByIndex(idx) {
-		let el = this.root.firstElementChild
+	selectItemByIndex(idx) {
+		let sel = this.root.getElementsByClassName("shown")[0]
+		if(sel)
+			Elem.removeClass(sel, "shown")
 		
-		let i = 0
-		while(el) {
-			if(i === idx) {
-				this.root.removeChild(el)
-				break
-			}
-			
-			el = el.nextElementSibling
-		}
+		let el = Elem.nthChild(this.root, idx)
+		if(el)
+			Elem.addClass(el, "shown")
+	}
+	
+	removeItemByIndex(idx) {
+		let el = Elem.nthChild(this.root, idx)
+		
+		if(el)
+			Elem.remove(el)
 	}
 	
 	remove() {

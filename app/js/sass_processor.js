@@ -15,6 +15,9 @@ let sass_defs = [{
 			src: "../sass/main.scss"
 		},
 		{
+			src: "../sass/logo.scss"
+		},
+		{
 			src: "../sass/tree_list.scss"
 		},
 		{

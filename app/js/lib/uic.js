@@ -3,12 +3,15 @@
 */
 
 class Uic {
-	static filePicker(txt = "...", callback) {
+	static openDialog(txt, callback, fdir) {
+		if(!txt || txt.length === 0)
+			txt = "..."
+		
 		let el = Elem.fromString(`<div class="flex-row"><p class="url flex-fill">${txt}</p><div class="url-browse">Browse</div></div>`)
 		
 		el.getElementsByClassName("url-browse")[0].addEventListener("click", _ => {
 			let p = remote.dialog.showOpenDialog({
-				properties: ['openDirectory']
+				properties: fdir ? ['openDirectory'] : null,
 			})
 			
 			if(!p)

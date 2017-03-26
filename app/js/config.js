@@ -26,12 +26,13 @@ class Config {
 	
 	regAll() {
 		this.reg("acefontsize", "number", 14)
-		this.reg("ocexe", "string", "")
-		this.reg("c4group", "string", "")
+		this.reg("ocexe", "string", undefined)
+		this.reg("c4group", "string", undefined)
 		this.reg("pages", "array", null)
 		this.reg("author", "string", "Twonky")
 		this.reg("version", "string", "7.0")
 		this.reg("workspaces", "array", null)
+		this.reg("hidenonocfiles", "boolean", true)
 	}
 	
 	reg(key, type, val) {

@@ -12,9 +12,9 @@ class Dialog_Settings extends Dialog {
 		
 		uic.insertArray(this.body, [
 			["desc", "Openclonk(.exe)"],
-			["filePicker", config.get("ocexe"), v => config.set("ocexe", v)],
+			["openDialog", config.get("ocexe"), v => config.set("ocexe", v)],
 			["desc", "C4group(.exe)"],
-			["filePicker", config.get("c4group"), v => config.set("c4group", v)]
+			["openDialog", config.get("c4group"), v => config.set("c4group", v)]
 		])
 		
 		this.show()

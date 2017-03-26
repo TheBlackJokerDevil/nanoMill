@@ -253,14 +253,14 @@ function openFilePicker() {
 
 // checks weather "ocexe" is set in configs,
 // to indicate that we can give operations to it (e.g. running the game)
-function hasExecutable() {
-	return !!config.has("ocexe")
+function hasOcRunnable() {
+	return config.get("ocexe")
 }
 
 // checks weather "c4group" is set in configs,
 // to indicate that we can give operations to it (e.g. unpacking, ...)
 function hasC4group() {
-	return !!config.has("c4group")
+	return config.get("c4group")
 }
 
 /** ui object containing small layout items to fill any page */

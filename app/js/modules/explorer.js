@@ -235,7 +235,7 @@ class Explorer extends layout.Module {
 				label: "Run",
 				icon: "icon-play",
 				onclick: _ => runOCEditor([finfo.path]),
-				onvalidate: _ => hasExecutable()
+				onvalidate: _ => hasOcRunnable()
 			})
 		
 		props.push({

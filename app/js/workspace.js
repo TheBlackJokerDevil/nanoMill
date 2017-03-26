@@ -384,6 +384,10 @@ class Workspace {
 		@param {string} ext - Extension to check. Requires preceding "."
 	*/
 	static isAcceptedFileType(ext) {
+		
+		if(config.get("hidenonocfiles") === false)
+			return true
+		
 		switch(ext) {
 			case ".png":
 			case ".jpg":

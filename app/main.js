@@ -60,7 +60,7 @@ function createWindow () {
 	
 	winopts.icon = `${__dirname}/the-mill.ico`
 	winopts.show = false
-	winopts.backgroundColor = "#282828"
+	winopts.backgroundColor = "#26282b"
 	winopts.frame = false
 	
 	global.communicator = communicator

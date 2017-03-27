@@ -730,7 +730,7 @@ textarea::-webkit-input-placeholder {
     width: 1px;
     background: #2d2d2d; }
   .ace_mill .ace_cursor {
-    color: black; }
+    color: steelblue; }
   .ace_mill .ace_invisible {
     color: #bfbfbf; }
   .ace_mill .ace_constant.ace_buildin {
@@ -745,7 +745,7 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_fold {
     background-color: #252525; }
   .ace_mill .ace_support.ace_function {
-    color: #41a5d4; }
+    color: #68bbe2; }
   .ace_mill .ace_support.ace_constant {
     color: #06960e; }
   .ace_mill .ace_support.ace_type,

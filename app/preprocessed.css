@@ -700,14 +700,6 @@ textarea::-webkit-input-placeholder {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-@keyframes bracket {
-  0% {
-    transform: scale(0.8); }
-  50% {
-    transform: scale(1.2); }
-  100% {
-    transform: scale(1); } }
-
 .ace_tooltip.ace_doc-tooltip {
   font-family: "SpaceMono";
   font-size: 12px;
@@ -744,7 +736,6 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_constant.ace_buildin {
     color: #5848f6; }
   .ace_mill .ace_constant.ace_language {
-    color: #585cf6;
     color: #003aff; }
   .ace_mill .ace_constant.ace_library {
     color: #06960e; }
@@ -754,7 +745,6 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_fold {
     background-color: #252525; }
   .ace_mill .ace_support.ace_function {
-    color: #5d90b3;
     color: #41a5d4; }
   .ace_mill .ace_support.ace_constant {
     color: #06960e; }
@@ -768,7 +758,6 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_keyword.ace_operator,
   .ace_mill .ace_param-divide,
   .ace_mill .ace_paren {
-    color: #687687;
     font-weight: bold;
     color: grey; }
   .ace_mill .ace_comment {
@@ -797,13 +786,10 @@ textarea::-webkit-input-placeholder {
     background: #a4e565; }
   .ace_mill .ace_marker-layer .ace_bracket {
     margin: -1px 0 0 -1px;
-    border: 1px solid silver;
-    animation: bracket 0.2s; }
+    border: 1px solid silver; }
   .ace_mill .ace_marker-layer .ace_active-line {
     background: rgba(0, 0, 0, 0.07); }
   .ace_mill .ace_gutter-active-line {
-    background-color: #505050;
-    background: repeating-linear-gradient(135deg, #2d2d2d 0px, #2d2d2d 3px, #3c3c3c 3px, #3c3c3c 4px);
     background: #3c3c3c; }
   .ace_mill .ace_marker-layer .ace_selected-word {
     background: #141414;
@@ -811,7 +797,6 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_storage,
   .ace_mill .ace_keyword,
   .ace_mill .ace_meta.ace_tag {
-    color: #dc4632;
     color: #D04B4B;
     font-weight: bold; }
   .ace_mill .ace_string.ace_regex {

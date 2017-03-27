@@ -14,7 +14,18 @@ class Dialog_Settings extends Dialog {
 			["desc", "Openclonk(.exe)"],
 			["openDialog", config.get("ocexe"), v => config.set("ocexe", v)],
 			["desc", "C4group(.exe)"],
-			["openDialog", config.get("c4group"), v => config.set("c4group", v)]
+			["openDialog", config.get("c4group"), v => config.set("c4group", v)],
+			["numberInput", "Texteditor Font-size",
+				v =>  {
+					setTextEditorFontSize(v),
+					config.set("acefontsize", v)
+				},
+				"px",
+				{
+					val: config.get("acefontsize"),
+					min: 10,
+					max: 24
+			}]
 		])
 		
 		this.show()

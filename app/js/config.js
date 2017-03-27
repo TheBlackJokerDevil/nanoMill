@@ -62,8 +62,10 @@ class Config {
 				else
 					throw new Error(`Setting config entry ${key} does not match type array. Given: ${val}.`)
 			}
-			else
+			else if (typeof cval.type === "object")
 				cval.val = val
+			else
+				throw new Error(`Setting config entry ${key} does not match type ${cval.type}. Given: ${val}.`)
 		}
 		else if(typeof val === cval.type)
 			cval.val = val

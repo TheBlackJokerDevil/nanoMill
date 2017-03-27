@@ -140,23 +140,6 @@ let lyt
 		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "settings.js"))
 		new Dialog_SelectWorkspace(800, 600)
 	})
-
-	document.getElementById("ace-font-size").onchange = function(e) {
-		if(!this.value || !this.value.length)
-			this.value = config.get("acefontsize") || "12"
-		else {
-			config.set("acefontsize", this.value)
-			
-			// delegate new value
-			// don't use instance of, but check for equal alias since instanceof would throw
-			// an error if such a class is not defined
-			for(let i = 0; i < _modules.length; i++)
-				if(_modules[i].constructor.def.alias === "texteditor")
-					_modules[i].setFontSize(this.value)
-		}
-	}
-	
-	document.getElementById("ace-font-size").value = config.get("acefontsize") || "12"
 	
 	try {
 		if(!config)
@@ -188,6 +171,16 @@ let lyt
 	window.addEventListener("beforeunload", _ => config.save())
 }
 
+function setTextEditorFontSize(val) {
+	// delegate new value
+	// don't use instance of, but check for equal alias since instanceof would throw
+	// an error if such a class is not defined
+	let mdls = lyt.getModulesSet()
+	for(let mdl of mdls)
+		if(mdl.constructor.def.alias === "texteditor")
+			mdl.setFontSize(val)
+}
+
 /**
 	opens the file-picker dialog and executes the given callback on completion
 */
@@ -208,17 +201,6 @@ function receiveLocalResource(p) {
 		return config.set("ocexe", p)
 	
 	wmaster.openFileByPath(p)
-}
-
-function openFiles(paths) {
-	warn("Used unimplented or deprecated function")
-	/*
-	for(var i = 0; i < files.length; i++) {
-		let res = filemanager.addResource(paths)
-		if(res)
-			hook.exec("onFileOpen", res)
-	}
-	*/
 }
 
 function insertTemplateSpecials(s) {

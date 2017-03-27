@@ -11,6 +11,10 @@ custom keybinding
 rename submodule to deckitem to fit proper naming
 make blueish logo or rebrand nanoMill completely
 close dialog on esc button
+is there a require() using ace implementation?
+
+future goals:
+formating whole script via hotkey
 
 things that one could do:
 replacing c4group usage by nodejs gzip stream preceding a custom transform-stream (to make things valid for gzip) and vice versa

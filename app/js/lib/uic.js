@@ -34,6 +34,26 @@ class Uic {
 		return el
 	}
 	
+	static numberInput(label, callback, unit, {val, min, max}) {
+		let el = document.createElement("div")
+		el.className = "flex-row"
+		
+		let lbl = document.createElement("label")
+		lbl.innerHTML = `${label}<input type="number" value="${val}" min="${min}" max="${max}"/>`
+		
+		let inp = lbl.lastElementChild
+		
+		el.appendChild(lbl)
+		
+		if(unit)
+			el.insertAdjacentHTML("beforeend", `<span>${unit}</span>`)
+		
+		if(callback)
+			inp.addEventListener("change", _ => callback(parseInt(inp.value)))
+		
+		return el
+	}
+	
 	static insertArray(par, ary) {
 		for(let i = 0; i < ary.length; i++) {
 			let args = ary[i]

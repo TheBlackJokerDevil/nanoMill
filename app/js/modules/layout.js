@@ -53,6 +53,10 @@ class Layout extends Layout_Element {
 		return mdl
 	}
 	
+	getModulesSet() {
+		return new Set(this.mdls)
+	}
+	
 	removeFromModuleList(mdl) {
 		let a = []
 		for(let i = 0; i < this.mdls.length; i++)

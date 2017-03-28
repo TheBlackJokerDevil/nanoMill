@@ -45,7 +45,7 @@ class TemplateLoader {
 		this.templates = []
 		
 		this.loadTemplates(path.join(__rootdir, "templates"))
-		this.loadTemplates(path.join(__appdir, "templates"))
+		this.loadTemplates(path.join(__appdata, "templates"))
 	}
 	
 	/**

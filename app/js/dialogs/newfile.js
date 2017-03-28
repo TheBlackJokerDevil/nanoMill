@@ -27,7 +27,7 @@ class Dialog_NewFile extends Dialog {
 			
 			this.body.innerHTML = 
 				`<div class='err-fill-in'></div><p class='desc'>Autofills: ${template.autofill.join(", ")}</p>
-				<p>Title: <span><input id="newfile-name" type="text" value="NewlyThere" required/></span><span style="color: grey">${template.ext}</span></p>
+				<p>Title: <span><input id="newfile-name" type="text" value="NewlyThere" required/></span><span style="color: grey">.${template.ext}</span></p>
 				${opts.has("desc")?
 				"<p class='desc'>Description:</p><textarea id='newfile-desc' class='flex-fill' rows='3'></textarea>":""}`
 			
@@ -46,8 +46,8 @@ class Dialog_NewFile extends Dialog {
 				let descEl = document.getElementById("newfile-desc")
 				templateLoader.createFromTemplate(template, dirParent, {
 					title,
-					author: getConfig("author"),
-					version: getConfig("ocver"),
+					author: config.get("author"),
+					version: config.get("ocver"),
 					desc: descEl?descEl.value:""
 				}, _  => fnOnCreation(true))
 				

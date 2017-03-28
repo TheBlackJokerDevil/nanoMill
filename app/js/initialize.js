@@ -96,44 +96,6 @@ let lyt
 		
 		e.preventDefault()
 	}
-	/*
-	document.getElementById("c4GroupPath").innerHTML = getConfig("c4group") || "not set"
-	
-	document.getElementById("c4GroupPicker").onchange = function(e) {
-		let p = this.files[0].path
-		
-		if(path.basename(p).match(/^c4group/gi)) {
-			setConfig("c4group", p)
-			document.getElementById("c4GroupPath").innerHTML = p
-		}
-	}
-	
-	document.getElementById("ocExePath").innerHTML = getConfig("ocexe") || "not set"
-	
-	document.getElementById("ocExePicker").onchange = function(e) {
-		let p = this.files[0].path
-		
-		if(path.basename(p).match(/^openclonk/gi)) {
-			setConfig("ocexe", p)
-			document.getElementById("ocExePath").innerHTML = p
-			
-			// start openclonk for a very short time and extract
-			// version number from stdout
-			var cp = cprocess.spawn(p, [`--editor`])
-			var _inittime = (new Date()).getTime()
-			
-			cp.stdout.on('data', function (data) {
-				let m = data.toString().match(/Version:\s*(.*?)\s/)
-				if(m && m[1]) {
-					setConfig("ocver", m[1])
-					document.getElementById("version-input").value = m[1]
-					cp.kill()
-				} // if things did not happen as expected and reach 100ms, stop try
-				else if((new Date()).getTime() - _inittime > 100)
-					cp.kill()
-			})
-		}
-	}*/
 	
 	// setting up settings-page visibilty toggle
 	document.getElementById("sett-page-toggle").addEventListener("click", function () {

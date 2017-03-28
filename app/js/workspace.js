@@ -186,8 +186,8 @@ class Workspace {
 			this.loaded = true
 			wmaster.saveInConfig()
 			this.tree = tree
-			hook.exec("onWorkspaceLoad", this)
-			log("asd")
+			
+			// update views
 			for(let view of this.views)
 				view.addItem(tree, -1)
 		})
@@ -602,7 +602,8 @@ class WorkspaceView {
 		
 		this.selected = []
 		
-		this.addItem(wspace.tree, -1)
+		if(wspace.tree)
+			this.addItem(wspace.tree, -1)
 	}
 	
 	addItem(tree, parIdx) {
@@ -693,21 +694,21 @@ class WorkspaceView {
 		label.draggable = true
 		
 		label.addEventListener("dragstart", e => {
-			let idx = treeItem.dataset.value
 			isDragging = true
-			e.dataTransfer.setData("app/explorer/fileIndex", idx)
-			e.dataTransfer.setData("app/explorer/workspace", this.wspace.index)
+		})
+		
+		label.addEventListener("dragend", e => {
+			isDragging = false
 		})
 		
 		label.addEventListener("drop", e => {log("dragend")
 			if(currentDropTarget)
 				Elem.removeClass(currentDropTarget, "droptarget")
-			
+			log(e)
+			// don't react on non workspace drag events
 			if(!isDragging)
 				return
-			// secure we are dragging an explorer element
-			let sourceFileIndex = parseInt(e.dataTransfer.getData("app/explorer/fileIndex"))
-			let sourceWspace = parseInt(e.dataTransfer.getData("app/explorer/workspace"))
+			
 			let idx = treeItem.dataset.value
 			// and also check for operations to be only within the same workspace
 			// (for now)

@@ -872,3 +872,6 @@ textarea::-webkit-input-placeholder {
   .--RUNINT-link:hover {
     color: orange;
     cursor: pointer; }
+
+.droptarget {
+  background-color: rgba(50, 100, 150, 0.2); }

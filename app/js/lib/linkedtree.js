@@ -9,6 +9,7 @@ class LinkedTree {
 			this.children = []
 		
 		this.children.push(child)
+		child.parent = this
 		
 		return child
 	}
@@ -18,12 +19,7 @@ class LinkedTree {
 		if(!this.children)
 			return
 		
-		let a = []
-		for(let i = 0; i < this.children.length; i++)
-			if(this.children[i] !== child)
-				a.push(this.children[i])
-		
-		this.children = a
+		removeArrayItem(this.children, child)
 	}
 	
 	/**
@@ -93,7 +89,7 @@ class LinkedTree {
 		
 		for(let i = 0; i < this.children.length; i++) {
 			let child = this.children[i]
-			if(child.value === val) {log(child.value)
+			if(child.value === val) {l
 				this.removeChild(child)
 				return child
 			}

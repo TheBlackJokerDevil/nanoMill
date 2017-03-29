@@ -4,7 +4,7 @@
 important for beta:
 Workspace name
 custom keybinding
-make blueish logo or rebrand nanoMill completely
+moves files around and across workspaces
 
 not so important for beta
 is there a require() using ace implementation?

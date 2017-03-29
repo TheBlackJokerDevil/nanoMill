@@ -121,8 +121,8 @@ class WorkspaceMaster {
 	saveInConfig() {
 		let a = []
 		
-		for(let w of this.wspaces)
-			a.push(w.path)
+		for(let i = 0; i < this.wspaces.length; i++)
+			a.push(this.wspaces[i].path)
 		
 		config.set('workspaces', a)
 	}
@@ -145,6 +145,20 @@ class WorkspaceMaster {
 	*/
 	getWorkspace(idx) {
 		return this.wspaces[idx]
+	}
+	
+	/**
+		Removes a workspace
+		@param {Workspace} wspace - the workspace instance to remove
+	*/
+	removeWorkspace(wspace) {
+		if(!wspace)
+			return
+		
+		wspace.onRemove()
+		removeArrayItem(this.wspaces, wspace)
+		
+		this.saveInConfig()
 	}
 	
 	/**
@@ -205,6 +219,22 @@ class Workspace {
 		this.views.add(view)
 		
 		return view
+	}
+	
+	removeView(view) {
+		if(!view)
+			return
+		
+		view.innerHTML = ''
+		if(this.views)
+			this.views.delete(view)
+	}
+	
+	onRemove() {
+		for(let view of this.views)
+			view.root.innerHTML = ""
+		
+		this.views = null
 	}
 	
 	/**

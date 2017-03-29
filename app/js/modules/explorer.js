@@ -28,12 +28,17 @@ class Explorer extends layout.Module {
 		if(this.wspace === wspace)
 			return
 		
-		if(this.wspace && this.view)
-			this.wspace.removeView(view)
+		// clear old view
+		if(this.wspace && this.view) {
+			this.wspace.removeView(this.view)
+			this.body.innerHTML = ''
+		}
 		
-		this.wspace = wspace
-		this.view = wspace.getView()
-		this.body.appendChild(this.view.root)
+		if(wspace) {
+			this.wspace = wspace
+			this.view = wspace.getView()
+			this.body.appendChild(this.view.root)
+		}
 	}
 	
 	/**
@@ -54,7 +59,6 @@ class Explorer extends layout.Module {
 	}
 	
 	getSpecialMenuProps() {
-		
 		let sub_sel = []
 		
 		let workspaces = wmaster.getWorkspaces()
@@ -88,6 +92,15 @@ class Explorer extends layout.Module {
 				onvalidate: _ => {
 					// only allow access if there are any workspaces
 					return !!wmaster.getWorkspaces().length
+				}
+			},
+			{
+				label: "Close workspace",
+				icon: "icon-close",
+				onvalidate: _ => this.wspace ? true : false,
+				onclick: _ =>  {
+					wmaster.removeWorkspace(this.wspace)
+					this.setWorkspace(null)
 				}
 			}
 		]

@@ -1,7 +1,7 @@
 // provide every editor dom instace with a unique id by this index
 let nextTextEditorId = 0
 
-class TextEditor extends layout.SubModule {
+class TextEditor extends layout.DeckItem {
 	
 	init() {
 		this.root.innerHTML = `<div id='TE-${nextTextEditorId}' class='ace_mill'></div>`

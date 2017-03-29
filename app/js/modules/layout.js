@@ -670,7 +670,7 @@ class Layout_Deck extends Layout_Module {
 	onChildShow(idx) {}
 }
 
-class Layout_SubModule extends Layout_Element {
+class Layout_DeckItem extends Layout_Element {
 	constructor() {
 		super()
 		
@@ -823,8 +823,8 @@ let mouseOffX, mouseOffY, dragSplitterTarget, origDim
 module.exports = {
 	Layout: Layout,
 	Module: Layout_Module,
-	SubModule: Layout_SubModule,
 	Deck: Layout_Deck,
+	DeckItem: Layout_DeckItem,
 	setModuleDef,
 	DIR_COL,
 	DIR_ROW

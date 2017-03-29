@@ -4,7 +4,6 @@
 important for beta:
 Workspace name
 custom keybinding
-rename submodule to deckitem to fit proper naming
 make blueish logo or rebrand nanoMill completely
 close dialog on esc button
 

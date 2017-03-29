@@ -250,7 +250,7 @@ class Workspace {
 							fn(items, subdir, branch)
 						
 						// if there are no valid files found in subdirectory,
-						// still assign an assign to branch, so it gets recoginized as
+						// still assign an Array to branch, so it gets recoginized as
 						// a parent tree item
 						if(!branch.children)
 							branch.children = []
@@ -270,28 +270,32 @@ class Workspace {
 		})
 	}
 	
+	loadFile(p, parIdx) {
+		
+	}
+	
 	/**
 		Deletes a file or folder with all its descendants
 		@param {number} idx - Index of the FileInfo instance, which is to delete
 	*/
-	unlinkFile(idx) {
+	removeFile(idx) {
 		// sanity check
 		if(!this.finfo[idx])
 			return
 		
-		fs.unlink(this.finfo[idx].path)
-		
-		this.finfo[idx] = undefined
-		// detach from tree
-		let branch = this.tree.removeElementOfVal(idx)
-		// dereference any file info object, which is referenced by the descendants
-		// of branch
-		branch.forEach((idx) => {
+		fs.remove(this.finfo[idx].path, e => {
 			this.finfo[idx] = undefined
+			// detach from tree
+			let branch = this.tree.removeElementOfVal(idx)
+			// dereference any file info object, which is referenced by the descendants
+			// of branch
+			branch.forEach((idx) => {
+				this.finfo[idx] = undefined
+			})
+			
+			for(let view of this.views)
+				view.removeItem(idx)
 		})
-		
-		for(let view of this.views)
-			view.removeItem(idx)
 	}
 	
 	/**
@@ -927,7 +931,7 @@ class WorkspaceView {
 		props.push({
 			label: "Delete",
 			icon: "icon-trashbin",
-			onclick: _ => {this.wspace.unlinkFile(findex)}
+			onclick: _ => {this.wspace.removeFile(findex)}
 		})
 		
 		return props
@@ -945,7 +949,7 @@ class WorkspaceView {
 			if(!result)
 				return
 			log(result)
-			this.wspace.addDirectoryEntry(parentfIndex, result)
+			this.wspace.loadFile(parentfIndex, result)
 		})
 	}
 }

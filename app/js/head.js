@@ -92,7 +92,7 @@ function validateFilename(p, callback, i) {
 	Checks if a file/or directory of the given path already
 	exists; if so it checks for alternative with a " - n" suffix.
 	Otherwise it returns the given path
-	@param {p} path of tile
+	@param {p} path of file
 */
 function validateFilenameSync(p) {
 	let stat

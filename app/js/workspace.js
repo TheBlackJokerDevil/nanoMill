@@ -1,3 +1,5 @@
+let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
+
 /**
 	The WorkspaceMaster manages and stores the single Workspace instances
 	and handles opening single files.
@@ -221,8 +223,6 @@ class Workspace {
 				return
 			}
 			
-			let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
-			
 			// make a recursive call to iterate all directories and fill in the linked tree
 			let fn = (files, dir, tree) => {
 				for(let i = 0; i < files.length; i++) {
@@ -270,8 +270,31 @@ class Workspace {
 		})
 	}
 	
+	/**
+		Similar to loadDirectory() but with a single target
+		@param {string} p - path to file/directory
+		@param {number} parIdx - index of parent FileInfo object
+	*/
 	loadFile(p, parIdx) {
+		if(parIdx < -1)
+			throw new Error("loadFile parent index is not a valid input")
 		
+		fs.stat(p, (err, stat) => {
+			if(err)
+				return
+			
+			let branch = this.tree.getElementByVal(parIdx)
+			if(!branch)
+				branch = this.tree
+			
+			let idx = this.addFileInfo(new FileInfo(p, stat))
+			let tree = new LinkedTree(idx)
+			
+			branch.addChild(tree)
+			// update views
+			for(let view of this.views)
+				view.addItem(tree, parIdx)
+		})
 	}
 	
 	/**
@@ -628,7 +651,6 @@ class WorkspaceView {
 	}
 	
 	createItem(tree) {		
-		let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 		let el = LinkedTree.toHtmlList(tree, idx => {
 			// get file name form workspace file info holder
 			let name = this.wspace.finfo[idx].name
@@ -689,7 +711,7 @@ class WorkspaceView {
 		})
 		
 		// attach contextmenu on right click
-		label.addEventListener("contextmenu", (e) =>  {log("asd")
+		label.addEventListener("contextmenu", (e) =>  {
 			this.selectItem(treeItem, false)
 			new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(label))
 		})
@@ -857,9 +879,10 @@ class WorkspaceView {
 	getTreeMenuProps(el) {
 		let props = []
 		
+		let par = el.parentNode
 		// get file info from workspace
 		// explicit parse as integer, for the linked tree compares with ===
-		let findex = parseInt(el.parentNode.dataset.value)
+		let findex = parseInt(par.dataset.value)
 		let finfo = this.wspace.finfo[findex]
 		
 		// add run option for scenarios
@@ -875,27 +898,18 @@ class WorkspaceView {
 			label: "New file",
 			icon: "icon-plus",
 			onclick: _ => {
-				// the path where to place the file
-				let tpath
-				
-				let findex = -1
-				// if the element itself is a directory, create new file in it
-				if(Elem.hasClass(el, "tree-parent")) {
-					findex =  parseInt(el.dataset.value)
-					tpath = this.wspace.finfo[findex].path
+				let dirEl = this.getNextValidDirectoryElement(par)
+				let idx, tpath
+				if(!dirEl) {
+					idx = -1
+					tpath = this.wspace.path
 				}
-				// otherwise locate the new file in the directory where this file is, respecting root element
 				else {
-					let par = el.parentNode.parentNode
-					if(Elem.hasClass(par, "tree-parent")) {
-						findex =  parseInt(el.dataset.value)
-						tpath = this.wspace.finfo[findex].path
-					}
-					else
-						tpath = this.wspace.path
+					idx = dirEl.dataset.value
+					tpath = this.wspace.finfo[idx].path
 				}
 				
-				this.newFileDialog(tpath, findex)
+				this.newFileDialog(tpath, idx || -1)
 			}
 		})
 		
@@ -948,8 +962,10 @@ class WorkspaceView {
 		new Dialog_NewFile(500, 300, tpath, (result) => {
 			if(!result)
 				return
-			log(result)
-			this.wspace.loadFile(parentfIndex, result)
+			
+			if(typeof result === "string") {
+				this.wspace.loadFile(result, parentfIndex)
+			}
 		})
 	}
 }

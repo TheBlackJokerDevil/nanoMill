@@ -49,7 +49,7 @@ class Dialog_NewFile extends Dialog {
 					author: config.get("author"),
 					version: config.get("ocver"),
 					desc: descEl?descEl.value:""
-				}, _  => fnOnCreation(true))
+				}, fpath  => fnOnCreation(fpath))
 				
 				this.close()
 			})

@@ -58,7 +58,7 @@ class TemplateLoader {
 			files = fs.readdirSync(dirpath)
 		}
 		catch(err) {
-			error(`Could not load templates from path ${dirpath} (${err})`)
+			warn(`Could not load templates from path ${dirpath} (${err})`)
 			return
 		}
 		
@@ -72,7 +72,7 @@ class TemplateLoader {
 				this.templates.push(template)
 			}
 			catch(err) {
-				error(`Could not read template definition of directory ${files[i]} (${err})`)
+				warn(`Could not read template definition of directory ${files[i]} (${err})`)
 			}
 		}
 	}
@@ -98,19 +98,23 @@ class TemplateLoader {
 			let write = fs.createWriteStream(tpath)
 			
 			read.pipe(trans).pipe(write)
+			if(callback)
+				callback(tpath)
 		}
 		else {
 			fs.mkdirSync(tpath)
 			ncp(template.path, tpath,
 				{
+					// ignore templateDef.json files
 					filter: v => !/templateDef.json$/gi.test(v),
+					// set transform stream in between to handle autofills
 					transform: function (read, write) {
 						read.pipe(new AutofillStream(null, fillIns)).pipe(write)
-					},
+					}
 				},
-				(err) => {
+				err => {
 					if(callback)
-						callback(err)
+						callback(err || tpath)
 				}
 			)
 		}

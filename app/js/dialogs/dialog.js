@@ -16,6 +16,12 @@ class Dialog {
 		
 		document.body.appendChild(this.modal)
 		
+		this.escEv = (e) => {
+			if(e.which === 27)
+				this.close()
+		}
+		document.addEventListener("keydown", this.escEv)
+		
 		this.init(...args)
 	}
 	
@@ -26,6 +32,8 @@ class Dialog {
 	}
 	
 	close() {
+		document.removeEventListener("keydown", this.escEv)
+		
 		Elem.removeClass(this.modal, "shown")
 		setTimeout(_ => {
 			Elem.remove(this.modal)

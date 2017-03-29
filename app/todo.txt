@@ -5,7 +5,6 @@ important for beta:
 Workspace name
 custom keybinding
 make blueish logo or rebrand nanoMill completely
-close dialog on esc button
 
 not so important for beta
 is there a require() using ace implementation?

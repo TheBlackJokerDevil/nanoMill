@@ -1,6 +1,6 @@
 const cprocess = require("child_process")
 const __rootdir = __dirname
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const {remote} = require('electron')
 const dialog = remote.dialog

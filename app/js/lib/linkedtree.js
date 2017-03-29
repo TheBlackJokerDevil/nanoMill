@@ -89,7 +89,7 @@ class LinkedTree {
 		
 		for(let i = 0; i < this.children.length; i++) {
 			let child = this.children[i]
-			if(child.value === val) {l
+			if(child.value === val) {
 				this.removeChild(child)
 				return child
 			}

@@ -70,8 +70,10 @@ function removeArrayItems(ary, val) {
 			Has the resulting path as argument
 */
 function validateFilename(p, callback, i) {
-	if(typeof i === "number")
-		p += " - " + i
+	if(typeof i === "number") {
+		let ext = path.extname(p)
+		p = p.substr(0, p.length - ext.length) + " - " + i + ext
+	}
 	
 	fs.stat(p, (err) => {
 		// an error means, that the file does not exists
@@ -102,10 +104,12 @@ function validateFilenameSync(p) {
 		return p
 	}
 	
+	let ext = path.extname(p)
+	let basep = p = p.substr(0, p.length - ext.length)
 	let altp
 	let i = 1
 	while(stat) {
-		altp = p + " - " + i
+		altp = basep + " - " + i + ext
 		try {
 			stat = fs.statSync(altp)
 		}

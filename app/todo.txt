@@ -1,11 +1,8 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
-	
-Load newly created files and directories into the workspaces
-use validateFilename() in renameFile of the Workspace-class
+
 Close workspace option
 Workspace name
-removing files recursively
 lazy load more things (ace would save us 200ms)
 custom keybinding
 rename submodule to deckitem to fit proper naming

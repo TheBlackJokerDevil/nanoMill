@@ -1,14 +1,16 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
-Close workspace option
+important for beta:
 Workspace name
-lazy load more things (ace would save us 200ms)
 custom keybinding
 rename submodule to deckitem to fit proper naming
 make blueish logo or rebrand nanoMill completely
 close dialog on esc button
+
+not so important for beta
 is there a require() using ace implementation?
+lazy load more things (ace would save us 200ms)
 
 future goals:
 formating whole script via hotkey

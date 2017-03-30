@@ -58,7 +58,7 @@ function createWindow () {
 		}
 	}
 	
-	winopts.icon = `${__dirname}/the-mill.ico`
+	winopts.icon = `${__dirname}/icon/icon.png`
 	winopts.show = false
 	winopts.backgroundColor = "#26282b"
 	winopts.frame = false

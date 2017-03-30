@@ -68,8 +68,9 @@ function createWindow () {
 	// Create the browser window.
 	win = new BrowserWindow(winopts)
 	
-	win.webContents.on('did-finish-load', _ => {
+	win.on('ready-to-show', _ => {
 		win.show()
+		win.focus()
 	})
 	
 	if(!windata.devmode)

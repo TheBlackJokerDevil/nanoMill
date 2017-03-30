@@ -1,8 +1,0 @@
-
-run in commandline as admin( if not admin, OSx might not build )
-you can change --out=<dir> wherever you want the bundles to get placed
-keep --electron-version=-<electron_version> up to date
-
-npm
-npm install <pathToAppFolder> --save
-electron-packager <pathToAppFolder> --all --asar --electron-version=1.6.2 --overwrite --out=<output> --icon=<pathToApFolder>\the-mill.ico

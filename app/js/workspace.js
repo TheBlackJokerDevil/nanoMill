@@ -780,15 +780,16 @@ class WorkspaceView {
 	}
 	
 	removeItem(idx) {
-		let item = this.entries[idx]
+		let item = this.items[idx]
 		if(!item)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
 		
-		item.parentNode.removeChild(item)
+		removeArrayItem(this.items, item)
+		item.onRemove()
 	}
 	
 	replaceItem(idx, tree) {
-		let item = this.entries[idx]
+		let item = this.items[idx]
 		if(!item)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
 		
@@ -864,7 +865,7 @@ class WorkspaceView {
 		props.push({
 			label: "Delete",
 			icon: "icon-trashbin",
-			onclick: _ => {this.wspace.removeFile(findex)}
+			onclick: _ => {this.wspace.removeFile(item.idx)}
 		})
 		
 		return props
@@ -938,7 +939,7 @@ class WorkspaceViewItem {
 	}
 	
 	onRemove() {
-		
+		this.el.parentNode.removeChild(this.el)
 	}
 	
 	onSelect() {

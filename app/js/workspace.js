@@ -424,11 +424,15 @@ class Workspace {
 		@param {FileInfo} finfo - FileInfo instance to add
 	*/
 	addFileInfo(finfo) {
-		let i = this.finfo.length
+		let idx = this.finfo.length
 		
-		this.finfo[i] = finfo
+		this.finfo[idx] = finfo
 		
-		return i
+		return idx
+	}
+	
+	getFileInfo(idx) {
+		return this.finfo[idx]
 	}
 	
 	/**
@@ -656,6 +660,8 @@ class WorkspaceView {
 		// indexed by their corresponding finfo index
 		// in workspace object
 		this.entries = []
+		this.items = []
+		this.rootItem = new WorkspaceViewRootItem(this.root)
 		
 		this.selected = []
 		
@@ -671,181 +677,70 @@ class WorkspaceView {
 			return
 		}
 		
-		let el = this.createItem(tree)
+		let idx = tree.value
+		let finfo = this.wspace.finfo[idx]
+		let root = this.createViewItem(idx, finfo, tree.children ? true : false)
 		
-		// ignore root element
 		if(parIdx === -1)
-			this.root.appendChild(el)
+			root.setParent(this.rootItem)
 		else
-			this.entries[parIdx].appendChild(el)
-	}
-	
-	createItem(tree) {		
-		let el = LinkedTree.toHtmlList(tree, idx => {
-			// get file name form workspace file info holder
-			let name = this.wspace.finfo[idx].name
-			// wrap span around extension
-			return this.parseItemLabel(name)
-		}, 'dblclick')
+			root.setParent(this.items[parIdx])
 		
-		// link by their file indicess
-		let items = el.getElementsByClassName("tree-item")
+		this.items[idx] = root
 		
-		for(let i = 0; i < items.length; i++) {
-			let item = items[i]
-			let idx = item.dataset.value
-			
-			this.entries[idx] = item
-			
-			this.bindEventHandlers(item)
+		let rec = (children, par) => {
+			for(let i = 0; i < children.length; i++) {
+				let child = children[i]
+				let idx = child.value
+				let finfo = this.wspace.getFileInfo(idx)
+				let item = this.createViewItem(idx, finfo, child.children ? true : false)
+				item.setParent(par)
+				
+				this.items[idx] = item
+				
+				if(child.children)
+					rec(child.children, item)
+			}
 		}
-		// do the same with tree root element
-		let idx = tree.value		
-		this.entries[idx] = el
-		this.bindEventHandlers(el)
 		
-		return el
+		if(tree.children)
+			rec(tree.children, root)
 	}
 	
-	parseItemLabel(fname) {
-		return fname.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
-	}
-	
-	bindEventHandlers(el) {
-		if(!Elem.hasClass(el, "tree-item"))
-			throw new Error("bindEventHandlers() received non-tree-item element")
+	createViewItem(idx, finfo, isDir) {
+		let item = new WorkspaceViewItem(idx, finfo, isDir)
+		item.bindEventHandlers(this)
 		
-		// get label element
-		let label = el.firstChild
-		let treeItem = el
-		
-		// select on single click
-		label.addEventListener("mousedown", (e) => {
-			if(Elem.hasClass(treeItem, "tree-selected") && e.ctrlKey)
-				this.deselectItem(treeItem)
-			else
-				this.selectItem(treeItem, e.ctrlKey)
-		})
-		
-		// open editable files; expand/collapse directories on dblclick
-		label.addEventListener("dblclick", (e) => {
-			let idx = label.parentNode.dataset.value
-			let finfo = this.wspace.finfo[idx]
-			
-			if(Elem.hasClass(treeItem, "tree-parent"))
-				return
-			
-			// open file
-			if(WorkspaceMaster.isEditableExt(finfo.ext))
-				wmaster.openFile(finfo)
-		})
-		
-		// attach contextmenu on right click
-		label.addEventListener("contextmenu", (e) =>  {
-			this.selectItem(treeItem, false)
-			new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(label))
-		})
-		
-		// dragging elements
-		label.draggable = true
-		
-		label.addEventListener("dragstart", e => {
-			isDragging = true
-		})
-		
-		label.addEventListener("dragend", e => {
-			isDragging = false
-		})
-		
-		label.addEventListener("drop", e => {log("dragend")
-			if(currentDropTarget)
-				Elem.removeClass(currentDropTarget, "droptarget")
-			log(e)
-			// don't react on non workspace drag events
-			if(!isDragging)
-				return
-			
-			let idx = treeItem.dataset.value
-			// and also check for operations to be only within the same workspace
-			// (for now)
-			if(this.wspace.index !== sourceWspace)
-				return
-			else
-				this.wspace.moveFileTo(sourceFileIndex, idx)
-			
-			isDragging = false
-			
-			// claim event
-			e.preventDefault()
-			e.stopPropagation()
-		})
-		
-		label.addEventListener("dragenter", e => {
-			if(!isDragging)
-				return
-			
-			let par = this.getNextValidDirectoryElement(treeItem)
-			if(!par)
-				par = this.root
-			
-			//check if anything has changed
-			if(currentDropTarget === par)
-				return
-			
-			currentDropTarget = par
-			Elem.addClass(par, "droptarget")
-		})
-		
-		label.addEventListener("dragleave", e => {
-			if(!isDragging)
-				return
-			
-			let par = this.getNextValidDirectoryElement(treeItem)
-			if(!par)
-				par = this.root
-			
-			// check if anything has changed
-			if(currentDropTarget === par)
-				return
-			
-			Elem.removeClass(par, "droptarget")
-		})
+		return item
 	}
 	
 	selectItem(item, multiSelect) {
 		if(!multiSelect)
-			this.deselectItems()
+			this.deselectItems(item)
 		
 		this.selected.push(item)
 		
-		Elem.addClass(item, "tree-selected")
+		item.onSelect()
 		
-		// update active item
+		// loose active
 		if(this.activeItem)
-			Elem.removeClass(this.activeItem, "tree-active")
+			this.activeItem.onBlur()
 		
 		this.activeItem = item
-		Elem.addClass(item, "tree-active")
+		item.onFocus(item)
 	}
 	
 	deselectItem(item) {
-		// recreate select array without the targeted item
-		let a = []
-		for(let i = 0; i < this.selected.length; i++)
-			if(this.selected[i] !== item)
-				a.push(this.selected[i])
-		
-		this.selected = a
-		
-		Elem.removeClass(item, "tree-selected")
+		removeArrayItem(this.selected, item)
+		item.onDeselect()
 		
 		// if the item was active set it to the most recent element
-		if(Elem.hasClass(item, "tree-active")) {
-			Elem.removeClass(item, "tree-active")
+		if(item.hasFocus()) {
+			item.onBlur()
 			
 			if(this.selected.length) {
 				let active = this.selected[this.selected.length - 1]
-				Elem.addClass(active, "tree-active")
+				active.onFocus()
 				this.activeItem = active
 			}
 			else
@@ -853,18 +748,15 @@ class WorkspaceView {
 		}
 	}
 	
-	getSelectedItems() {
-		
-	}
-	
 	deselectItems() {
 		for(let i = 0; i < this.selected.length; i++)
-			Elem.removeClass(this.selected[i], "tree-selected")
+			this.selected[i].onDeselect()
 		
 		this.selected = []
 		
 		if(this.activeItem)
-			Elem.removeClass(this.activeItem, "tree-active")
+			this.activeItem.onBlur()
+		
 		this.activeItem = null
 	}
 	
@@ -906,14 +798,12 @@ class WorkspaceView {
 		item.parentNode.replaceChild(el, item)
 	}
 	
-	getTreeMenuProps(el) {
+	getTreeMenuProps(item, nextDirItem) {
 		let props = []
 		
-		let par = el.parentNode
 		// get file info from workspace
 		// explicit parse as integer, for the linked tree compares with ===
-		let findex = parseInt(par.dataset.value)
-		let finfo = this.wspace.finfo[findex]
+		let finfo = this.wspace.finfo[item.idx]
 		
 		// add run option for scenarios
 		if(finfo.ext === ".ocs")
@@ -997,5 +887,185 @@ class WorkspaceView {
 				this.wspace.loadFile(result, parentfIndex)
 			}
 		})
+	}
+}
+
+class WorkspaceViewItem {
+	constructor(idx, finfo, isDir) {
+		this._par = null
+		this.finfo = finfo
+		this.idx = idx
+		
+		let el = document.createElement("div")
+		el.className = "tree-item"
+		el.innerHTML = `<div class="tree-label">${this.parseLabelName(finfo.name)}</div><div class="tree-children"></div>`
+		
+		if(isDir) {
+			el.className += " tree-parent tree-collapsed"
+			el.firstChild.addEventListener('dblclick', (e) => {
+				Elem.toggleClass(el, 'tree-collapsed')
+			})
+		}
+		
+		this.isDir = isDir
+		this.el = el
+		this.childrenEl = el.lastChild
+	}
+	
+	update(idx, finfo) {
+		this.idx = idx
+		this.finfo = finfo
+	}
+	
+	getParent() {
+		return this._par
+	}
+	
+	setParent(newPar) {
+		if(newPar === this._par)
+			return
+		
+		newPar.childrenEl.appendChild(this.el)
+		
+		this._par = newPar
+	}
+	
+	parseLabelName(fname) {
+		return fname.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
+	}
+	
+	onRemove() {
+		
+	}
+	
+	onSelect() {
+		Elem.addClass(this.el, "tree-selected")
+	}
+	
+	onDeselect() {	
+		Elem.removeClass(this.el, "tree-selected")
+	}
+	
+	onFocus() {
+		Elem.addClass(this.el, "tree-active")
+		this.focused = true
+	}
+	
+	onBlur() {
+		Elem.removeClass(this.el, "tree-active")
+		this.focused = false
+	}
+	
+	hasFocus() {
+		return this.focused
+	}
+	
+	isRootItem() {
+		return false
+	}
+	
+	
+	bindEventHandlers(wview) {
+		// get label element
+		let label = this.el.firstChild
+		
+		// select on single click
+		label.addEventListener("mousedown", (e) => {
+			if(Elem.hasClass(this.el, "tree-selected") && e.ctrlKey)
+				wview.deselectItem(this)
+			else
+				wview.selectItem(this, e.ctrlKey)
+		})
+		
+		// open editable files; expand/collapse directories on dblclick
+		label.addEventListener("dblclick", (e) => {
+			let finfo = wview.wspace.finfo[this.idx]
+			
+			if(Elem.hasClass(this.el, "tree-parent"))
+				return
+			
+			// open file
+			if(WorkspaceMaster.isEditableExt(finfo.ext))
+				wmaster.openFile(finfo)
+		})
+		
+		// attach contextmenu on right click
+		label.addEventListener("contextmenu", (e) =>  {
+			wview.selectItem(this, false)
+			new Contextmenu(e.pageX, e.pageY, wview.getTreeMenuProps(this))
+		})
+		
+		// dragging elements
+		label.draggable = true
+		
+		label.addEventListener("dragstart", e => {
+			isDragging = true
+		})
+		
+		label.addEventListener("dragend", e => {
+			isDragging = false
+		})
+		
+		label.addEventListener("drop", e => {log("dragend")
+			if(currentDropTarget)
+				Elem.removeClass(currentDropTarget, "droptarget")
+			
+			// don't react on non workspace drag events
+			if(!isDragging)
+				return
+			// and also check for operations to be only within the same workspace
+			// (for now)
+			if(wview.wview.index !== sourcewview)
+				return
+			else
+				wview.wview.moveFileTo(sourceFileIndex, this.idx)
+			
+			isDragging = false
+			
+			// claim event
+			e.preventDefault()
+			e.stopPropagation()
+		})
+		
+		label.addEventListener("dragenter", e => {
+			if(!isDragging)
+				return
+			
+			let par = wview.getNextValidDirectoryElement(this.el)
+			if(!par)
+				par = wview.root
+			
+			//check if anything has changed
+			if(currentDropTarget === par)
+				return
+			
+			currentDropTarget = par
+			Elem.addClass(par, "droptarget")
+		})
+		
+		label.addEventListener("dragleave", e => {
+			if(!isDragging)
+				return
+			
+			let par = wview.getNextValidDirectoryElement(this.el)
+			if(!par)
+				par = wview.root
+			
+			// check if anything has changed
+			if(currentDropTarget === par)
+				return
+			
+			Elem.removeClass(par, "droptarget")
+		})
+	}
+}
+
+class WorkspaceViewRootItem {
+	constructor(el) {
+		this.childrenEl = el
+	}
+	
+	isRootItem() {
+		return true
 	}
 }

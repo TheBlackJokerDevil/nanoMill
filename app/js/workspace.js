@@ -772,12 +772,11 @@ class WorkspaceView {
 	}
 	
 	renameItem(idx, newName) {
-		let item = this.entries[idx]
+		let item = this.items[idx]
 		if(!item)
 			throw new Error("Trying to rename unknown WorkspaceView entry")
 		
-		let label = item.firstChild
-		label.innerHTML = this.parseItemLabel(newName)
+		item.rename(newName)
 	}
 	
 	removeItem(idx) {
@@ -838,13 +837,13 @@ class WorkspaceView {
 			props.push({
 				label: "Pack",
 				icon: "icon-pack",
-				onclick: _ => { this.wspace.packFile(findex) },
+				onclick: _ => { this.wspace.packFile(item.idx) },
 				onvalidate: _ => hasC4group() && finfo.stat.isDirectory()
 			})
 			props.push({
 				label: "Unpack",
 				icon: "icon-unpack",
-				onclick: () => { this.wspace.unpackFile(findex) },
+				onclick: () => { this.wspace.unpackFile(item.idx) },
 				onvalidate: _ => hasC4group() && !finfo.stat.isDirectory()
 			})
 		}
@@ -857,7 +856,7 @@ class WorkspaceView {
 				new Dialog_Rename(300, 150, finfo.name, (result) => {
 					// check for valid file name
 					if(result && typeof result === "string" && result !== finfo.name)
-						this.wspace.renameFile(findex, result)
+						this.wspace.renameFile(item.idx, result)
 				})
 			}
 		})
@@ -934,6 +933,10 @@ class WorkspaceViewItem {
 		return fname.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
 	}
 	
+	rename(fname) {		
+		this.el.firstChild.innerHTML = this.parseLabelName(fname)
+	}
+	
 	onRemove() {
 		
 	}
@@ -963,7 +966,6 @@ class WorkspaceViewItem {
 	isRootItem() {
 		return false
 	}
-	
 	
 	bindEventHandlers(wview) {
 		// get label element

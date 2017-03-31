@@ -401,26 +401,29 @@ class Layout_Module extends Layout_Element {
 					p2 = mod2.parent,
 					idx2 = p2.getChildIndex(mod2)
 				
-				if(idx2 < idx1) {
-					_self.parent.unregisterChild(_self)
-					p2.registerChild(_self, idx2)
-					mod2.parent.unregisterChild(mod2)
-					p1.registerChild(mod2, idx1)
+				// only do something if two different modules are selected
+				if(_self !== mod2) {
+					if(idx2 < idx1) {
+						_self.parent.unregisterChild(_self)
+						p2.registerChild(_self, idx2)
+						mod2.parent.unregisterChild(mod2)
+						p1.registerChild(mod2, idx1)
+					}
+					else {
+						mod2.parent.unregisterChild(mod2)
+						p1.registerChild(mod2, idx1)
+						_self.parent.unregisterChild(_self)
+						p2.registerChild(_self, idx2)
+					}
+					
+					_self.root.style.width = mod2.root.style.width
+					_self.root.style.height = mod2.root.style.height
+					
+					mod2.root.style.width = w
+					mod2.root.style.height = h
+					
+					hook.exec("onLayoutChange")
 				}
-				else {
-					mod2.parent.unregisterChild(mod2)
-					p1.registerChild(mod2, idx1)
-					_self.parent.unregisterChild(_self)
-					p2.registerChild(_self, idx2)
-				}
-				
-				_self.root.style.width = mod2.root.style.width
-				_self.root.style.height = mod2.root.style.height
-				
-				mod2.root.style.width = w
-				mod2.root.style.height = h
-				
-				hook.exec("onLayoutChange")
 				
 				e.stopPropagation()
 				

@@ -469,16 +469,14 @@ class Workspace {
 				Object of the target directory
 	*/
 	moveFileTo(idx, newParIdx) {
-		log(newParIdx)
 		let newPar = this.tree.getElementByVal(newParIdx)
-		log(this.tree)
-		log(newPar)
+		
 		if(!newPar)
 			throw new Error("moveFileTo has undefined parent target")
 		
 		let branch = this.tree.getElementByVal(idx)
 		branch.parent.removeChild(branch)
-		log(newPar)
+		
 		newPar.addChild(branch)
 		
 		// and do the sorting stuff
@@ -793,9 +791,13 @@ class WorkspaceView {
 		if(!item)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
 		
-		let el = this.createItem(tree)
+		let parIdx = item.getParent().idx
 		
-		item.parentNode.replaceChild(el, item)
+		// remove old
+		this.removeItem(idx)
+		
+		// create new item
+		this.addItem(tree, parIdx)
 	}
 	
 	getTreeMenuProps(item, nextDirItem) {
@@ -1066,6 +1068,7 @@ class WorkspaceViewItem {
 class WorkspaceViewRootItem {
 	constructor(el) {
 		this.childrenEl = el
+		this.idx = -1
 	}
 	
 	isRootItem() {

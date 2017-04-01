@@ -5,10 +5,7 @@ important for beta:
 Workspace name
 custom keybinding
 moves files around and across workspaces
-moving modules bug
 complete settings
-remove style from console links
-push replace module behavior to work with replaceChild()
 
 not so important for beta
 is there a require() using ace implementation?

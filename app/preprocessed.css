@@ -868,10 +868,16 @@ textarea::-webkit-input-placeholder {
   color: #D04B4B; }
 
 .--RUNINT-link {
-  text-decoration: underline; }
-  .--RUNINT-link:hover {
-    color: orange;
-    cursor: pointer; }
+  /* 	uncomment this as soon
+	as opening linked files works
+
+	text-decoration: underline; 
+	
+	&:hover {
+		color: orange;
+		cursor: pointer;
+	}
+*/ }
 
 .droptarget {
   background-color: rgba(50, 100, 150, 0.2); }

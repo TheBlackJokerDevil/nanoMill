@@ -64,10 +64,14 @@
 }
 
 .--RUNINT-link {
+/* 	uncomment this as soon
+	as opening linked files works
+
 	text-decoration: underline; 
 	
 	&:hover {
 		color: orange;
 		cursor: pointer;
 	}
+*/
 }

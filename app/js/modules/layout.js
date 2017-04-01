@@ -214,10 +214,8 @@ class Layout_Flex extends Layout_Element {
                 index = this.children.length - 1
 				Elem.before(this.children[index].root, child.root)
 			}
-			else {
-				index = this.children.length
-				Elem.after(this.children[index].root, child.root)
-			}
+			else 
+				this.root.appendChild(child.root)
 			
             this.children.splice(index, 0, child)
         }
@@ -264,6 +262,24 @@ class Layout_Flex extends Layout_Element {
 		// assign parent to child element
 		newChild.parent = this
 	}
+	
+	swapChildren(mod1, mod2) {
+		// swap dimensions
+		let w = mod1.root.style.width,
+			h = mod1.root.style.height
+		
+		mod1.root.style.width = mod2.root.style.width
+		mod1.root.style.height = mod2.root.style.height
+		mod2.root.style.width = w
+		mod2.root.style.height = h
+		
+		if(mod1.root === this.root.firstElementChild)
+			this.root.insertBefore(mod2.root, mod1.root)
+		else
+			this.root.insertBefore(mod1.root, mod2.root)
+		
+		this.updateSplitters()
+	}
 
     adjustAppearance() {
 		// remove flexer without children
@@ -289,15 +305,15 @@ class Layout_Flex extends Layout_Element {
     }
 
     updateSplitters() {
-
         let prev, el = this.root.firstElementChild
 		
 		if(!el)
 			return
 		
 		if(Elem.hasClass(el, "flex-splitter")) {
+			let next = el.nextSibling
 			Elem.remove(el)
-			el = el.nextSibling
+			el = next
 		}
 		
 		while(el) {
@@ -392,10 +408,6 @@ class Layout_Module extends Layout_Element {
 			
 			let fn = function(e) {
 				let p1 = _self.parent
-
-				let idx1 = p1.getChildIndex(_self),
-					w = _self.root.style.width,
-					h = _self.root.style.height
 				
 				let mod2 = _self.source.getModuleOfBody(this),
 					p2 = mod2.parent,
@@ -403,24 +415,25 @@ class Layout_Module extends Layout_Element {
 				
 				// only do something if two different modules are selected
 				if(_self !== mod2) {
-					if(idx2 < idx1) {
-						_self.parent.unregisterChild(_self)
-						p2.registerChild(_self, idx2)
-						mod2.parent.unregisterChild(mod2)
-						p1.registerChild(mod2, idx1)
-					}
+					if(p1 === mod2.parent)
+						mod2.parent.swapChildren(_self, mod2)
 					else {
-						mod2.parent.unregisterChild(mod2)
-						p1.registerChild(mod2, idx1)
-						_self.parent.unregisterChild(_self)
-						p2.registerChild(_self, idx2)
+						let idx = p1.getChildIndex(_self)
+						p1.unregisterChild(_self)
+						
+						mod2.parent.replaceChild(_self, mod2)
+						p1.registerChild(mod2, idx)
+						
+						// swap dimensions
+						let w = _self.root.style.width,
+							h = _self.root.style.height
+					
+						_self.root.style.width = mod2.root.style.width
+						_self.root.style.height = mod2.root.style.height
+					
+						mod2.root.style.width = w
+						mod2.root.style.height = h
 					}
-					
-					_self.root.style.width = mod2.root.style.width
-					_self.root.style.height = mod2.root.style.height
-					
-					mod2.root.style.width = w
-					mod2.root.style.height = h
 					
 					hook.exec("onLayoutChange")
 				}

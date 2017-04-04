@@ -555,7 +555,8 @@ textarea::-webkit-input-placeholder {
     background-color: steelblue; }
 
 #content.move-mod .mod-con:hover .mod-head {
-  background-color: steelblue; }
+  outline: 2px solid steelblue;
+  outline-offset: -2px; }
 
 .mod-con {
   min-height: 20px;
@@ -565,7 +566,8 @@ textarea::-webkit-input-placeholder {
   background-color: #26282b;
   color: gray;
   height: 20px;
-  padding: 5px 3px; }
+  padding: 5px 3px;
+  transition: background 0.2s; }
 
 .mod-button {
   text-shadow: 0 1px 0 #141414;
@@ -586,12 +588,13 @@ textarea::-webkit-input-placeholder {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); }
   .mod-sel:focus .mod-sel-item {
     display: initial;
-    pointer-events: auto; }
+    pointer-events: auto;
+    background-color: #26282b; }
     .mod-sel:focus .mod-sel-item:hover {
       background-color: #787878;
       color: black; }
   .mod-sel:hover:not(:focus) .visible {
-    background-color: #26282b; }
+    color: #b4b4b4; }
 
 .mod-sel-list {
   position: absolute;
@@ -606,7 +609,6 @@ textarea::-webkit-input-placeholder {
   display: none;
   padding: 0 3px;
   font-size: 14px;
-  background-color: #26282b;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
@@ -614,6 +616,9 @@ textarea::-webkit-input-placeholder {
   white-space: nowrap; }
   .mod-sel-item.visible {
     display: initial; }
+
+.mod-active .mod-head {
+  background: linear-gradient(to right, #3e4146 0%, transparent 45%); }
 
 .mod-body {
   position: relative;

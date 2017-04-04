@@ -1,6 +1,8 @@
 
 #content.move-mod .mod-con:hover .mod-head {
-	background-color: $frame-action;
+	// background-color: $frame-action;
+	outline: 2px solid $frame-action;
+	outline-offset: -2px;
 }
 
 .mod-con {
@@ -13,6 +15,7 @@
 	color: $tb-clr;
 	height: 20px;
 	padding: 5px 3px;
+	transition: background 0.2s;
 }
 
 .mod-button {
@@ -44,6 +47,7 @@
 	&:focus .mod-sel-item {
 		display: initial;
 		pointer-events: auto;
+		background-color: $bg-main;
 		
 		&:hover {
 			background-color: $tb-bg-hvr;
@@ -52,7 +56,7 @@
 	}
 	
 	&:hover:not(:focus) .visible {
-		background-color: $bg-main;
+		color: rgb(180, 180, 180);
 	}
 }
 
@@ -71,7 +75,6 @@
 	display: none;
 	padding: 0 3px;
 	font-size: 14px;
-	background-color: $bg-main;
 	
 	@include noUserSelect();
 	
@@ -82,6 +85,12 @@
 	}
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+.mod-active {
+	.mod-head {
+		background: linear-gradient(to right, #3e4146 0%,rgba(0,0,0,0) 45%);
+	}
 }
 
 .mod-body {

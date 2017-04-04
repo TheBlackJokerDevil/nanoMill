@@ -26,6 +26,8 @@ class Layout extends Layout_Element {
 		
 		this.children = []
 		
+		this.active = null
+		
 		this.flexer = new Flexer(DIR_ROW)
 		
 		Elem.addClass(this.flexer.root, "flex-fill")
@@ -51,6 +53,26 @@ class Layout extends Layout_Element {
 		mdl.init(stateinfo)
 		
 		return mdl
+	}
+	
+	setActiveModule(mdl) {
+		if(this.active === mdl)
+			return
+		
+		if(this.active)
+			Elem.removeClass(this.active.root, "mod-active")
+		
+		this.active = mdl
+		
+		if(mdl !== null)
+			Elem.addClass(mdl.root, "mod-active")
+		
+		if(this.onActivate)
+			this.onActivate(mdl) 
+	}
+	
+	isActiveModule(mdl) {
+		return mdl === this.active
 	}
 	
 	getModulesSet() {
@@ -364,7 +386,9 @@ class Layout_Module extends Layout_Element {
 		super()
 
 		let el = document.querySelector(".mod-con.draft").cloneNode(true)
-		
+		el.addEventListener("click", e => {
+			this.source.setActiveModule(this)
+		})
 		
         this.root = el
 		this.body = el.getElementsByClassName("mod-body")[0]
@@ -521,6 +545,10 @@ class Layout_Module extends Layout_Element {
 		this.source.removeFromModuleList(this)
 		
 		this.onClose()
+		
+		// dereference active module in source element
+		if(this.source.isActiveModule(this))
+			this.source.setActiveModule(null)
 		
 		return true
 	}

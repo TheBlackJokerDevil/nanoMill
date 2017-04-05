@@ -4,6 +4,9 @@ const
 	KEY_SHIFT = 2,
 	KEY_CTRL = 4
 
+const
+	MOD_KEY_BIT_OFFSET = 3
+
 const keyCodeMap = {
 	"backspace": 8,
 	"tab": 9,
@@ -107,33 +110,55 @@ const keyCodeMap = {
 
 class KeyMapper {
 	constructor() {
-		this.bindings = []
-		
-		this.regKb("ctrl-o", openFilePicker)
-		this.regKb("ctrl-s", save)
+		this.nameList = {}
+		this.codeList = {}
 		
 		document.addEventListener("keyup", e => {
-			let mods = 0
-			if(e.altKey === true)
-				mods += KEY_ALT
-			if(e.shiftKey === true)
-				mods += KEY_SHIFT
-			if(e.ctrlKey === true)
-				mods += KEY_CTRL
+			let code = KeyMapper.eventToCode(e)
 			
-			// keybinding is only allowed in conjunction with
-			// modulate buttons e.g. shift, ctrl and alt
-			if(!mods)
+			if(code === -1)
 				return
 			
-			let code = (e.keyCode << 3) + mods
-			
-			if(this.bindings[code])
-				this.bindings[code]()
+			if(this.codeList[code])
+				this.codeList[code].exec(this.activeMdl)
 		})
 	}
 	
-	regKb(keyString, cb) {
+	bind(name, keyString, cb, alias = "global") {
+		let code = KeyMapper.keyStringToCode(keyString)
+		
+		if(code === -1)
+			throw new Error(`Invalid keystring ${keyString} for binding ${name}`)
+		
+		if(!this.codeList[code])
+			this.codeList[code] = new KeyBinding()
+		
+		this.codeList[code].set(alias, cb)
+		
+		this.nameList[name] = this.codeList[code]
+	}
+	
+	setActiveModule(mdl, type) {
+		this.activeMdl = mdl
+	}
+	
+	static eventToCode(e) {
+		let code = 0
+		
+		if(e.altKey === true)
+			code += KEY_ALT
+		if(e.shiftKey === true)
+			code += KEY_SHIFT
+		if(e.ctrlKey === true)
+			code += KEY_CTRL
+		
+		if(!code)
+			return -1
+		
+		return (e.keyCode << MOD_KEY_BIT_OFFSET) | code
+	}
+	
+	static keyStringToCode(keyString) {
 		let code = 0
 		if(keyString.match(/alt/i))
 			code += KEY_ALT
@@ -142,15 +167,43 @@ class KeyMapper {
 		if(keyString.match(/ctrl/i))
 			code += KEY_CTRL
 		
-		let key = keyString.replace(/(ctrl|shift|alt|-)/gi, "").trim().toLowerCase()
+		if(!code)
+			return -1
 		
-		if(!keyCodeMap[key])
-			return warn(`Cannot parse keybinding notation '${key}' of '${keyString}'`)
+		let keyName = keyString.replace(/(ctrl|shift|alt|-)/gi, "").trim().toLowerCase()
 		
-		code = (keyCodeMap[key] << 3) + code
+		return (keyCodeMap[keyName] << MOD_KEY_BIT_OFFSET) | code
+	}
+}
+
+class KeyBinding {
+	constructor() {
+		this.bindings = {}
+	}
+	
+	set(alias, cb) {
+		this.bindings[alias] = cb
+	}
+	
+	unset(alias) {
+		this.bindings[alias] = null
+	}
+	
+	getLabel() {
 		
-		if(code)
-			this.bindings[code] = cb
+	}
+	
+	exec(mdl) {
+		if(mdl) {
+			let alias = mdl.constructor.def.alias
+			
+			if(this.bindings[alias])
+				this.bindings[alias](mdl)
+			else if(this.bindings["global"])
+				this.bindings["global"]()
+		}
+		else if(this.bindings["global"])
+			this.bindings["global"]()
 	}
 }
 

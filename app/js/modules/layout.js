@@ -395,36 +395,34 @@ class Layout_Module extends Layout_Element {
 
         log("module created - constructor name: " + this.constructor.def.alias)
 		Elem.removeClass(el, "draft")
-
-        for(let item of mdlDefs) {
-            let def = item[1]
-			
-			// submodules are handled differently, the user is not allowed
-			// to switch to them manually
-            if(def.isSub)
-                continue
-			
-            let entry = Elem.fromString(`<div class='mod-sel-item
-				   ${(def.alias === this.constructor.def.alias?" visible":"")}
-				   '>${def.title}</div>`)
-			
-			el.getElementsByClassName("mod-sel-list")[0].appendChild(entry)
-			
-            entry.addEventListener("click", (e) => {
-				// when the type of the current module has been selected, do nothing
-				if(this.constructor.def.alias === def.alias) {
-					document.activeElement.blur()
-					return
-				}
-				
-				Elem.removeClass(el.querySelector(".mod-sel-list .visible"), "visible")
-				Elem.addClass(e.target, "visible")
-				// blur selection parent element
-                document.activeElement.blur()
-                this.redefine(def.alias)
-            })
-        }
 		
+		// redefine module
+		let sel = el.getElementsByClassName("mod-sel")[0]
+		sel.addEventListener("click", e => {
+			let w = e.target.getBoundingClientRect().width
+			
+			let x = e.clientX - e.offsetX,
+				y = e.clientY - e.offsetY
+			
+			let props = []
+			
+			for(let item of mdlDefs) {
+				let def = item[1]
+				
+				props.push({
+					label: def.title,
+					onclick: _ => {
+						this.redefine(def.alias)
+					}
+				})
+			}
+			
+			new Contextmenu(x, y, props, w)
+		})
+		
+		sel.innerHTML = `<div class="mod-title">${this.constructor.def.title}</div>`
+		
+		// swap modules button
 		el.getElementsByClassName("mod-move")[0].addEventListener("click", _ => {
 			Elem.addClass(document.getElementById("content"), "move-mod")
 

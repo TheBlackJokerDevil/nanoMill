@@ -171,13 +171,13 @@ html, body {
   cursor: default;
   font-size: 16px;
   text-shadow: 0 1px 0 #141414;
-  cursor: pointer;
-  padding: 2px 5px;
+  padding: 5px 8px;
   -webkit-app-region: no-drag;
   line-height: 20px; }
   .hb-btn:hover {
     background-color: #3c3c3c;
-    text-shadow: none; }
+    text-shadow: none;
+    color: #b3b3b3; }
 
 .hb-btn.icon {
   font-size: 16px;
@@ -554,7 +554,7 @@ textarea::-webkit-input-placeholder {
   .flex-splitter.dragged {
     background-color: steelblue; }
 
-#content.move-mod .mod-con:hover .mod-head {
+#content.move-mod .mod-con:hover {
   outline: 2px solid steelblue;
   outline-offset: -2px; }
 
@@ -565,57 +565,31 @@ textarea::-webkit-input-placeholder {
 .mod-head {
   background-color: #26282b;
   color: gray;
-  height: 20px;
-  padding: 5px 3px;
   transition: background 0.2s; }
 
 .mod-button {
   text-shadow: 0 1px 0 #141414;
-  cursor: pointer;
-  padding: 2px; }
+  padding: 5px; }
   .mod-button:hover, .mod-button:active {
     background-color: #3c3c3c;
-    text-shadow: none; }
+    text-shadow: none;
+    color: #b3b3b3; }
 
 .mod-sel {
   cursor: default;
   position: relative;
-  margin: 0 2px;
-  padding: 3px 2px; }
-  .mod-sel:focus {
-    outline: none; }
-  .mod-sel:focus .mod-sel-list {
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); }
-  .mod-sel:focus .mod-sel-item {
-    display: initial;
-    pointer-events: auto;
-    background-color: #26282b; }
-    .mod-sel:focus .mod-sel-item:hover {
-      background-color: #787878;
-      color: black; }
-  .mod-sel:hover:not(:focus) .visible {
-    color: #b4b4b4; }
+  align-items: center;
+  padding: 0 15px; }
+  .mod-sel:hover {
+    color: #b3b3b3; }
 
-.mod-sel-list {
-  position: absolute;
-  top: 3px;
-  right: 0;
-  left: 0;
-  z-index: 10;
-  padding: 0 2px;
-  transition: height 0.3s; }
-
-.mod-sel-item {
-  display: none;
-  padding: 0 3px;
+.mod-title {
   font-size: 14px;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
   overflow: hidden;
   white-space: nowrap; }
-  .mod-sel-item.visible {
-    display: initial; }
 
 .mod-active .mod-head {
   background: linear-gradient(to right, #3e4146 0%, transparent 45%); }

@@ -18,14 +18,14 @@ $z-mod: 10;
 	cursor: default;
 	font-size: 16px;
 	text-shadow: 0 1px 0 rgb(20, 20, 20);
-	cursor: pointer;
-	padding: 2px 5px;
+	padding: 5px 8px;
 	-webkit-app-region: no-drag;
 	line-height: 20px;
 	
 	&:hover {
 		background-color: $tb-bg;
 		text-shadow: none;
+		color: #b3b3b3;
 	}
 }
 

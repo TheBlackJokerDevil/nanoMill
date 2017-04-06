@@ -112,7 +112,7 @@ class Explorer extends layout.Module {
 	
 	onClose() {
 		if(this.wspace && this.view)
-			this.wspace.removeView(view)
+			this.wspace.removeView(this.view)
 	}
 }
 

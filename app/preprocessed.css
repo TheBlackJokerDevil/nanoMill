@@ -457,6 +457,11 @@ textarea::-webkit-input-placeholder {
     .dlg-modal .btn:hover {
       background-color: #234861;
       color: #7dc5de; }
+    .dlg-modal .btn.disabled {
+      color: grey; }
+    .dlg-modal .btn.disabled:hover {
+      background-color: #1e2123;
+      color: grey; }
   .dlg-modal .desc {
     margin: 5px 0;
     font-size: 12px;

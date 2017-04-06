@@ -23,6 +23,15 @@
 			background-color: #234861;
 			color: #7dc5de;
 		}
+		
+		&.disabled {
+			color: grey;
+		}
+		
+		&.disabled:hover {
+			background-color: #1e2123;
+			color: grey;
+		}
 	}
 
 	.desc {

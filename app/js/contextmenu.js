@@ -5,7 +5,7 @@ class Contextmenu {
 		this.init(...arguments)
 	}
 	
-	init(x, y, props) {
+	init(x, y, props, width) {
 		this.focusedBefore = document.activeElement
 		
 		this.createContent(props)
@@ -19,6 +19,13 @@ class Contextmenu {
 		this.el.addEventListener("blur", (e) => {
 			Elem.remove(e.target)
 		})
+		
+		if(width) {
+			width += "px"
+			log(width)
+			this.el.style.minWidth = width
+			this.el.style.maxWidth = width
+		}
 	}
 	
 	setPosition(x, y) {

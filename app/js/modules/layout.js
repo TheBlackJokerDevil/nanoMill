@@ -475,11 +475,12 @@ class Layout_Module extends Layout_Element {
 
 		})
 		
-		// create context menu on settings button
+		// module settings button
 		this.root.getElementsByClassName("mod-sett")[0].addEventListener("click", (e) => {
+			let h = e.target.getBoundingClientRect().height
 			
 			let x = e.clientX - e.offsetX,
-				y = e.clientY + e.offsetY
+				y = e.clientY - e.offsetY + h
 			
 			let props = this.getBasicMenuProps()
 			let props2 = this.getSpecialMenuProps()

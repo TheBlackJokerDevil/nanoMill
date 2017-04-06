@@ -22,7 +22,6 @@ class Contextmenu {
 		
 		if(width) {
 			width += "px"
-			log(width)
 			this.el.style.minWidth = width
 			this.el.style.maxWidth = width
 		}

@@ -45,7 +45,8 @@ class Explorer extends layout.Module {
 		Opens a dialog, where a new workspace can be chosen
 	*/
 	newWorkspaceDialog() {
-		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "selworkspace.js"))
+		
+		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "wiz_selwspace.js"))
 		new Dialog_SelectWorkspace(600, "", (result) => {
 			if(result === false)
 				return

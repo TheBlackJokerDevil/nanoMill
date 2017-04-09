@@ -7,6 +7,8 @@ class Wizard extends Dialog {
 		this.pages = pages
 		this.current = 0
 		
+		this.pageValidity = true
+		
 		if(pages)
 			this.showPage(0)
 	}
@@ -49,7 +51,7 @@ class Wizard extends Dialog {
 		this.body.innerHTML = ``
 		
 		// create page
-		page.init()
+		page.onShow()
 		this.body.appendChild(page.el)
 		
 		// handle prev button state
@@ -58,30 +60,31 @@ class Wizard extends Dialog {
 		else
 			Elem.removeClass(this.btn_prev, "disabled")
 		
-		// handle next button state
-		if(idx === this.pages.length - 1) {
-			Elem.addClass(this.btn_next, "disabled")
+		// handle next button naming
+		if(idx === this.pages.length - 1)
 			this.btn_next.innerHTML = "Finish"
-		}
-		else {
-			Elem.removeClass(this.btn_next, "disabled")
+		else
 			this.btn_next.innerHTML = "Next"
-		}
 		
-		// check if validation is required
-		page.awaitsValidation()
+		// check if the page needs validation to show next
+		if(page.awaitsValidation()) {
+			this.pageValidity = false
+			Elem.addClass(this.btn_next, "disabled")
+		}
 	}
 	
 	next() {
 		// prevent going to next page if the current one needs
 		// validity to be explicitely set
-		if(this.pages[this.current].awaitsValidation() && !this.valid)
+		if(this.pageValidity === false)
 			return
 		
 		this.current++
 		
-		if(this.current >= this.pages.length)
+		if(this.current >= this.pages.length) {
+			this.onFinish()
 			this.close()
+		}
 		else
 			this.showPage(this.current)
 	}
@@ -96,26 +99,31 @@ class Wizard extends Dialog {
 	}
 	
 	setValid() {
-		
+		this.pageValidity = true
+		Elem.removeClass(this.btn_next, "disabled")
 	}
+	
+	onFinish() {}
 }
 
 class Page {
-	constructor(cb, awaitsValidation = false) {
-		this.cb = cb
+	constructor(cb, valid = true) {
 		this.await = awaitsValidation
-	}
-	
-	init() {
+		
 		this.el = document.createElement("div")
 		this.el.className = "dialog-page"
 		
-		if(this.cb)
-			this.cb()
+		if(cb)
+			cb.call(this)
+		
+		this.valid = valid
 	}
 	
-	awaitsValidation() {
-		return this.await
+	onShow() {
+	}
+	
+	isValid() {
+		
 	}
 }
 

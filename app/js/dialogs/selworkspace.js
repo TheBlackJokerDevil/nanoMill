@@ -16,20 +16,6 @@ class Dialog_SelectWorkspace extends Dialog {
 				<div id="dlg-confirm" class="btn flex-fill">Select</div>
 			</div>`
 		
-		document.getElementById("dlg-confirm").addEventListener("click", (e) => {
-			if(!e.target.dataset.valid)
-				return
-			
-			fnClose(e.target.dataset.valid)
-			this.close()
-		})
-		
-		let input = document.getElementById("rename-field")
-		
-		document.getElementById("dlg-cancel").addEventListener("click", _ => {
-			this.close()
-		})
-		
 		this.show()
 	}
 }

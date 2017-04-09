@@ -6,6 +6,8 @@ Workspace name
 custom keybinding
 moves files around and across workspaces
 complete settings
+explorer->new file doesn't work
+remove ui object in initialize.js
 
 not so important for beta
 is there a require() using ace implementation?

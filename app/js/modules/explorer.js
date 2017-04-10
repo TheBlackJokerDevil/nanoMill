@@ -38,6 +38,11 @@ class Explorer extends layout.Module {
 			this.wspace = wspace
 			this.view = wspace.getView()
 			this.body.appendChild(this.view.root)
+			log(this.view.root.parentNode)
+		}
+		else {
+			this.wspace = null
+			this.view = null
 		}
 	}
 	
@@ -45,17 +50,13 @@ class Explorer extends layout.Module {
 		Opens a dialog, where a new workspace can be chosen
 	*/
 	newWorkspaceDialog() {
-		
-		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "wiz_selwspace.js"))
-		new Dialog_SelectWorkspace(600, "", (result) => {
-			if(result === false)
+		let fn = require(path.join(__rootdir, "js", "dialogs", "wiz_selwspace.js"))
+		fn((dpath, name) => {
+			if(dpath === false)
 				return
 			
-			let ws = wmaster.addWorkspace(result)
+			let ws = wmaster.addWorkspace(dpath, name)
 			this.setWorkspace(ws)
-			
-			// display loading indicator
-			this.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
 		})
 	}
 	

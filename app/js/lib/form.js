@@ -3,10 +3,10 @@
 	and handle validation of inputs
 */
 class Form {
-	constructor(decl) {
+	constructor(decl, data) {
 		this.el = document.createElement("div")
 		this.el.className = "form"
-		this.result = {}
+		this.data = data || {}
 		
 		this.ridx = 0
 		
@@ -22,31 +22,45 @@ class Form {
 	
 	createComponent(item) {
 		let comp, cb
+		
+		// wrap callback in form data collector
+		if(item.key) {
+			this.data[item.key] = item.value
+			cb = v => {log(v)
+				this.data[item.key] = v
+				if(item.onchange)
+					item.onchange(v)
+			}
+		}
+		else
+			cb = item.onchange
+		
 		switch(item.type) {
 			case "url":
-				cb = item.onchange
 				comp = new Component_Url(item.value, cb, item.directory)
-			return comp
+			break
 			
 			case "desc":
 				comp = new Component_Desc(item.text)
 			return comp
 			
 			case "number":
-				cb = item.onchange
 				comp = new Component_Number(item.label, cb, item.unit, item.value, item.min, item.max)
-			return comp
+			break
 			
 			case "switch":
-				comp = new Component_Switch(item.label, item.value, item.onchange)
-			return comp
+				comp = new Component_Switch(item.label, item.value, cb)
+			break
 			
 			case "shorttext":
-				comp = new Component_ShortText(item.label, item.value, item.onchange)
-			return comp
+				comp = new Component_ShortText(item.label, item.value, cb)
+			break
+			
+			default:
+			return null
 		}
 		
-		return null
+		return comp
 	}
 	
 	getRoot() {
@@ -61,8 +75,19 @@ class Form {
 		return this.ridx++
 	}
 	
-	getResult() {
-		return this.result
+	hasRequired() {
+		return true
+	}
+	
+	getData() {
+		return this.data
+	}
+	
+	setData(data) {
+		for(let key in this.data)
+			data[key] = this.data[key]
+		
+		this.data = data
 	}
 }
 

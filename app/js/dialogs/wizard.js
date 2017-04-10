@@ -1,13 +1,20 @@
 let Dialog = require("./dialog.js")
+let Form = require("./../lib/form.js")
 
 class Wizard extends Dialog {
-	constructor(width, height, pages = null) {
+	constructor(width, height, pages) {
 		super(width, height)
 		
+		if(!pages)
+			throw new Error("No pages given to create a wizard of")
+		
 		this.pages = pages
-		this.current = 0
+		this.currentIdx = 0
+		this.currentPage = null
 		
 		this.pageValidity = true
+		
+		this.data = {}
 		
 		if(pages)
 			this.showPage(0)
@@ -41,18 +48,28 @@ class Wizard extends Dialog {
 		this.footer.appendChild(row)
 	}
 	
+	setPagesDisplay(idx) {
+		for(let i = 0; i < this.body.children.length; i++)
+			if(idx !== i)
+				this.body.children[i].style.display = "none"
+			else
+				this.body.children[i].style.display = ""
+	}
+	
 	showPage(idx) {
-		
-		this.current = idx
+		this.currentIdx = idx
 		
 		let page = this.pages[idx]
+		if(typeof page === "function")
+			page = page(this.data)
+		log(this.pages)
+		log(idx)
+		log(page)
+		page.setData(this.data)
 		
-		// clear content
-		this.body.innerHTML = ``
+		this.body.appendChild(page.getRoot())
 		
-		// create page
-		page.onShow()
-		this.body.appendChild(page.el)
+		this.setPagesDisplay(idx)
 		
 		// handle prev button state
 		if(idx === 0)
@@ -66,36 +83,32 @@ class Wizard extends Dialog {
 		else
 			this.btn_next.innerHTML = "Next"
 		
-		// check if the page needs validation to show next
-		if(page.awaitsValidation()) {
-			this.pageValidity = false
-			Elem.addClass(this.btn_next, "disabled")
-		}
+		this.currentPage = page
 	}
 	
 	next() {
 		// prevent going to next page if the current one needs
 		// validity to be explicitely set
-		if(this.pageValidity === false)
+		if(Wizard.hasRequired(this.currentPage) === false)
 			return
 		
-		this.current++
+		this.currentIdx++
 		
-		if(this.current >= this.pages.length) {
-			this.onFinish()
+		if(this.currentIdx >= this.pages.length) {
+			this.onFinish(this.data)
 			this.close()
 		}
 		else
-			this.showPage(this.current)
+			this.showPage(this.currentIdx)
 	}
 	
 	prev() {
-		if(this.current === 0)
+		if(this.currentIdx === 0)
 			return
 		
-		this.current--
+		this.currentIdx--
 		
-		this.showPage(this.current)
+		this.showPage(this.currentIdx)
 	}
 	
 	setValid() {
@@ -104,30 +117,13 @@ class Wizard extends Dialog {
 	}
 	
 	onFinish() {}
-}
-
-class Page {
-	constructor(cb, valid = true) {
-		this.await = awaitsValidation
-		
-		this.el = document.createElement("div")
-		this.el.className = "dialog-page"
-		
-		if(cb)
-			cb.call(this)
-		
-		this.valid = valid
-	}
 	
-	onShow() {
-	}
-	
-	isValid() {
-		
+	static hasRequired(page) {
+		if(page instanceof Form)
+			return page.hasRequired()
+		else
+			return true
 	}
 }
 
-module.exports = {
-	Wizard,
-	Page
-}
+module.exports = Wizard

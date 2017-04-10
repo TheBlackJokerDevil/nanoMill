@@ -12,7 +12,7 @@ class WorkspaceMaster {
 		let a = config.get("workspaces")
 		
 		if(a)
-			a.forEach(this.addWorkspace.bind(this))
+			a.forEach(v => this.addWorkspace(v.path, v.name))
 		
 		this.opened = []
 		
@@ -106,10 +106,11 @@ class WorkspaceMaster {
 	/**
 		Creates a workspace directing to the given path
 		@param {string} p - The path to create a workspace from
+		@param {string} name - A name to identify to workspace by the user
 	*/
-	addWorkspace(p) {
+	addWorkspace(p, name) {
 		let idx = this.wspaces.length
-		let ws = new Workspace(p, idx)
+		let ws = new Workspace(p, idx, name)
 		this.wspaces.push(ws)
 		
 		return ws
@@ -122,7 +123,10 @@ class WorkspaceMaster {
 		let a = []
 		
 		for(let i = 0; i < this.wspaces.length; i++)
-			a.push(this.wspaces[i].path)
+			a.push({
+				path: this.wspaces[i].path,
+				name: this.wspaces[i].getName()
+			})
 		
 		config.set('workspaces', a)
 	}
@@ -184,7 +188,10 @@ class WorkspaceMaster {
 */
 
 class Workspace {
-	constructor(dir_path, idx) {
+	constructor(dir_path, idx, name) {
+		// name of the workspace chosen by the user
+		this.name = name
+		
 		this.index = idx
 		this.path = dir_path
 		// file info storage
@@ -412,10 +419,7 @@ class Workspace {
 		@return {string} Name of the workspace, otherwise the basename of its path
 	*/
 	getName() {
-		if(!this.name)
-			return path.basename(this.path)
-		
-		return name
+		return this.name
 	}
 	
 	/**

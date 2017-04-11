@@ -65,7 +65,7 @@ class Form extends EventEmitter {
 			break
 			
 			case "shorttext":
-				comp = new Component_ShortText(item.label, item.value, cb)
+				comp = new Component_ShortText(item.label, item.value, cb, item.align)
 			break
 			
 			case "select":
@@ -162,19 +162,24 @@ class Component_Url {
 }
 
 class Component_ShortText {
-	constructor(label, value, callback) {
+	constructor(label, value, callback, align = "left") {
 		let el = document.createElement("div")
+		el.className = "flex-row"
 		
 		if(label)
-			el.innerHTML = label + `  <input type="text" />`
-		else
+			el.innerHTML = `${label}<input type="text" />`
+		else {
 			el.innerHTML = `<input type="text" />`
-			
+			el.style.justifyContent = "center"
+		}
 		let inp = el.lastElementChild
 		inp.addEventListener("change", e => {
 			if(this.cb)
 				this.cb(e.target.value)
 		})
+		
+		// set css property
+		inp.style.textAlign = align
 		
 		// set attributes
 		if(value)

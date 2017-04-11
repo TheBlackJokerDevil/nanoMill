@@ -39,11 +39,12 @@ class Dialog_Settings extends Dialog {
 			value: config.get("acekbmode"),
 			onchange: setAceKbMode
 		}, {
+			/* uncomment this as updating the explorers is implemeted
 			type: "switch",
 			label: "Hide irrelevant files",
 			value: config.get("hidenonocfiles"),
 			onchange: v => config.set("hidenonocfiles", v)
-		}, {
+		}, {*/
 			type: "desc",
 			text: "Autofill data"
 		},{

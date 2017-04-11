@@ -6,6 +6,7 @@ let EventEmitter = require("./../lib/event.js")
 
 class Form extends EventEmitter {
 	constructor(decl, data) {
+		super()
 		this.el = document.createElement("div")
 		this.el.className = "form"
 		this.data = data || {}
@@ -53,7 +54,7 @@ class Form extends EventEmitter {
 			
 			case "desc":
 				comp = new Component_Desc(item.text)
-			return comp
+			break
 			
 			case "number":
 				comp = new Component_Number(item.label, cb, item.unit, item.value, item.min, item.max)
@@ -65,6 +66,10 @@ class Form extends EventEmitter {
 			
 			case "shorttext":
 				comp = new Component_ShortText(item.label, item.value, cb)
+			break
+			
+			case "select":
+				comp = new Component_Select(item.label, item.options, item.value, cb)
 			break
 			
 			default:
@@ -279,6 +284,39 @@ class Component_Switch {
 			this.setState(false)
 		else
 			this.setState(true)
+	}
+	
+	getElement() {
+		return this.el
+	}
+}
+
+class Component_Select {
+	constructor(label, options = [], value, cb) {
+		let el = document.createElement("label")
+		
+		// create list
+		let sel = document.createElement("select")
+		
+		// add options
+		for(let i = 0; i < options.length; i++) {
+			let opt = document.createElement("option")
+			opt.innerHTML = options[i]
+			opt.setAttribute("value", options[i])
+			sel.appendChild(opt)
+			
+			if(options[i] === value)
+				opt.setAttribute("selected", true)
+		}
+		
+		// compose wrapping label
+		el.innerHTML = label
+		el.appendChild(sel)
+		
+		if(cb)
+			sel.addEventListener("change", e => cb(e.target.value))
+		
+		this.el = el
 	}
 	
 	getElement() {

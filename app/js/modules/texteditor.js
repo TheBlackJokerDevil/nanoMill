@@ -50,12 +50,24 @@ class TextEditor extends layout.DeckItem {
 		// get rid of the local lang tool, since it will suggest any word in the document
 		let langtools = ace.require("ace/ext/language_tools")
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
+		
+		// set keyboard mode
+		this.setKeyBoardMode(config.get("acekbmode"))
     }
 	
 	setFontSize(size) {
 		this.editor.setOptions({
 			fontSize: size + "px"
 		})
+	}
+	
+	setKeyBoardMode(mode) {log(mode)
+		if(mode === "vim")
+			this.editor.setKeyboardHandler("ace/keyboard/vim")
+		else if(mode === "emacs")
+			this.editor.setKeyboardHandler("ace/keyboard/emacs")
+		else
+			this.editor.setKeyboardHandler(null)
 	}
 	
 	checkFileState() {
@@ -126,3 +138,23 @@ TextEditor.def = {
 }
 
 layout.setModuleDef(TextEditor.def)
+
+function setTextEditorFontSize(val) {
+	// delegate new value
+	// don't use instance of, but check for equal alias since instanceof would throw
+	// an error if such a class is not defined
+	let mdls = lyt.getModulesSet()
+	for(let mdl of mdls)
+		if(mdl.constructor.def.alias === "texteditor")
+			mdl.setFontSize(val)
+}
+
+function setTextEditorKbMode(mode) {
+	// delegate new value
+	// don't use instance of, but check for equal alias since instanceof would throw
+	// an error if such a class is not defined
+	let mdls = lyt.getModulesSet()
+	for(let mdl of mdls)
+		if(mdl.constructor.def.alias === "texteditor")
+			mdl.setKeyBoardMode(mode)
+}

@@ -140,16 +140,6 @@ let lyt
 	window.addEventListener("beforeunload", _ => config.save())
 }
 
-function setTextEditorFontSize(val) {
-	// delegate new value
-	// don't use instance of, but check for equal alias since instanceof would throw
-	// an error if such a class is not defined
-	let mdls = lyt.getModulesSet()
-	for(let mdl of mdls)
-		if(mdl.constructor.def.alias === "texteditor")
-			mdl.setFontSize(val)
-}
-
 /**
 	opens the file-picker dialog and executes the given callback on completion
 */

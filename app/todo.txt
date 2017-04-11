@@ -1,14 +1,14 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
-stable milestone
+stable milestone:
 custom keybinding
 moves files around and across workspaces
-explorer->new file doesn't work
-remove ui object in initialize.js
+workspace rename (+ workspace specific c4group and ocexe)
+sort newly and renamed files correctly into the explorer
 
-afterstable milestone
-procedural explorer loading (to prevent loading C:-drive all at once)
+afterstable milestone:
+procedural explorer loading (to prevent loading whole C:-drive at once)
 
 future goals:
 formating whole script via hotkey

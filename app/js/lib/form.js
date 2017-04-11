@@ -165,7 +165,11 @@ class Component_ShortText {
 	constructor(label, value, callback) {
 		let el = document.createElement("div")
 		
-		el.innerHTML = label + `  <input type="text" />`
+		if(label)
+			el.innerHTML = label + `  <input type="text" />`
+		else
+			el.innerHTML = `<input type="text" />`
+			
 		let inp = el.lastElementChild
 		inp.addEventListener("change", e => {
 			if(this.cb)

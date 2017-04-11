@@ -2,13 +2,17 @@
 	a class to create complex forms from a declaration
 	and handle validation of inputs
 */
-class Form {
+let EventEmitter = require("./../lib/event.js")
+
+class Form extends EventEmitter {
 	constructor(decl, data) {
 		this.el = document.createElement("div")
 		this.el.className = "form"
 		this.data = data || {}
 		
 		this.ridx = 0
+		this.reqMask = 0
+		this.reqs = 0
 		
 		for(let i = 0; i < decl.length; i++) {
 			let comp = this.createComponent(decl[i])
@@ -26,7 +30,14 @@ class Form {
 		// wrap callback in form data collector
 		if(item.key) {
 			this.data[item.key] = item.value
-			cb = v => {log(v)
+			let ridx = this.getRequirementIndex()
+			
+			cb = v => {
+				if(v !== undefined)
+					this.setRequirement(ridx, true)
+				else
+					this.setRequirement(ridx, false)
+				
 				this.data[item.key] = v
 				if(item.onchange)
 					item.onchange(v)
@@ -68,15 +79,25 @@ class Form {
 	}
 	
 	setRequirement(ridx, b) {
+		if(b === true)
+			this.reqs |= 1 << ridx
+		else {
+			let mask = 1 << ridx
+			this.reqs &= ~mask
+		}
+		
 		
 	}
 	
 	getRequirementIndex() {
+		this.reqMask <<= 1
+		this.reqMask |= 1
+		
 		return this.ridx++
 	}
 	
 	hasRequired() {
-		return true
+		return this.reqs === this.reqMask
 	}
 	
 	getData() {
@@ -89,6 +110,8 @@ class Form {
 		
 		this.data = data
 	}
+	
+	onReqChange() {}
 }
 
 class Component_Desc {

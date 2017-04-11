@@ -62,9 +62,7 @@ class Wizard extends Dialog {
 		let page = this.pages[idx]
 		if(typeof page === "function")
 			page = page(this.data)
-		log(this.pages)
-		log(idx)
-		log(page)
+		
 		page.setData(this.data)
 		
 		this.body.appendChild(page.getRoot())

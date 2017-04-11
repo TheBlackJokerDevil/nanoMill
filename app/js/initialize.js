@@ -204,29 +204,6 @@ function hasC4group() {
 	return config.get("c4group")
 }
 
-/** ui object containing small layout items to fill any page */
-var ui = {
-	urlPicker: function(txt = "...", callback) {
-		let el = Elem.fromString(`<div class="flex-row"><p class="url flex-fill">${txt}</p><div class="url-browse">Browse</div></div>`)
-		
-		el.getElementsByClassName("url-browse")[0].addEventListener("click", _ => {
-			let p = remote.dialog.showOpenDialog({
-				properties: ['openDirectory']
-			})
-			
-			if(!p)
-				return
-			
-			el.getElementsByClassName("url")[0].innerHTML = p[0]
-			
-			if(callback)
-				callback(p[0])
-		})
-		
-		return el
-	}
-}
-
 let editor_proc
 
 function runOCEditor(args) {

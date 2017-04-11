@@ -38,7 +38,6 @@ class Explorer extends layout.Module {
 			this.wspace = wspace
 			this.view = wspace.getView()
 			this.body.appendChild(this.view.root)
-			log(this.view.root.parentNode)
 		}
 		else {
 			this.wspace = null

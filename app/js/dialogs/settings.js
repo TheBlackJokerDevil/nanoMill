@@ -33,6 +33,12 @@ class Dialog_Settings extends Dialog {
 			value: config.get("acefontsize"),
 			onchange: setAceFontSize
 		}, {
+			type: "select",
+			label: "Texteditor Keybindings",
+			options: ["default", "vim", "emacs"],
+			value: config.get("acekbmode"),
+			onchange: setAceKbMode
+		}, {
 			type: "switch",
 			label: "Hide irrelevant files",
 			value: config.get("hidenonocfiles"),
@@ -56,6 +62,11 @@ class Dialog_Settings extends Dialog {
 function setAceFontSize(v) {
 	config.set("acefontsize", v)
 	setTextEditorFontSize(v)
+}
+
+function setAceKbMode(v) {
+	config.set("acekbmode", v)
+	setTextEditorKbMode(v)
 }
 
 module.exports = Dialog_Settings

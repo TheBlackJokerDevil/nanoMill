@@ -26,6 +26,7 @@ class Config {
 	
 	regAll() {
 		this.reg("acefontsize", "number", 14)
+		this.reg("acekbmode", "string", "default")
 		this.reg("ocexe", "string", undefined)
 		this.reg("c4group", "string", undefined)
 		this.reg("pages", "array", null)

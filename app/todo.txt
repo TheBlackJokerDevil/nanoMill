@@ -1,17 +1,14 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
-important for beta:
-Workspace name
+stable milestone
 custom keybinding
 moves files around and across workspaces
-complete settings
 explorer->new file doesn't work
 remove ui object in initialize.js
 
-not so important for beta
-is there a require() using ace implementation?
-lazy load more things (ace would save us 200ms)
+afterstable milestone
+procedural explorer loading (to prevent loading C:-drive all at once)
 
 future goals:
 formating whole script via hotkey

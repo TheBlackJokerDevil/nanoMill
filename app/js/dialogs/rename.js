@@ -1,41 +1,24 @@
-let Dialog = require(path.join(__rootdir, "js", "dialogs", "dialog.js"))
+let Wizard = require(path.join(__rootdir, "js", "dialogs", "wizard.js"))
+let Form = require("./../lib/form.js")
 
-class Dialog_Rename extends Dialog {
-	init(data, fnClose) {
-		this.body.innerHTML =
-			`<p class="desc">Enter filename</p>
-			<input id="rename-field" style="margin: 10px 30px; border-bottom: 1px solid grey; text-align: center" type="text" value="${data}"></input>`
-		
-		this.footer.innerHTML = 
-			`<div class="flex-row">
-				<div id="dlg-cancel" class="btn flex-fill">Cancel</div>
-				<div id="dlg-confirm" class="btn flex-fill">Rename</div>
-			</div>`
-		
-		let input = document.getElementById("rename-field")
+module.exports = function(oldName, cb) {
+	let wzd = new Wizard(300, 150, [
+		new Form([{
+				type: "desc",
+				text: "Enter new filename"
+			}, {
+				type: "shorttext",
+				align: "center",
+				required: true,
+				key: "newName",
+				value: oldName
+			}
+		])
+	])
 	
-		let fnConfirm = _ => {
-			this.close()
-			fnClose(input.value)
-		}
-		// preselect file name without extension
-		input.addEventListener("keydown", (e) => {
-			if(e.keyCode === 13)
-				fnConfirm()
-		})
-		
-		document.getElementById("dlg-cancel").addEventListener("click", _ => {
-			fnClose()
-			this.close()
-		})
-		document.getElementById("dlg-confirm").addEventListener("click", fnConfirm)
-		
-		this.show()
-		setTimeout(_ => {
-			input.focus()
-			input.setSelectionRange(0, data.length - path.extname(data).length)
-		}, 0)
+	wzd.onFinish = data => {
+		cb(data.newName)
 	}
+	
+	wzd.show()
 }
-
-module.exports = Dialog_Rename

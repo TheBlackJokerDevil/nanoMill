@@ -858,12 +858,12 @@ class WorkspaceView {
 		props.push({
 			label: "Rename",
 			icon: "icon-pencil",
-			onclick: () => {
-				let Dialog_Rename = require(path.join(__rootdir, "js", "dialogs", "rename.js"))
-				new Dialog_Rename(300, 150, finfo.name, (result) => {
+			onclick: () => {				
+				let fn = require(path.join(__rootdir, "js", "dialogs", "rename.js"))
+				fn(finfo.name, (newName) => {
 					// check for valid file name
-					if(result && typeof result === "string" && result !== finfo.name)
-						this.wspace.renameFile(item.idx, result)
+					if(newName && typeof newName === "string" && newName !== finfo.name)
+						this.wspace.renameFile(item.idx, newName)
 				})
 			}
 		})

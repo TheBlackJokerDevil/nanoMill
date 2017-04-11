@@ -61,7 +61,7 @@ class TextEditor extends layout.DeckItem {
 		})
 	}
 	
-	setKeyBoardMode(mode) {log(mode)
+	setKeyBoardMode(mode) {
 		if(mode === "vim")
 			this.editor.setKeyboardHandler("ace/keyboard/vim")
 		else if(mode === "emacs")

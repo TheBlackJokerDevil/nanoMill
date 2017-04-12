@@ -15,14 +15,14 @@ class Form extends EventEmitter {
 		this.reqMask = 0
 		this.reqs = 0
 		
-		for(let i = 0; i < decl.length; i++) {
-			let comp = this.createComponent(decl[i])
-			
-			if(comp)
-				this.el.appendChild(comp.getElement())
+		if(decl) {
+			for(let i = 0; i < decl.length; i++) {
+				let comp = this.createComponent(decl[i])
+				
+				if(comp)
+					this.el.appendChild(comp.getElement())
+			}
 		}
-		
-		// create index
 	}
 	
 	createComponent(item) {

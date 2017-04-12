@@ -72,6 +72,10 @@ class Form extends EventEmitter {
 				comp = new Component_Select(item.label, item.options, item.value, cb)
 			break
 			
+			case "keybinding":
+				comp = new Component_KeyBinding(item.label, item.value, cb)
+			break
+			
 			default:
 			return null
 		}
@@ -324,6 +328,21 @@ class Component_Select {
 		
 		if(cb)
 			sel.addEventListener("change", e => cb(e.target.value))
+		
+		this.el = el
+	}
+	
+	getElement() {
+		return this.el
+	}
+}
+
+class Component_KeyBinding {
+	constructor(label, value, cb) {
+		let el = document.createElement("div")
+		el.className = "keyb flex-row"
+		
+		el.innerHTML = label + `<div class="flex-fill"></div><div class="keyb-symbols">${value}</div>`
 		
 		this.el = el
 	}

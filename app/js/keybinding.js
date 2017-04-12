@@ -7,7 +7,7 @@ const
 const
 	MOD_KEY_BIT_OFFSET = 3
 
-const keyCodeMap = {
+const keyOfNames = {
 	"backspace": 8,
 	"tab": 9,
 	"enter": 13,
@@ -108,6 +108,232 @@ const keyCodeMap = {
 	"single quote": 222
 }
 
+const nameOfKeys = [
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"backspace",
+	"tab",
+	null,
+	null,
+	null,
+	"enter",
+	null,
+	null,
+	"shift",
+	"ctrl",
+	"alt",
+	"pause",
+	"caps lock",
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"escape",
+	null,
+	null,
+	null,
+	null,
+	null,
+	"page up",
+	"page down",
+	"end",
+	"home",
+	"left arrow",
+	"up arrow",
+	"right arrow",
+	"down arrow",
+	null,
+	null,
+	null,
+	null,
+	"insert",
+	"delete",
+	null,
+	"0",
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"a",
+	"b",
+	"c",
+	"d",
+	"e",
+	"f",
+	"g",
+	"h",
+	"i",
+	"j",
+	"k",
+	"l",
+	"m",
+	"n",
+	"o",
+	"p",
+	"q",
+	"r",
+	"s",
+	"t",
+	"u",
+	"v",
+	"w",
+	"x",
+	"y",
+	"z",
+	"left window key",
+	"right window key",
+	"select key",
+	null,
+	null,
+	"numpad0",
+	"numpad1",
+	"numpad2",
+	"numpad3",
+	"numpad4",
+	"numpad5",
+	"numpad6",
+	"numpad7",
+	"numpad8",
+	"numpad9",
+	"multiply",
+	"add",
+	null,
+	"subtract",
+	"decimal point",
+	"divide",
+	"f1",
+	"f2",
+	"f3",
+	"f4",
+	"f5",
+	"f6",
+	"f7",
+	"f8",
+	"f9",
+	"f10",
+	"f11",
+	"f12",
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"num lock",
+	"scroll lock",
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"semi-colon",
+	"equal sign",
+	"comma",
+	"dash",
+	"period",
+	"forward slash",
+	"grave accent",
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	"open bracket",
+	"back slash",
+	"close bracket",
+	'single quote'
+]
+
 class KeyMapper {
 	constructor() {
 		this.nameList = {}
@@ -172,7 +398,18 @@ class KeyMapper {
 		
 		let keyName = keyString.replace(/(ctrl|shift|alt|-)/gi, "").trim().toLowerCase()
 		
-		return (keyCodeMap[keyName] << MOD_KEY_BIT_OFFSET) | code
+		return (keyOfNames[keyName] << MOD_KEY_BIT_OFFSET) | code
+	}
+	
+	isValidKey(c) {
+		if(c === 16 || c === 17 || c == 18)
+			return false
+		
+		return nameOfKeys[c] ? true : false
+	}
+	
+	nameOf(c) {
+		return nameOfKeys[c]
 	}
 }
 
@@ -205,6 +442,26 @@ class KeyBinding {
 		else if(this.bindings["global"])
 			this.bindings["global"]()
 	}
+}
+
+/**
+	dev function to create array of nameOfKeys
+	automatically
+*/
+function printNameOfKeys() {
+	let a = []
+	for(let key in keyOfNames)
+		a[keyOfNames[key]] = key
+	
+	let s = "const nameOfKeys = [\n"
+	
+	for(let i = 0; i < a.length - 1; i++)
+		s += "\t" + (a[i] ? '"' + a[i] + '"' : null) + ",\n"
+	
+	s += "\t'" + a[a.length - 1] + "'\n"
+	
+	s += "]"
+	console.log(s)
 }
 
 module.exports = new KeyMapper()

@@ -418,7 +418,7 @@ class KeyMapper {
 			s += "Ctrl "
 		if(keyData.shift)
 			s += "Shift "
-		if(keyData.shift)
+		if(keyData.alt)
 			s += "Alt "
 		
 		if(keyData.key)

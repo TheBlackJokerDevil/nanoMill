@@ -128,8 +128,8 @@ let lyt
 		require(path.join(__rootdir, "js", "logo.js"))(document.getElementById("logo"), 20)
 	})
 	
-	kb.bind("Open file", "ctrl-o", openFilePicker)
-	kb.bind("Save file", "ctrl-s", save)
+	kb.bind("Open file", "ctrl o", openFilePicker)
+	kb.bind("Save file", "ctrl s", save)
 	
 	lyt.onActivate = mdl => {
 		kb.setActiveModule(mdl)

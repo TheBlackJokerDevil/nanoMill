@@ -430,22 +430,14 @@ class Component_KeyBinding {
 			return
 		}
 		
-		let s = ""
-		if(keyData.ctrl)
-			s += "Ctrl "
-		if(keyData.shift)
-			s += "Shift "
-		if(keyData.alt)
-			s += "Alt "
+		let keyString = KeyMapper.keyDataToKeyString(keyData)
 		
-		if(keyData.key !== 0) {
-			s += KeyMapper.nameOf(keyData.key).toUpperCase()
+		if(keyData.key !== 0)
 			Elem.removeClass(this.el.lastElementChild, "invalid")
-		}
 		else
 			Elem.addClass(this.el.lastElementChild, "invalid")
 		
-		symb.innerHTML = s.trim()
+		symb.innerHTML = keyString
 		
 		if(this.onchange)
 			this.onchange(keyData)

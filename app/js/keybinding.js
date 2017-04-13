@@ -411,6 +411,38 @@ class KeyMapper {
 	static nameOf(c) {
 		return nameOfKeys[c]
 	}
+	
+	static keyDataToKeyString(keyData) {
+		let s = ""
+		if(keyData.ctrl)
+			s += "Ctrl "
+		if(keyData.shift)
+			s += "Shift "
+		if(keyData.shift)
+			s += "Alt "
+		
+		if(keyData.key)
+			s += KeyMapper.nameOf(keyData.key)
+		
+		return s.trim()
+	}
+	
+	static keyStringToKeyData(keyString) {
+		let keyData = {key: -1}
+		
+		if(keyString.match(/alt/i))
+			keyData.alt = true
+		if(keyString.match(/shift/i))
+			keyData.shift = true
+		if(keyString.match(/ctrl/i))
+			keyData.ctrl = true
+		
+		let keyName = keyString.replace(/(ctrl|shift|alt|-)/gi, "").trim().toLowerCase()
+		
+		keyData.key = keyOfNames[keyName]
+		
+		return keyData
+	}
 }
 
 class KeyBinding {

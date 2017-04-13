@@ -671,7 +671,8 @@ textarea::-webkit-input-placeholder {
   border-radius: 5px;
   outline-radius: 5px;
   border-bottom: 1px solid black;
-  box-shadow: 0 0 3px black; }
+  box-shadow: 0 0 3px black;
+  text-transform: capitalize; }
   .keyb-symbols:hover {
     background-color: #2d2d2d;
     box-shadow: none; }

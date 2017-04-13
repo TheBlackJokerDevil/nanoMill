@@ -53,7 +53,7 @@ class Dialog_Settings {
 			label: "Author name:",
 			value: config.get("author"),
 			onchange: v => config.set("author", v)
-		}])
+		}], "General")
 		
 		let components = []
 		
@@ -67,7 +67,7 @@ class Dialog_Settings {
 			})
 		}
 		
-		let d = new Deck(600, 450, [f, new Form(components)])
+		let d = new Deck(600, 450, [f, new Form(components, "KeyBindings")])
 		d.show()
 	}
 }

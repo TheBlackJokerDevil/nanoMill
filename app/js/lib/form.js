@@ -5,12 +5,16 @@
 let EventEmitter = require("./../lib/event.js")
 
 class Form extends EventEmitter {
-	constructor(decl, data) {
+	constructor(decl, name) {
 		super()
 		this.el = document.createElement("div")
 		this.el.className = "form"
-		this.data = data || {}
+		this.data = {}
+		this.name = name
 		
+		// information to detect weather
+		// the form fullfills what is requested
+		// by the "required" option of single components
 		this.ridx = 0
 		this.reqMask = 0
 		this.reqs = 0
@@ -23,6 +27,10 @@ class Form extends EventEmitter {
 					this.el.appendChild(comp.getElement())
 			}
 		}
+	}
+	
+	getName() {
+		return this.name || "Page"
 	}
 	
 	createComponent(item) {

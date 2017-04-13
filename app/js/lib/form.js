@@ -375,7 +375,7 @@ class Component_KeyBinding {
 			currentKey.alt = e.altKey
 			currentKey.ctrl = e.ctrlKey
 			
-			if(kb.isValidKey(e.which)) {
+			if(KeyMapper.isValidKey(e.which)) {
 				currentKey.key = e.which
 				this.setKeyData(currentKey)
 				symb.blur()
@@ -392,7 +392,7 @@ class Component_KeyBinding {
 			currentKey.alt = e.altKey
 			currentKey.ctrl = e.ctrlKey
 			
-			if(kb.isValidKey(e.which))
+			if(KeyMapper.isValidKey(e.which))
 				currentKey.key = 0
 			
 			this.updateSymbol(currentKey)
@@ -439,7 +439,7 @@ class Component_KeyBinding {
 			s += "Alt "
 		
 		if(keyData.key !== 0) {
-			s += kb.nameOf(keyData.key).toUpperCase()
+			s += KeyMapper.nameOf(keyData.key).toUpperCase()
 			Elem.removeClass(this.el.lastElementChild, "invalid")
 		}
 		else

@@ -401,14 +401,14 @@ class KeyMapper {
 		return (keyOfNames[keyName] << MOD_KEY_BIT_OFFSET) | code
 	}
 	
-	isValidKey(c) {
+	static isValidKey(c) {
 		if(c === 16 || c === 17 || c == 18)
 			return false
 		
 		return nameOfKeys[c] ? true : false
 	}
 	
-	nameOf(c) {
+	static nameOf(c) {
 		return nameOfKeys[c]
 	}
 }
@@ -464,4 +464,4 @@ function printNameOfKeys() {
 	console.log(s)
 }
 
-module.exports = new KeyMapper()
+module.exports = KeyMapper

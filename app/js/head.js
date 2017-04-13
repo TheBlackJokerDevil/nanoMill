@@ -11,7 +11,8 @@ const {__appdata, printLog, devmode} = remote.getGlobal("communicator")
 const layout = require(path.join(__rootdir, "js", "modules", "layout.js"))
 const hook = require(path.join(__rootdir, "js", "hook.js"))
 const config = require(path.join(__rootdir, "js", "config.js"))
-const kb = require(path.join(__rootdir, "js", "keybinding.js"))
+const KeyMapper = require(path.join(__rootdir, "js", "keybinding.js"))
+const kb = new KeyMapper()
 
 const MOUSE_LEFT = 1
 

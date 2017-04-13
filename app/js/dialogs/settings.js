@@ -55,11 +55,20 @@ class Dialog_Settings {
 			onchange: v => config.set("author", v)
 		}])
 		
-		let d = new Deck(600, 450, [f, new Form()])
-		d.show()
-		// this.body.appendChild(f.getRoot())
+		let components = []
 		
-		// this.show()
+		let nameList = kb.nameList
+		
+		for(let name in nameList) {
+			components.push({
+				type: "keybinding",
+				label: name,
+				value: undefined
+			})
+		}
+		
+		let d = new Deck(600, 450, [f, new Form(components)])
+		d.show()
 	}
 }
 

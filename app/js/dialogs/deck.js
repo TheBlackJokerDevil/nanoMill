@@ -11,17 +11,23 @@ class Deck extends Dialog {
 		this.currentIdx = 0
 		this.currentPage = null
 		this.pages = pages
-		log(pages)
+		
 		// create page tabs
 		let row = document.createElement("div")
 		row.className = "flex-row"
 		
 		for(let i = 0; i < pages.length; i++) {
 			let tab = document.createElement("div")
-			tab.innerHTML = "Page " + i
+			
+			if(pages[i].getName)
+				tab.innerHTML = pages[i].getName()
+			else
+				tab.innerHTML = "Page " + i
+			
 			row.appendChild(tab)
 			
 			tab.onclick = _ => this.showPage(i)
+			tab.className = "dlg-tab"
 			
 			this.body.appendChild(pages[i].getRoot())
 		}
@@ -32,14 +38,19 @@ class Deck extends Dialog {
 			this.showPage(0)
 	}
 	
-	init() {}
-	
 	setPagesDisplay(idx) {
+		let row = this.head.firstElementChild
+		// update display of pages
+		// and the page selection
 		for(let i = 0; i < this.body.children.length; i++)
-			if(idx !== i)
+			if(idx !== i) {
 				this.body.children[i].style.display = "none"
-			else
+				Elem.removeClass(row.children[i], "selected")
+			}
+			else {
 				this.body.children[i].style.display = ""
+				Elem.addClass(row.children[i], "selected")
+			}
 	}
 	
 	showPage(idx) {

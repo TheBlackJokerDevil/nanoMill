@@ -530,6 +530,17 @@ textarea::-webkit-input-placeholder {
   display: flex;
   flex-direction: column; }
 
+.dlg-head {
+  background-color: #1e2123;
+  color: #b4b4b4;
+  border-bottom: 1px solid #191919; }
+
+.dlg-tab {
+  padding: 5px 10px; }
+  .dlg-tab:hover {
+    background-color: #234861;
+    color: #b4b4b4; }
+
 .form .btn {
   padding: 10px 15px;
   margin: 10px 0;

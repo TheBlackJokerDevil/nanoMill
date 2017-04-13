@@ -12,7 +12,7 @@ class Deck extends Dialog {
 		this.currentPage = null
 		this.pages = pages
 		
-		// create page tabs
+		// create page selection
 		let row = document.createElement("div")
 		row.className = "flex-row"
 		
@@ -31,6 +31,10 @@ class Deck extends Dialog {
 			
 			this.body.appendChild(pages[i].getRoot())
 		}
+		
+		// add close button
+		row.insertAdjacentHTML("beforeend", `<div class="flex-fill"></div><div class="icon-close dlg-tab"></div>`)
+		row.lastElementChild.onclick = _ => this.close()
 		
 		this.head.appendChild(row)
 		

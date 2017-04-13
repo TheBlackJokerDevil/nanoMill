@@ -337,14 +337,118 @@ class Component_Select {
 	}
 }
 
+/**
+	value must be something like
+	{
+		key: 23,
+		ctrl: true,
+		alt: true,
+		shift: true
+	}
+*/
 class Component_KeyBinding {
-	constructor(label, value, cb) {
-		let el = document.createElement("div")
-		el.className = "keyb flex-row"
+	constructor(label, keyData = {key: -1}, cb) {
+		this.el = document.createElement("div")
+		this.el.className = "keyb flex-row"
 		
-		el.innerHTML = label + `<div class="flex-fill"></div><div class="keyb-symbols">${value}</div>`
+		this.el.innerHTML = label + `<div class="flex-fill" style="align-self: stretch"></div><div class="keyb-symbols" tabindex="-1"></div>`
+		this.setKeyData(keyData)
 		
-		this.el = el
+		this.onchange = cb
+		
+		let symb = this.el.lastElementChild
+		
+		// focusing the element
+		this.el.addEventListener("click", e => {
+			// ignore space in between label and symbol display
+			if(Elem.hasClass(e.target, "flex-fill"))
+				return
+			
+			symb.focus()
+		})
+		
+		let currentKey
+		
+		// keyboard listener
+		let onkey = e => {
+			currentKey.shift = e.shiftKey
+			currentKey.alt = e.altKey
+			currentKey.ctrl = e.ctrlKey
+			
+			if(kb.isValidKey(e.which)) {
+				currentKey.key = e.which
+				this.setKeyData(currentKey)
+				symb.blur()
+			}
+			
+			this.updateSymbol(currentKey)
+			
+			e.stopImmediatePropagation()
+			e.preventDefault()
+		}
+		
+		let onkeyup = e => {
+			currentKey.shift = e.shiftKey
+			currentKey.alt = e.altKey
+			currentKey.ctrl = e.ctrlKey
+			
+			if(kb.isValidKey(e.which))
+				currentKey.key = 0
+			
+			this.updateSymbol(currentKey)
+			
+			e.stopImmediatePropagation()
+			e.preventDefault()
+		}
+		
+		// changing the value
+		symb.addEventListener("focus", e => {
+			currentKey = {key: 0}
+			symb.addEventListener("keydown", onkey, true)
+			symb.addEventListener("keyup", onkeyup, true)
+		})
+		
+		// update value
+		symb.addEventListener("blur", e => {
+			symb.removeEventListener("keydown", onkey, true)
+			symb.removeEventListener("keyup", onkeyup, true)
+		})
+	}
+	
+	setKeyData(keyData) {
+		this.keyData = keyData
+		
+		this.updateSymbol(this.keyData)
+	}
+	
+	updateSymbol(keyData) {
+		let symb = this.el.lastElementChild
+		
+		// keyData is uninitialized
+		if(keyData.key === -1) {
+			symb.innerHTML = "..."
+			return
+		}
+		
+		let s = ""
+		if(keyData.ctrl)
+			s += "Ctrl "
+		if(keyData.shift)
+			s += "Shift "
+		if(keyData.alt)
+			s += "Alt "
+		
+		if(keyData.key !== 0) {
+			s += kb.nameOf(keyData.key).toUpperCase()
+			Elem.removeClass(this.el.lastElementChild, "invalid")
+		}
+		else
+			Elem.addClass(this.el.lastElementChild, "invalid")
+		
+		symb.innerHTML = s.trim()
+		
+		if(this.onchange)
+			this.onchange(keyData)
 	}
 	
 	getElement() {

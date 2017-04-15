@@ -7,6 +7,10 @@ const
 const
 	MOD_KEY_BIT_OFFSET = 3
 
+/**
+	a list of allowed keys, where you
+	get their key code by their name
+*/
 const keyOfNames = {
 	"backspace": 8,
 	"tab": 9,
@@ -108,6 +112,13 @@ const keyOfNames = {
 	"single quote": 222
 }
 
+/**
+	a list of names for allowed keys
+	where the index is their key code value
+	(don't simply change values here, change them
+		in the keyOfNames array and recreate the
+		definition below with printNameOfKeys())
+*/
 const nameOfKeys = [
 	null,
 	null,
@@ -364,6 +375,13 @@ class KeyMapper {
 		this.nameList[name] = this.codeList[code]
 	}
 	
+	rebind(name, keyString) {
+		if(code === -1)
+			throw new Error(`Invalid keystring ${keyString} for binding ${name}`)
+		
+		
+	}
+	
 	setActiveModule(mdl, type) {
 		this.activeMdl = mdl
 	}
@@ -495,5 +513,27 @@ function printNameOfKeys() {
 	s += "]"
 	console.log(s)
 }
+
+setTimeout(function() {
+	// load keybindings is seperate "thread"
+	fs.readFile(path.join(__appdata, "keybindings.json"), (err, json) => {
+		let saved
+		// no file found
+		if(err)
+			saved = {}
+		else {
+			try {
+				saved = JSON.parse(json)
+			}
+			// file could not be parsed
+			catch(e) {
+				err("Failed to parse json keybindings file")
+			}
+		}
+		
+		kb.bind("Open file", saved.openFile || "ctrl o", openFilePicker)
+		kb.bind("Save file", saved.saveFile || "ctrl s", save)
+	})
+}, 300)
 
 module.exports = KeyMapper

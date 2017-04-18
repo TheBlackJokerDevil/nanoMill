@@ -515,7 +515,7 @@ function printNameOfKeys() {
 }
 
 setTimeout(function() {
-	// load keybindings is seperate "thread"
+	// load keybindings in seperate "thread"
 	fs.readFile(path.join(__appdata, "keybindings.json"), (err, json) => {
 		let saved
 		// no file found

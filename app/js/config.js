@@ -45,7 +45,7 @@ class Config {
 	}
 	
 	wipeAll() {
-		this.entires = {}
+		this.entries = {}
 		this.regAll()
 	}
 	

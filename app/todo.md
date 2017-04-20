@@ -7,7 +7,7 @@
 - ~~Display keybindings in contextmenus~~
 - Some styling to deck-navigation of dialogs
 - Basic styling of Form components
-- Fix navigating between pages in dialog wizards
+- ~~Fix navigating between pages in dialog wizards~~
 
 # Stable (v1.0)
 - (custom keybinding; if not easily achieved by beforementioned API)

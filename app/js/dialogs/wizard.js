@@ -49,6 +49,7 @@ class Wizard extends Dialog {
 	}
 	
 	setPagesDisplay(idx) {
+		return
 		for(let i = 0; i < this.body.children.length; i++)
 			if(idx !== i)
 				this.body.children[i].style.display = "none"
@@ -57,6 +58,10 @@ class Wizard extends Dialog {
 	}
 	
 	showPage(idx) {
+		// detach recent pageX
+		if(this.currentPage)
+			this.body.removeChild(this.currentPage.getRoot())
+		
 		this.currentIdx = idx
 		
 		let page = this.pages[idx]

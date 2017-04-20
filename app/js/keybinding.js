@@ -450,6 +450,10 @@ class KeyMapper {
 		this.activeMdl = mdl
 	}
 	
+	getBinding(name) {
+		return this.nameList[name] || null
+	}
+	
 	static eventToCode(e) {
 		let code = 0
 		

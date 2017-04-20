@@ -61,11 +61,13 @@ let lyt
 		let rect = this.getBoundingClientRect()
 		new Contextmenu(rect.left, rect.bottom, [{
 				label: "Open file",
-				onclick: _ => openFilePicker()
+				onclick: _ => openFilePicker(),
+				keybinding: "Open file"
 			}, {
 				label: "Save ...",
-				onclick: _=> {}
-				}, {
+				onclick: _=> {},
+				keybinding: "Save file"
+			}, {
 				label: "Save all",
 				onclick: _=> {}
 		}])

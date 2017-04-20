@@ -58,6 +58,16 @@ class Contextmenu {
 								<div class="ctx-menu-label">${prop.label}</div>
 							</div>`
 			
+			// append keybinding indicator
+			if(prop.keybinding) {
+				let binding = kb.getBinding(prop.keybinding)
+				if(binding) {
+					let keyString = KeyMapper.codeToKeyString(binding.getCode())
+					item.insertAdjacentHTML("beforeend", `<div class="ctx-kb-indicator">${keyString}</div>`)
+				}
+			}
+			
+			// append submenu indicator
 			if(prop.submenu)
 				item.insertAdjacentHTML("beforeend", `<div class="flex-col" style="justify-content: center"><div class="ctx-menu-indicator icon-ctx-submenu-indicator"></div></div>`)
 			

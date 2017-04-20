@@ -39,3 +39,13 @@
 	margin: 5px;
 	color: grey;
 }
+
+.ctx-kb-indicator {
+	color: grey;
+	font-size: 12px;
+	text-transform: capitalize;
+	display: flex;
+    justify-content: center;
+    flex-direction: column;
+	padding: 0 5px;
+}

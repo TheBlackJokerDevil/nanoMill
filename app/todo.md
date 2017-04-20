@@ -1,9 +1,10 @@
 # Beta (v0.9)
-- Solid keybindings API
+- ~~Solid keybindings API~~
+- Saving and loading keybindings
 - Moving files within and across workspaces
 - Keep sorting when renaming/creating new files
 - Ensure functions in main toolbar do work
-- Display keybindings in contextmenus
+- ~~Display keybindings in contextmenus~~
 - Some styling to deck-navigation of dialogs
 - Basic styling of Form components
 - Fix navigating between pages in dialog wizards

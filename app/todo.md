@@ -5,7 +5,7 @@
 - Keep sorting when renaming/creating new files
 - Ensure functions in main toolbar do work
 - ~~Display keybindings in contextmenus~~
-- Some styling to deck-navigation of dialogs
+- ~~Some styling to deck-navigation of dialogs~~
 - Basic styling of Form components
 - ~~Fix navigating between pages in dialog wizards~~
 

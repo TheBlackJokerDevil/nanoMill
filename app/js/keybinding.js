@@ -347,7 +347,11 @@ const nameOfKeys = [
 
 class KeyMapper {
 	constructor() {
+		// a list where keybindings are referenced by their name
+		// (mainly used to display customizable keybindings)
 		this.nameList = {}
+		// reference keybindings by a calculated keyCode
+		// (used in key-event handler)
 		this.codeList = {}
 		
 		document.addEventListener("keyup", e => {
@@ -356,30 +360,61 @@ class KeyMapper {
 			if(code === -1)
 				return
 			
-			if(this.codeList[code])
-				this.codeList[code].exec(this.activeMdl)
+			// get keybindings bound to that keyCode + modifier combination
+			let kbs = this.codeList[code]
+			if(kbs) {
+				// if we have a focused module
+				// search for a keybinding in module scope
+				// or fallback to global scope
+				if(this.activeMdl) {
+					// get current scope identifier
+					let scope = this.activeMdl.getAlias()
+					
+					let global, match
+					for(let i = 0; i < kbs.length; i++) {
+						let kbscope = kbs[i].getScope()
+						if(kbscope === "global")
+							global = kbs[i]
+						else if(kbscope === scope)
+							match = kbs[i]
+					}
+					
+					// invoke keybinding in module context
+					if(match)
+						match.exec(this.activeMdl)
+					// or fall back to global keybinding
+					else if(global)
+						global.exec()
+				}
+				// otherwise look for keybinding in global scope only
+				else {
+					let global
+					for(let i = 0; i < kbs.length; i++)
+						if(kbs[i].getScope() === "global")
+							global = kbs[i]
+					
+					if(global)
+						global.exec()
+				}
+			}
 		})
 	}
 	
-	bind(name, keyString, cb, alias = "global") {
+	bind(name, keyString, cb, scope = "global") {
+		// use keyCode to itentify bindings
 		let code = KeyMapper.keyStringToCode(keyString)
 		
 		if(code === -1)
 			throw new Error(`Invalid keystring ${keyString} for binding ${name}`)
 		
 		if(!this.codeList[code])
-			this.codeList[code] = new KeyBinding()
+			this.codeList[code] = []
 		
-		this.codeList[code].set(alias, cb)
-		
-		this.nameList[name] = this.codeList[code]
-	}
-	
-	rebind(name, keyString) {
-		if(code === -1)
-			throw new Error(`Invalid keystring ${keyString} for binding ${name}`)
-		
-		
+		let kb = new KeyBinding(scope, cb)
+		// referene by keyCode + modifier combination
+		this.codeList[code].push(kb)
+		// and keybinding name
+		this.nameList[name] = kb
 	}
 	
 	setActiveModule(mdl, type) {
@@ -464,33 +499,32 @@ class KeyMapper {
 }
 
 class KeyBinding {
-	constructor() {
-		this.bindings = {}
+	/**
+		@param {string} scope - the scope of the keybinding to be valid in. Has to be
+							module alias or "global"
+		@param {function} cb - the callback to execute. If the scope is a module the callback
+							gets invoked in context of the module object
+	*/
+	constructor(scope, cb) {
+		this.scope = scope
+		this.cb = cb
 	}
 	
-	set(alias, cb) {
-		this.bindings[alias] = cb
+	/**
+		@param {Layout_Module} mod - executes the keybindings callback in the context of the given module
+	*/
+	exec(mod) {
+		if(mod)
+			this.cb.call(mod)
+		else
+			this.cb()
 	}
 	
-	unset(alias) {
-		this.bindings[alias] = null
-	}
-	
-	getLabel() {
-		
-	}
-	
-	exec(mdl) {
-		if(mdl) {
-			let alias = mdl.constructor.def.alias
-			
-			if(this.bindings[alias])
-				this.bindings[alias](mdl)
-			else if(this.bindings["global"])
-				this.bindings["global"]()
-		}
-		else if(this.bindings["global"])
-			this.bindings["global"]()
+	/**
+		@return {string|number} - the scope identifier of the keybinding or -1 for global scope
+	*/
+	getScope() {
+		return this.scope
 	}
 }
 
@@ -515,7 +549,7 @@ function printNameOfKeys() {
 }
 
 setTimeout(function() {
-	// load keybindings in seperate "thread"
+	// load keybindings in seperate thread
 	fs.readFile(path.join(__appdata, "keybindings.json"), (err, json) => {
 		let saved
 		// no file found

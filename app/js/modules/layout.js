@@ -656,6 +656,10 @@ class Layout_Module extends Layout_Element {
 	}
 	
 	getSaveData() {}
+	
+	getAlias() {
+		return this.constructor.def.alias
+	}
 }
 
 class Layout_Deck extends Layout_Module {
@@ -765,6 +769,10 @@ class Layout_DeckItem extends Layout_Element {
 	onClose() {}
 	
 	getSaveData() {}
+	
+	getAlias() {
+		return this.constructor.def.alias
+	}
 }
 
 class Flexer extends Layout_Flex {

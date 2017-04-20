@@ -3,12 +3,6 @@ let Deck = require(path.join(__rootdir, "js", "dialogs", "deck.js"))
 
 class Dialog_Settings {
 	constructor() {
-		/*
-		this.footer.innerHTML = `<div id="dlg-cancel" class="btn">Close</div>`
-		document.getElementById("dlg-cancel").addEventListener("click", _ => {
-			this.close()
-		})
-		*/
 		let Form = require(path.join(__rootdir, "js", "lib", "form.js"))
 		
 		let f = new Form([{
@@ -57,13 +51,13 @@ class Dialog_Settings {
 		
 		let components = []
 		
-		let nameList = kb.nameList
+		let kbByName = kb.nameList
 		
-		for(let name in nameList) {
+		for(let name in kbByName) {
 			components.push({
 				type: "keybinding",
 				label: name,
-				value: undefined
+				value: KeyMapper.codeToKeyData(kbByName[name].getCode())
 			})
 		}
 		

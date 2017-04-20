@@ -411,10 +411,16 @@ class KeyMapper {
 			this.codeList[code] = []
 		
 		let kb = new KeyBinding(scope, cb)
+		kb.setCode(code)
+		
 		// referene by keyCode + modifier combination
 		this.codeList[code].push(kb)
 		// and keybinding name
 		this.nameList[name] = kb
+	}
+	
+	rebind() {
+		
 	}
 	
 	setActiveModule(mdl, type) {
@@ -435,6 +441,30 @@ class KeyMapper {
 			return -1
 		
 		return (e.keyCode << MOD_KEY_BIT_OFFSET) | code
+	}
+	
+	static codeToKeyString(code) {
+		let str = ""
+		
+		if(code & KEY_CTRL)
+			str += "ctrl "
+		if(code & KEY_SHIFT)
+			str += "shift "
+		if(code & KEY_ALT)
+			str += "alt "
+		
+		str += nameOfKeys[(code >> MOD_KEY_BIT_OFFSET)]
+		
+		return str
+	}
+	
+	static codeToKeyData(code) {
+		return {
+			ctrl: code & KEY_CTRL,
+			shift: code & KEY_SHIFT,
+			alt: code & KEY_ALT,
+			key: code >> MOD_KEY_BIT_OFFSET
+		}
 	}
 	
 	static keyStringToCode(keyString) {
@@ -508,6 +538,17 @@ class KeyBinding {
 	constructor(scope, cb) {
 		this.scope = scope
 		this.cb = cb
+	}
+	
+	/**
+		
+	*/
+	setCode(code) {
+		this.code = code
+	}
+	
+	getCode() {
+		return this.code
 	}
 	
 	/**

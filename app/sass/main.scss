@@ -40,6 +40,9 @@ $z-mod: 10;
 
 .hb-label {
 	padding: 2px 8px;
+	display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 input,

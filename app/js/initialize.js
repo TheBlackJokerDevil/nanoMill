@@ -70,6 +70,12 @@ let lyt
 			}, {
 				label: "Save all",
 				onclick: _=> {}
+			}, {
+				label: "Preferences",
+				onclick: _=> {
+					let Dialog_Settings = require(path.join(__rootdir, "js", "dialogs", "settings.js"))
+					new Dialog_Settings(800, 600)
+				}
 		}])
 	})
 	
@@ -98,12 +104,6 @@ let lyt
 		
 		e.preventDefault()
 	}
-	
-	// setting up settings-page visibilty toggle
-	document.getElementById("sett-page-toggle").addEventListener("click", function () {
-		let Dialog_Settings = require(path.join(__rootdir, "js", "dialogs", "settings.js"))
-		new Dialog_Settings(800, 600)
-	})
 	
 	try {
 		if(!config)

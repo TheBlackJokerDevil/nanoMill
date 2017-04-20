@@ -54,10 +54,12 @@ class Dialog_Settings {
 		let kbByName = kb.nameList
 		
 		for(let name in kbByName) {
+			let binding = kbByName[name]
 			components.push({
 				type: "keybinding",
 				label: name,
-				value: KeyMapper.codeToKeyData(kbByName[name].getCode())
+				value: KeyMapper.codeToKeyData(binding.getCode()),
+				onchange: v => kb.rebind(binding, KeyMapper.keyDataToCode(v))
 			})
 		}
 		

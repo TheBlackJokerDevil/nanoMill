@@ -362,6 +362,7 @@ class Component_KeyBinding {
 		this.el.innerHTML = label + `<div class="flex-fill" style="align-self: stretch"></div><div class="keyb-symbols" tabindex="-1"></div>`
 		this.setKeyData(keyData)
 		
+		// declare callback after setting the value the first time
 		this.onchange = cb
 		
 		let symb = this.el.lastElementChild
@@ -427,6 +428,9 @@ class Component_KeyBinding {
 		this.keyData = keyData
 		
 		this.updateSymbol(this.keyData)
+		
+		if(this.onchange)
+			this.onchange(keyData)
 	}
 	
 	updateSymbol(keyData) {

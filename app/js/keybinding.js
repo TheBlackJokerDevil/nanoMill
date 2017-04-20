@@ -1,4 +1,8 @@
-
+/**
+	When talking about the Keycode in this file, it mostly means a numeral representation
+	containing the modifiers keys in the first three least significant bits followed
+	by what is known to be the KeyCode.
+*/
 const
 	KEY_ALT = 1,
 	KEY_SHIFT = 2,
@@ -8,7 +12,7 @@ const
 	MOD_KEY_BIT_OFFSET = 3
 
 /**
-	a list of allowed keys, where you
+	A list of allowed keys, where you
 	get their key code by their name
 */
 const keyOfNames = {
@@ -113,7 +117,7 @@ const keyOfNames = {
 }
 
 /**
-	a list of names for allowed keys
+	A list of names for allowed keys
 	where the index is their key code value
 	(don't simply change values here, change them
 		in the keyOfNames array and recreate the
@@ -354,7 +358,7 @@ class KeyMapper {
 		// (used in key-event handler)
 		this.codeList = {}
 		
-		document.addEventListener("keyup", e => {
+		document.addEventListener("keydown", e => {
 			let code = KeyMapper.eventToCode(e)
 			
 			if(code === -1)
@@ -397,7 +401,7 @@ class KeyMapper {
 						global.exec()
 				}
 			}
-		})
+		}, true)
 	}
 	
 	bind(name, keyString, cb, scope = "global") {
@@ -419,8 +423,27 @@ class KeyMapper {
 		this.nameList[name] = kb
 	}
 	
-	rebind() {
+	/**
+		@param {KeyBinding} binding - the binding to change the code of
+		@param {number} newCode - the modifier + keyCode combination
+	*/
+	rebind(binding, newCode) {
+		let oldCode = binding.getCode()
 		
+		let bindingsStack = this.codeList[oldCode]
+		if(!bindingsStack)
+			return
+		else if(bindingsStack.length === 1)
+			delete this.codeList[oldCode]
+		else
+			removeArrayItem(bindingsStack, binding)
+		
+		if(!this.codeList[newCode])
+			this.codeList[newCode] = []
+		
+		this.codeList[newCode].push(binding)
+		
+		binding.setCode(newCode)
 	}
 	
 	setActiveModule(mdl, type) {
@@ -465,6 +488,19 @@ class KeyMapper {
 			alt: code & KEY_ALT,
 			key: code >> MOD_KEY_BIT_OFFSET
 		}
+	}
+	
+	static keyDataToCode(data) {
+		let code = 0
+		
+		if(data.alt === true)
+			code += KEY_ALT
+		if(data.shift === true)
+			code += KEY_SHIFT
+		if(data.ctrl === true)
+			code += KEY_CTRL
+		
+		return (data.key << MOD_KEY_BIT_OFFSET) | code
 	}
 	
 	static keyStringToCode(keyString) {
@@ -570,8 +606,7 @@ class KeyBinding {
 }
 
 /**
-	dev function to create array of nameOfKeys
-	automatically
+	Dev function to automatically create the array "nameOfKeys" defined on the head of this file
 */
 function printNameOfKeys() {
 	let a = []
@@ -589,6 +624,11 @@ function printNameOfKeys() {
 	console.log(s)
 }
 
+/**
+	Restore Keybindings from previous sessions.
+	Do that after some delay, since it's not important for the
+	setup of the gui and therefore shall not delay its creation.
+*/
 setTimeout(function() {
 	// load keybindings in seperate thread
 	fs.readFile(path.join(__appdata, "keybindings.json"), (err, json) => {

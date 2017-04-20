@@ -17,3 +17,7 @@ By installing node.js:
 - Download and install nods.js
 - run npm in command line and install electron (pre-builds) as global
 - start run.bat in app folder or launch electron within that folder manually
+
+## When developing nanoMill
+- If you ran nanoMill once, you can add "devmode": true in window.json in appdata folder (nanoMill has to be closed to not overwrite that)
+- If done as stated, you can open/close Webkit console with Ctrl+Shift+I and reload the renderer process with Ctrl+R

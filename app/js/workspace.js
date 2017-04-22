@@ -642,9 +642,17 @@ class FileInfo {
 		Updates the stat property given by fs.stat() asynchronously
 		and invokes the given callback afterwards with the
 		FileInfo instance as argument
+		@param {function} callback - the callback to invoke on sync complete
 	*/
 	update(callback) {
-		fs.statSync(this.path, (stat) => {
+		fs.stat(this.path, (err, stat) => {
+			if(err) {
+				if(callback)
+					return callback(this, true)
+				else
+					return
+			}
+			
 			this.stat = stat
 			
 			if(callback)

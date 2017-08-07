@@ -239,7 +239,7 @@ class Workspace2 {
 				if(this.DEVCOUNTER < 1) {
 					log("updating directory data")
 					this.updateDirectoryData(fn)
-					this.DEVCOUNTER++
+					//this.DEVCOUNTER++
 				}
 			},
 			// respect what the user has as update rate set
@@ -259,7 +259,7 @@ class Workspace2 {
 			
 			// declare recursive function
 			let rec = (tree, files, dirPath, parIdx) => {
-				
+				let output = []
 				
 				let oldChildPointer = 0
 				let oldChildren = tree.children
@@ -286,15 +286,20 @@ class Workspace2 {
 							idx = this.addFileInfo(new FileInfo(entryPath, stat, fname))
 							
 							branch = new LinkedTree(idx)
-							tree.addChild(branch)
 							
+							// add pseudo children, the workspace view will identify them by
+							// having an array set or not
+							// TODO: code that properly
 							if(stat.isDirectory())
 								branch.children = []
 							
 							this.propagateAddItem(branch, parIdx)
 					}
-					else
+					else {
 						oldChildPointer++
+					}
+					
+					output.push(branch)
 					
 					// perform recursion for subfolders
 					if(stat.isDirectory()) {
@@ -303,6 +308,8 @@ class Workspace2 {
 						rec(branch, subFiles, entryPath, idx)
 					}
 				}
+				
+				tree.children = output
 			}
 			
 			if(!this.tree) {

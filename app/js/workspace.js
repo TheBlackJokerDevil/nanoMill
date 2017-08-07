@@ -232,13 +232,15 @@ class Workspace2 {
 		// update workspace entries periodically
 		let fn = tree => {
 			
-			return
 			setTimeout(_ => {
 				if(Number.isNaN(this.DEVCOUNTER) || this.DEVCOUNTER === undefined)
 					this.DEVCOUNTER = 0
 				
-				if(this.DEVCOUNTER < 5 && false)
+				if(this.DEVCOUNTER < 1) {
+					log("updating directory data")
 					this.updateDirectoryData(fn)
+					this.DEVCOUNTER++
+				}
 			},
 			// respect what the user has as update rate set
 			config.get("expUpdateRate"))
@@ -258,6 +260,13 @@ class Workspace2 {
 			// declare recursive function
 			let rec = (tree, files, dirPath, parIdx) => {
 				
+				
+				let oldChildPointer = 0
+				let oldChildren = tree.children
+				
+				if(oldChildren === undefined)
+					oldChildren = new Array(0)
+				
 				for(let i = 0; i < files.length; i++) {
 					let fname = files[i]
 					let entryPath = path.join(dirPath, fname)
@@ -266,15 +275,26 @@ class Workspace2 {
 					let stat = fs.statSync(entryPath)
 					// error handling?
 					
-					let idx = this.addFileInfo(new FileInfo(entryPath, stat, fname))
+					let idx, branch
+					if(oldChildren[oldChildPointer]) {
+						branch = oldChildren[oldChildPointer]
+						idx = branch.value
+					}
 					
-					let branch = new LinkedTree(idx)
-					tree.addChild(branch)
-					
-					if(stat.isDirectory())
-						branch.children = []
-					
-					this.propagateAddItem(branch, parIdx)
+					if(!branch || fname !== this.getFileInfo(idx).name) {
+							// add item
+							idx = this.addFileInfo(new FileInfo(entryPath, stat, fname))
+							
+							branch = new LinkedTree(idx)
+							tree.addChild(branch)
+							
+							if(stat.isDirectory())
+								branch.children = []
+							
+							this.propagateAddItem(branch, parIdx)
+					}
+					else
+						oldChildPointer++
 					
 					// perform recursion for subfolders
 					if(stat.isDirectory()) {
@@ -285,11 +305,14 @@ class Workspace2 {
 				}
 			}
 			
-			if(!this.tree)
+			if(!this.tree) {
 				this.tree = new LinkedTree("root")
-			
-			// initiate recursive call
-			rec(this.tree, files, this.path, -1)
+				
+				// initiate recursive call
+				rec(this.tree, files, this.path, -1)
+			}
+			else
+				rec(this.tree, files, this.path, -1)
 			
 			callback(this.tree)
 		})

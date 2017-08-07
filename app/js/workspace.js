@@ -22,6 +22,10 @@ class WorkspaceMaster {
 		hook.in("onFileClosed", (finfo) => {
 			removeArrayItem(this.opened, finfo)
 		})
+		
+		// storage of information to drag files
+		// around and across workspaces
+		this.dragStorage = null
 	}
 	
 	/**
@@ -110,7 +114,7 @@ class WorkspaceMaster {
 	*/
 	addWorkspace(p, name) {
 		let idx = this.wspaces.length
-		let ws = new Workspace(p, idx, name)
+		let ws = new Workspace2(p, idx, name)
 		this.wspaces.push(ws)
 		
 		return ws
@@ -165,6 +169,38 @@ class WorkspaceMaster {
 		this.saveInConfig()
 	}
 	
+	setDragStorage(ws, items) {
+		this.dragStorage = { source: ws, items }
+	}
+	
+	getDragStorage() {
+		return this.dragStorage
+	}
+	
+	clearDragStorage() {
+		this.dragStorage = null
+	}
+	
+	/**
+		@param {Workspace} wsDesc - destination workspace
+		@param {WorkspaceViewItem} parItem - item to which the items will be moved
+	*/
+	performDrag(wsDest, refItem) {
+		let store = this.getDragstorage()
+		if(!store)
+			return
+		
+		// if source and desctination workspace are equal
+		if(wsDest === store.source) {
+			
+		}
+		else {
+			
+		}
+		
+		this.clearDragStorage()
+	}
+	
 	/**
 		Checks if the given extension is one, that we want
 		to open in an EditoView
@@ -179,6 +215,400 @@ class WorkspaceMaster {
 			return true
 		
 		return false
+	}
+}
+
+class Workspace2 {
+	constructor(dir_path, idx, name) {
+		this.index = idx
+		this.path = dir_path
+		this.name = name
+		
+		this.tree = null
+		
+		this.views = new Set()
+		this.finfo = []
+		
+		// update workspace entries periodically
+		let fn = tree => {
+			
+			return
+			setTimeout(_ => {
+				if(Number.isNaN(this.DEVCOUNTER) || this.DEVCOUNTER === undefined)
+					this.DEVCOUNTER = 0
+				
+				if(this.DEVCOUNTER < 5 && false)
+					this.updateDirectoryData(fn)
+			},
+			// respect what the user has as update rate set
+			config.get("expUpdateRate"))
+		}
+		
+		this.updateDirectoryData(fn)
+	}
+	
+	updateDirectoryData(callback) {
+		// seperate into own thread
+		fs.readdir(this.path, (err, files) => {
+			if(err) {
+				error("Could not read workspace directory.", err)
+				return
+			}
+			
+			// declare recursive function
+			let rec = (tree, files, dirPath, parIdx) => {
+				
+				for(let i = 0; i < files.length; i++) {
+					let fname = files[i]
+					let entryPath = path.join(dirPath, fname)
+					
+					// read out file information
+					let stat = fs.statSync(entryPath)
+					// error handling?
+					
+					let idx = this.addFileInfo(new FileInfo(entryPath, stat, fname))
+					
+					let branch = new LinkedTree(idx)
+					tree.addChild(branch)
+					
+					if(stat.isDirectory())
+						branch.children = []
+					
+					this.propagateAddItem(branch, parIdx)
+					
+					// perform recursion for subfolders
+					if(stat.isDirectory()) {
+						let subFiles = fs.readdirSync(entryPath)
+						// error handling?
+						rec(branch, subFiles, entryPath, idx)
+					}
+				}
+			}
+			
+			if(!this.tree)
+				this.tree = new LinkedTree("root")
+			
+			// initiate recursive call
+			rec(this.tree, files, this.path, -1)
+			
+			callback(this.tree)
+		})
+	}
+	
+	propagateAddItem(tree, parent) {
+		for(let view of this.views)
+			view.addItem(tree, parent)
+	}
+	// TODO
+	propagateRemoveItem(tree, parent) {
+		for(let view of this.views)
+			view.addItem(tree, parent)
+	}
+	
+	/**
+		This function is designed to only change deligate calls to the interface when changes to the
+		files have happened, otherwise nothing shall happen.
+		Loads data of a directory into internal file info holder
+		and invokes a callback with a linked tree as paramter, which reperesents the file hiearchy
+		@param {function} callback - Callback that gets called when loading has finished.
+				Takes a LinkedTree as argument holding the hierarchy of the files
+				represented by the indices of their FileInfo objects.
+	*/
+	readFileTree(callback) {
+		// seperate into own thread		
+		fs.readdir(this.path, (err, files) => {
+			if(err) {
+				error("Could not read workspace directory.", err)
+				return
+			}
+			
+			let rec = (tree, files, dir_path) => {				
+				let len = files.length
+	
+				// pointer to the current value of "old"
+				let j = 0
+				// marks the current value in "old" to exist somewhere in "recent"
+				let exists = false
+				
+				// data from recent merge step
+				let oldChildren = tree.children || []
+				let newChildren = files
+				let out = []
+				
+				for(let i = 0; i < len; i++) {
+					let fname = files[i]
+					let entryPath = path.join(dir_path, fname)
+					
+					let stat = fs.statSync(entryPath)
+					// check if file is to ignore
+					//if(!this.isStatToIgnore(stat, fname))
+					//	continue
+				
+					log("Checking: " + newChildren[i] + " = " + oldChildren[j].val)
+					// check if item of "oldChildren" and "newChildren" do match
+					// if so, take the value of oldChildren
+					if(oldChildren[j] && newChildren[i] === oldChildren[j].val) {
+						log("Applied value: " + oldChildren[j].val)
+						// apply value
+						out.push(oldChildren[j])
+						j++
+						exists = false
+						continue
+					}
+					// if the value in "oldChildren" exists in "newChildren"
+					// then it is to assume that all values until its point in "newChildren"
+					// are new and need to be added
+					else if(exists) {
+						log("Created: " + newChildren[i])
+						out.push(newChildren[i])
+					}
+					// otherwise look ahead if the value in "oldChildren" does exist in "newChildren"
+					// or simply can be skipped
+					else {
+						// check if item of "oldChildren" exists in "newChildren"
+						let k = i
+						for(; k < len; k++) {
+							if(newChildren[k] === oldChildren[j].val) {
+								log("Does exist:" + oldChildren[j].val + " at: " + k)
+								exists = true
+								break
+							}
+						}
+						
+						// otherwise skip item in "oldChildren"
+						if(k === len) {
+							log("Unneeded:" + oldChildren[j].val)
+							j++
+						}
+						
+						// redo step with updated information about "oldChildren"
+						i--
+					}
+				}
+				
+				if(out.length)
+					tree.children = out
+				else
+					tree.children = null
+			}
+			
+			if(!this.tree)
+				this.tree = new LinkedTree("root")
+			
+			rec(this.tree, files, this.path)
+			
+			if(callback)
+				callback(this.tree)
+		})
+		
+		this.DEVCOUNTER++
+	}
+	/**
+	isStatToIgnore(stat, fname) {
+		return stat && (stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(fname)))
+	}
+	*/
+	
+	/**
+		Returns a new WorkspaceView() instance, that gets maintained
+		by the workspace object
+		@return {WorkspaceView}
+	*/
+	getView() {
+		let view = new WorkspaceView(this)
+		this.views.add(view)
+		
+		return view
+	}
+	
+	removeView(view) {
+		if(!view)
+			return
+		
+		view.innerHTML = ''
+		if(this.views)
+			this.views.delete(view)
+	}
+	
+	onRemove() {
+		for(let view of this.views)
+			view.root.innerHTML = ""
+		
+		this.views = null
+	}
+	
+	/**
+		Returns the name of the workspace.
+		@return {string} Name of the workspace, otherwise the basename of its path
+	*/
+	getName() {
+		return this.name
+	}
+	
+	/**
+		Pushes a FileInfo instance to the internal array and returns
+		its index in the array
+		@param {FileInfo} finfo - FileInfo instance to add
+	*/
+	addFileInfo(finfo) {
+		let idx = this.finfo.length
+		
+		this.finfo[idx] = finfo
+		
+		return idx
+	}
+	
+	getFileInfo(idx) {
+		return this.finfo[idx]
+	}
+	
+	/**
+		Sorts an array of LinkedTrees with file indices as their values
+		by their corresponding extension (cr editor sorting)
+		@param {array} fa - Array of LinkedTree to sort
+		@return {array} Sorted array of LinkedTrees
+	*/
+	sortFileIndicesByExt(fa) {
+		if(!fa)
+			return fa
+		
+		// copy input to not corrupt things outside this function
+		fa = fa.slice()
+		let a = []
+		
+		for(let q = 0; q < fa.length; q++) {
+			let lowest
+			let value = 0
+			for(let i = 0; i < fa.length; i++) {
+				let branch = fa[i]
+				// ignore deleted entries
+				if(branch !== null) {
+					let val = Workspace.getExtSortValue(this.finfo[branch.value].ext)
+					if(val > value) {
+						lowest = i
+						value = val
+					}
+				}
+			}
+			
+			a.push(fa[lowest])
+			// delete item from source list
+			fa[lowest] = null
+		}
+		
+		return a
+	}
+	
+	sortFNames(fa) {
+		if(!fa)
+			return null
+		
+		// copy input to not corrupt things outside this function
+		fa = fa.slice()
+		let a = []
+		
+		for(let q = 0; q < fa.length; q++) {
+			let lowest
+			let value = 0
+			for(let i = 0; i < fa.length; i++) {
+				// ignore deleted entries
+				if(fa[i] !== null) {
+					let val = Workspace.getExtSortValue(fa[i])
+					if(val > value) {
+						lowest = i
+						value = val
+					}
+				}
+			}
+			
+			a.push(fa[lowest])
+			// delete item from source list
+			fa[lowest] = null
+		}
+		
+		return a
+	}
+}
+
+/**
+	A class that holds data over a directory and updates it on request.
+	It main usage is to detect changes to the hierarchy correctly, while being silent when no changes
+	are detected and minimize the need of rebuilding everything everytime when the hierarchy is read out.
+*/
+class DirectoryWatcher {
+	constructor(path, fnOnInit) {
+		this.path = path
+		
+		this.update()
+		
+		this.onInit = fnOnInit
+	}
+	
+	update() {
+		// seperate into another thread
+		fs.readdir(this.path, (err, files) => {
+			if(err) {
+				error("Could not read workspace directory.", err)
+				return
+			}
+			
+			if(!this.tree)
+				this.tree = new LinkedTree("root")
+			
+			this.updateStep(this.tree, files, this.path)
+			
+			this.onInit(this.tree)
+		})
+	}
+	
+	updateStep(tree, fnames, dir_path) {
+		let len = fnames.length
+		
+		// log(fnames)
+		
+		// get old values from recent tree
+		let oldChildren = tree.children
+		let newChildren = []
+		
+		for(let i = 0; i < len; i++) {
+			let fname = fnames[i]
+			
+			let entryPath = path.join(dir_path, fname)
+			
+			let stat = fs.statSync(entryPath)
+			// check if file is to ignore?
+			// or at least for errors
+			
+			let idx = this.addFileInfo(new FileInfo(dir_path, stat, fname))
+			let branch = this.createEntryFromStat(idx)
+			
+			// invoke resursive call for subdirectories
+			if(stat.isDirectory()) {
+				let files = fs.readdirSync(entryPath)
+				
+				// error handling?
+				
+				this.updateStep(branch, files, entryPath)
+			}
+			
+			newChildren.push(branch)
+			
+			this.onCreation()
+			
+			tree.children = newChildren
+		}
+		
+		log(tree)
+	}
+	
+	createEntryFromStat(stat) {
+		let branch = new LinkedTree(stat)
+		
+		return branch
+	}
+	
+	onCreation() {
+		log("Created something")
 	}
 }
 
@@ -254,7 +684,7 @@ class Workspace {
 	*/
 	loadDirectory(dir_path, callback) {
 		// collect directory information
-		fs.readdir(dir_path, (err, files) => {
+		fs.readdir(dir_path, (err, files) => {console.time("asd")
 			if(err) {
 				error( "Could not list the directory.", err )
 				return
@@ -301,7 +731,7 @@ class Workspace {
 			let tree = new LinkedTree("root")
 			fn(files, dir_path, tree)
 			tree.children = this.sortFileIndicesByExt(tree.children)
-			
+			console.timeEnd("asd")
 			if(callback)
 				callback(tree)
 		})
@@ -659,6 +1089,10 @@ class FileInfo {
 				callback(this)
 		})
 	}
+	
+	getName() {
+		return this.name
+	}
 }
 
 class WorkspaceView {
@@ -768,6 +1202,10 @@ class WorkspaceView {
 			this.activeItem.onBlur()
 		
 		this.activeItem = null
+	}
+	
+	getSelectedItems() {
+		return this.selected
 	}
 	
 	getNextValidDirectoryElement(el) {
@@ -902,6 +1340,49 @@ class WorkspaceView {
 			}
 		})
 	}
+	
+	getWorkspace() {
+		return this.wspace
+	}
+}
+
+class WorkspaceView2 extends WorkspaceView {
+	/**
+		Check updated treelist against our ViewItemsTree
+	*/
+	update(tree) {
+		
+		if(!this.tree)
+			this.tree = new LinkedTree(this.rootEl)
+		
+		/**
+			fileItems - 
+			expItem - 
+		*/
+		let rec = (fileBranch, expBranch) => {
+			let fileItems = fileBranch.children
+			let expItems = expBranch.children
+			// ensure to remove view items which
+			// are not contained in the updated linked tree
+			if(!fileItems) {
+				if(expItem) {
+					for(let i = 0; i < expItems; i++)
+						expItems[i].onRemove()
+					
+					expBranch.removeChildren()
+				}
+				return
+			}
+			
+			// check if items have already been created
+			for(let i = 0; i < fileItems.length; i++) {
+				let fileItem = fileItems[i]
+				
+			}
+		}
+		
+		rec(tree, this.tree)
+	}
 }
 
 class WorkspaceViewItem {
@@ -1017,6 +1498,10 @@ class WorkspaceViewItem {
 		
 		label.addEventListener("dragstart", e => {
 			isDragging = true
+			
+			// cache draginfo
+			let ws = wview.getWorkspace()
+			wspace.setDragStorage(ws, ws.getSelectedItems())
 		})
 		
 		label.addEventListener("dragend", e => {
@@ -1032,10 +1517,14 @@ class WorkspaceViewItem {
 				return
 			// and also check for operations to be only within the same workspace
 			// (for now)
+			/*
 			if(wview.wview.index !== sourcewview)
 				return
 			else
 				wview.wview.moveFileTo(sourceFileIndex, this.idx)
+			*/
+			
+			wspace.performDrag(wview.getWorkspace())
 			
 			isDragging = false
 			

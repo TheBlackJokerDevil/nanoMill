@@ -41,6 +41,7 @@ class Config {
 		this.reg("version", "string", "7.0")
 		this.reg("workspaces", "array", null)
 		this.reg("hidenonocfiles", "boolean", true)
+		this.reg("expUpdateRate", "number", 800)
 	}
 	
 	/**

@@ -8,9 +8,11 @@
 - ~~Some styling to deck-navigation of dialogs~~
 - Basic styling of Form components
 - ~~Fix navigating between pages in dialog wizards~~
+- Normalze config entries to lowercase-camel-case
+- Make selection effect in explorer more appealing
+- Inform about dirty-state of editable modules (mostly texteditor)
 
 # Stable (v1.0)
-- (Custom keybinding; if not already achieved with beforementioned API)
 - Workspace settings (renaming, workspace specific c4group and ocexe)
 - Navigating between modules by using 1-9 keys
 - Controls to navigate in explorer and navigator with arrow keys

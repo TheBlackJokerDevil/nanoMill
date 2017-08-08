@@ -152,7 +152,7 @@ class WorkspaceMaster {
 	*/
 	addWorkspace(p, name) {
 		let idx = this.wspaces.length
-		let ws = new Workspace2(p, idx, name)
+		let ws = new Workspace(p, idx, name)
 		this.wspaces.push(ws)
 		
 		return ws
@@ -280,7 +280,7 @@ class WorkspaceMaster {
 	}
 }
 
-class Workspace2 {
+class Workspace {
 	constructor(dir_path, idx, name) {
 		this.index = idx
 		this.path = dir_path
@@ -336,9 +336,15 @@ class Workspace2 {
 					let fname = files[i]
 					let entryPath = path.join(dirPath, fname)
 					
+					let stat
 					// read out file information
-					let stat = fs.statSync(entryPath)
-					// error handling?
+					try {
+						stat = fs.statSync(entryPath)
+					}
+					catch(e) {
+						log(entryPath)
+						continue
+					}
 					
 					let idx = -1, branch
 					if(oldChildren[oldChildPointer]) {
@@ -552,186 +558,7 @@ class Workspace2 {
 		
 		return a
 	}
-}
-
-/**
-	A Workspace instance holds information about a specific folder on the user's drive
-	and collects data about editable components in that folder.
-*/
-
-class Workspace {
-	constructor(dir_path, idx, name) {
-		// name of the workspace chosen by the user
-		this.name = name
-		
-		this.index = idx
-		this.path = dir_path
-		// file info storage
-		this.finfo = []
-		// represents the directory hierarchy with indices for finfo
-		this.tree = null
-		// holder of indices of opened files
-		this.opened = new Set()
-		// weather the first execution of loadDirectory has been finished
-		this.loaded = false
-		
-		this.views = new Set()
-		
-		this.loadDirectory(dir_path, (tree) => {
-			this.loaded = true
-			wmaster.saveInConfig()
-			this.tree = tree
-			
-			// update views
-			for(let view of this.views)
-				view.addItem(tree, -1)
-		})
-	}
 	
-	/**
-		Returns a new WorkspaceView() instance, that gets maintained
-		by the workspace object
-		@return {WorkspaceView}
-	*/
-	getView() {
-		let view = new WorkspaceView(this)
-		this.views.add(view)
-		
-		return view
-	}
-	
-	removeView(view) {
-		if(!view)
-			return
-		
-		view.innerHTML = ''
-		if(this.views)
-			this.views.delete(view)
-	}
-	
-	onRemove() {
-		for(let view of this.views)
-			view.root.innerHTML = ""
-		
-		this.views = null
-	}
-	
-	/**
-		Executes the c4group application to unpack a file
-		@param {number} idx - FileInfo index
-	*/
-	packFile(idx) {
-		// command the c4group(.exe) to unpack our targeted file
-		runC4Group([this.finfo[idx].path, "-p"], false, () => {
-			// find element in tree
-			let branch = this.tree.getElementByVal(idx)
-			// remove all file infos referenced by the found element's children
-			branch.forEach((val) => {
-				this.finfo[val] = undefined
-			})
-			// detach children from element
-			branch.removeChildren()
-			// update file info
-			this.finfo[idx].updateSync()
-			// update workspace views
-			for(let view of this.views)
-				view.replaceItem(idx, branch)
-		})
-	}
-	
-	/**
-		Executes the c4group executable to unpack the file, given by the index
-		of the local file info holder
-		@param {number} idx - FileInfo index
-	*/
-	unpackFile(idx) {
-		runC4Group([this.finfo[idx].path, "-u"], false, () => {
-			// branch to update
-			let branch = this.tree.getElementByVal(idx)
-			
-			let unpack_dir = this.finfo[idx].path
-			this.loadDirectory(unpack_dir, (tree) => {
-				// if there are no valid files found in subdirectory,
-				// still assign an assign to branch, so it gets recoginized as
-				// a parent tree item
-				if(!tree.children)
-					tree.children = []
-				else // otherwise do the cr typical sorting
-					tree.children = this.sortFileIndicesByExt(tree.children)
-				
-				// transfer children
-				branch.children = tree.children
-				
-				// update stat (sync, because we are already in an async thread)
-				this.finfo[idx].updateSync()
-				
-				// update workspace views
-				for(let view of this.views)
-					view.replaceItem(idx, branch)
-			})
-		})
-	}
-	
-	/**
-		Returns the name of the workspace.
-		@return {string} Name of the workspace, otherwise the basename of its path
-	*/
-	getName() {
-		return this.name
-	}
-	
-	/**
-		Renames the file of the given index
-		@param {number} idx - FileInfo index of the file
-		@param {string} fname - New name of the file
-	*/
-	renameFile(idx, fname) {
-		let finfo = this.finfo[idx]
-		
-		if(!finfo)
-			return
-		
-		let newPath = path.join(path.dirname(finfo.path), fname)
-		// check if file already exists
-		fs.stat(newPath, (err) => {
-			if(err) {
-				fs.renameSync(finfo.path, newPath)
-				finfo.setPath(newPath)
-				finfo.updateSync()
-				// update workspace views
-				for(let view of this.views)
-					view.renameItem(idx, fname)
-			}
-			else
-				alert("Such file already exists.\n${newPath}")
-		})
-	}
-	
-	/**
-		Moves file to another directory
-		@param {number} idx - the index of the FileInfo Object
-		@param {number} newParIdx - the index of the FileInfo
-				Object of the target directory
-	*/
-	moveFileTo(idx, newParIdx) {
-		let newPar = this.tree.getElementByVal(newParIdx)
-		
-		if(!newPar)
-			throw new Error("moveFileTo has undefined parent target")
-		
-		let branch = this.tree.getElementByVal(idx)
-		branch.parent.removeChild(branch)
-		
-		newPar.addChild(branch)
-		
-		// and do the sorting stuff
-		newPar.children = this.sortFileIndicesByExt(newPar)
-		
-		/*
-		for(let view of this.views)
-			
-		*/
-	}
 	
 	/**
 		Checks weather the given extension is editable and

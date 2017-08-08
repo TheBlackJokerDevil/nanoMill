@@ -7,6 +7,8 @@ let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 class WorkspaceMaster {
 	constructor() {
 		this.wspaces = []
+		// file info holder
+		this.finfo = []
 		
 		// restore workspaces by config
 		let a = config.get("workspaces")
@@ -26,6 +28,38 @@ class WorkspaceMaster {
 		// storage of information to drag files
 		// around and across workspaces
 		this.dragStorage = null
+	}
+	
+	/**
+		Pushes a FileInfo instance to the internal array and returns
+		its index in the array
+		@param {FileInfo} finfo - FileInfo instance to add
+	*/
+	addFileInfo(finfo) {
+		let idx = this.finfo.length
+		
+		this.finfo[idx] = finfo
+		
+		return idx
+	}
+	
+	getFileInfo(idx) {
+		return this.finfo[idx]
+	}
+	
+	/**
+		Deletes a file or folder with all its descendants
+		@param {number} idx - Index of the FileInfo instance, which is to delete
+	*/
+	removeFile(idx) {
+		// sanity check
+		if(!this.finfo[idx])
+			return
+	
+		fs.remove(this.finfo[idx].path, e => {
+			// dereference file data
+			this.finfo[idx] = undefined
+		})
 	}
 	
 	/**
@@ -202,6 +236,30 @@ class WorkspaceMaster {
 	}
 	
 	/**
+		Executes the c4group application to unpack a file
+		@param {number} idx - FileInfo index
+	*/
+	packFile(idx) {
+		// command the c4group(.exe) to unpack our targeted file
+		runC4Group([this.finfo[idx].path, "-p"], false, () => {
+			// update file info
+			this.finfo[idx].updateSync()
+		})
+	}
+	
+	/**
+		Executes the c4group executable to unpack the file, given by the index
+		of the local file info holder
+		@param {number} idx - FileInfo index
+	*/
+	unpackFile(idx) {
+		runC4Group([this.finfo[idx].path, "-u"], false, () => {
+			// update stat (sync, because we are already in an async thread)
+			this.finfo[idx].updateSync()
+		})
+	}
+	
+	/**
 		Checks if the given extension is one, that we want
 		to open in an EditoView
 		@param {string} ext - Extension to check. Must have preceding "."
@@ -236,10 +294,10 @@ class Workspace2 {
 				if(Number.isNaN(this.DEVCOUNTER) || this.DEVCOUNTER === undefined)
 					this.DEVCOUNTER = 0
 				
-				if(this.DEVCOUNTER < 1) {
+				if(this.DEVCOUNTER < 200) {
 					log("updating directory data")
 					this.updateDirectoryData(fn)
-					//this.DEVCOUNTER++
+					this.DEVCOUNTER++
 				}
 			},
 			// respect what the user has as update rate set
@@ -263,11 +321,14 @@ class Workspace2 {
 				
 				let oldChildPointer = 0
 				let oldChildren = tree.children
+				let pointedChildExists = false
 				
 				if(oldChildren === undefined)
 					oldChildren = new Array(0)
 				
-				for(let i = 0; i < files.length; i++) {
+				let len = files.length
+				
+				for(let i = 0; i < len; i++) {
 					let fname = files[i]
 					let entryPath = path.join(dirPath, fname)
 					
@@ -275,28 +336,48 @@ class Workspace2 {
 					let stat = fs.statSync(entryPath)
 					// error handling?
 					
-					let idx, branch
+					let idx = -1, branch
 					if(oldChildren[oldChildPointer]) {
 						branch = oldChildren[oldChildPointer]
 						idx = branch.value
 					}
 					
-					if(!branch || fname !== this.getFileInfo(idx).name) {
-							// add item
-							idx = this.addFileInfo(new FileInfo(entryPath, stat, fname))
+					let finfo = wmaster.getFileInfo(idx)
+					
+					// check if the current pointer in the current and older file lists are different
+					if(!branch || !finfo || fname !== finfo.name) {
+						
+						// look ahead if the old entry we are comparing with
+						// will be needed
+						if(finfo && !pointedChildExists) {
+							for(let j = i + 1; j < len; j++) {
+								if(files[j] === finfo.name) {log("STILL THE MAIN")
+									pointedChildExists = true
+									break
+								}
+							}
 							
-							branch = new LinkedTree(idx)
-							
-							// add pseudo children, the workspace view will identify them by
-							// having an array set or not
-							// TODO: code that properly
-							if(stat.isDirectory())
-								branch.children = []
-							
-							this.propagateAddItem(branch, parIdx)
+							// skip item if its deprecated
+							if(!pointedChildExists) {
+								oldChildPointer++
+								// remove from views
+								this.propagateRemoveItem(idx)
+								// redo loop step with updated configurations
+								i--
+								continue
+							}
+						}
+						
+						// add as new item
+						idx = wmaster.addFileInfo(new FileInfo(entryPath, stat, fname))
+						branch = new LinkedTree(idx)
+						this.propagateAddItem(branch, parIdx)
 					}
+					// otherwise assume its the file has not been updated, so do not do any
+					// fancy stuff then moving the pointer and reset the existence flag
 					else {
 						oldChildPointer++
+						pointedChildExists = false
 					}
 					
 					output.push(branch)
@@ -330,9 +411,9 @@ class Workspace2 {
 			view.addItem(tree, parent)
 	}
 	// TODO
-	propagateRemoveItem(tree, parent) {
+	propagateRemoveItem(idx) {
 		for(let view of this.views)
-			view.addItem(tree, parent)
+			view.removeItem(idx)
 	}
 	
 	/**
@@ -473,23 +554,6 @@ class Workspace2 {
 	*/
 	getName() {
 		return this.name
-	}
-	
-	/**
-		Pushes a FileInfo instance to the internal array and returns
-		its index in the array
-		@param {FileInfo} finfo - FileInfo instance to add
-	*/
-	addFileInfo(finfo) {
-		let idx = this.finfo.length
-		
-		this.finfo[idx] = finfo
-		
-		return idx
-	}
-	
-	getFileInfo(idx) {
-		return this.finfo[idx]
 	}
 	
 	/**
@@ -1152,8 +1216,8 @@ class WorkspaceView {
 		}
 		
 		let idx = tree.value
-		let finfo = this.wspace.finfo[idx]
-		let root = this.createViewItem(idx, finfo, tree.children ? true : false)
+		let finfo = wmaster.finfo[idx]
+		let root = this.createViewItem(idx, finfo, finfo.stat.isDirectory())
 		
 		if(parIdx === -1)
 			root.setParent(this.rootItem)
@@ -1166,8 +1230,9 @@ class WorkspaceView {
 			for(let i = 0; i < children.length; i++) {
 				let child = children[i]
 				let idx = child.value
-				let finfo = this.wspace.getFileInfo(idx)
-				let item = this.createViewItem(idx, finfo, child.children ? true : false)
+				let finfo = wmaster.getFileInfo(idx)
+				
+				let item = this.createViewItem(idx, finfo, finfo.stat.isDirectory())
 				item.setParent(par)
 				
 				this.items[idx] = item
@@ -1285,7 +1350,7 @@ class WorkspaceView {
 		
 		// get file info from workspace
 		// explicit parse as integer, for the linked tree compares with ===
-		let finfo = this.wspace.finfo[item.idx]
+		let finfo = wmaster.finfo[item.idx]
 		
 		// add run option for scenarios
 		if(finfo.ext === ".ocs")
@@ -1308,7 +1373,7 @@ class WorkspaceView {
 				}
 				else {
 					idx = dirEl.dataset.value
-					tpath = this.wspace.finfo[idx].path
+					tpath = wmaster.finfo[idx].path
 				}
 				
 				this.newFileDialog(tpath, idx || -1)
@@ -1320,13 +1385,13 @@ class WorkspaceView {
 			props.push({
 				label: "Pack",
 				icon: "icon-pack",
-				onclick: _ => { this.wspace.packFile(item.idx) },
+				onclick: _ => { wmaster.packFile(item.idx) },
 				onvalidate: _ => hasC4group() && finfo.stat.isDirectory()
 			})
 			props.push({
 				label: "Unpack",
 				icon: "icon-unpack",
-				onclick: () => { this.wspace.unpackFile(item.idx) },
+				onclick: () => { wmaster.unpackFile(item.idx) },
 				onvalidate: _ => hasC4group() && !finfo.stat.isDirectory()
 			})
 		}
@@ -1339,7 +1404,7 @@ class WorkspaceView {
 				fn(finfo.name, (newName) => {
 					// check for valid file name
 					if(newName && typeof newName === "string" && newName !== finfo.name)
-						this.wspace.renameFile(item.idx, newName)
+						wmaster.renameFile(item.idx, newName)
 				})
 			}
 		})
@@ -1347,7 +1412,7 @@ class WorkspaceView {
 		props.push({
 			label: "Delete",
 			icon: "icon-trashbin",
-			onclick: _ => {this.wspace.removeFile(item.idx)}
+			onclick: _ => {wmaster.removeFile(item.idx)}
 		})
 		
 		return props
@@ -1362,6 +1427,7 @@ class WorkspaceView {
 	newFileDialog(tpath, parentfIndex) {
 		let Dialog_NewFile = require(path.join(__rootdir, "js", "dialogs", "newfile.js"))
 		new Dialog_NewFile(500, 300, tpath, (result) => {
+			// TODO: remove this and probably the callback too
 			if(!result)
 				return
 			
@@ -1507,7 +1573,7 @@ class WorkspaceViewItem {
 		
 		// open editable files; expand/collapse directories on dblclick
 		label.addEventListener("dblclick", (e) => {
-			let finfo = wview.wspace.finfo[this.idx]
+			let finfo = wmaster.finfo[this.idx]
 			
 			if(Elem.hasClass(this.el, "tree-parent"))
 				return
@@ -1528,7 +1594,8 @@ class WorkspaceViewItem {
 		
 		label.addEventListener("dragstart", e => {
 			isDragging = true
-			
+			// TODO
+			return -1
 			// cache draginfo
 			let ws = wview.getWorkspace()
 			wspace.setDragStorage(ws, ws.getSelectedItems())

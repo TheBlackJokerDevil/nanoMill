@@ -18,6 +18,7 @@
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping
 - Add options to main toolbar
 - Implement ocmapgen module (http://forum.openclonk.org/topic_show.pl?tid=3371)
+- Correctly free memory from unused FileInfos after packaging
 
 # Wishlist
 - Procedural explorer loading (to prevent even trying to load whole C:-drive at once, if specified as workspaces)

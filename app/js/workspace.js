@@ -393,127 +393,36 @@ class Workspace2 {
 				tree.children = output
 			}
 			
-			if(!this.tree) {
+			if(!this.tree)
 				this.tree = new LinkedTree("root")
-				
-				// initiate recursive call
-				rec(this.tree, files, this.path, -1)
-			}
-			else
-				rec(this.tree, files, this.path, -1)
+			
+			rec(this.tree, files, this.path, -1)
 			
 			callback(this.tree)
 		})
 	}
 	
+	/**
+		Loops through all WorkspaceViews and invokes addItem()
+		with the given parameters
+		@param {LinkedTree} tree - LinkedTree holding FileInfo index as value
+		@param {number} parent - Index of the parent FileInfo
+	*/
 	propagateAddItem(tree, parent) {
 		for(let view of this.views)
 			view.addItem(tree, parent)
 	}
-	// TODO
+	
+	/**
+		Loops through all WorkspaceViews and invokes removeItem()
+		with the given parameter
+		@param {number} idx - Index of the removed FileInfo
+	*/
 	propagateRemoveItem(idx) {
 		for(let view of this.views)
 			view.removeItem(idx)
 	}
 	
-	/**
-		This function is designed to only change deligate calls to the interface when changes to the
-		files have happened, otherwise nothing shall happen.
-		Loads data of a directory into internal file info holder
-		and invokes a callback with a linked tree as paramter, which reperesents the file hiearchy
-		@param {function} callback - Callback that gets called when loading has finished.
-				Takes a LinkedTree as argument holding the hierarchy of the files
-				represented by the indices of their FileInfo objects.
-	*/
-	readFileTree(callback) {
-		// seperate into own thread		
-		fs.readdir(this.path, (err, files) => {
-			if(err) {
-				error("Could not read workspace directory.", err)
-				return
-			}
-			
-			let rec = (tree, files, dir_path) => {				
-				let len = files.length
-	
-				// pointer to the current value of "old"
-				let j = 0
-				// marks the current value in "old" to exist somewhere in "recent"
-				let exists = false
-				
-				// data from recent merge step
-				let oldChildren = tree.children || []
-				let newChildren = files
-				let out = []
-				
-				for(let i = 0; i < len; i++) {
-					let fname = files[i]
-					let entryPath = path.join(dir_path, fname)
-					
-					let stat = fs.statSync(entryPath)
-					// check if file is to ignore
-					//if(!this.isStatToIgnore(stat, fname))
-					//	continue
-				
-					log("Checking: " + newChildren[i] + " = " + oldChildren[j].val)
-					// check if item of "oldChildren" and "newChildren" do match
-					// if so, take the value of oldChildren
-					if(oldChildren[j] && newChildren[i] === oldChildren[j].val) {
-						log("Applied value: " + oldChildren[j].val)
-						// apply value
-						out.push(oldChildren[j])
-						j++
-						exists = false
-						continue
-					}
-					// if the value in "oldChildren" exists in "newChildren"
-					// then it is to assume that all values until its point in "newChildren"
-					// are new and need to be added
-					else if(exists) {
-						log("Created: " + newChildren[i])
-						out.push(newChildren[i])
-					}
-					// otherwise look ahead if the value in "oldChildren" does exist in "newChildren"
-					// or simply can be skipped
-					else {
-						// check if item of "oldChildren" exists in "newChildren"
-						let k = i
-						for(; k < len; k++) {
-							if(newChildren[k] === oldChildren[j].val) {
-								log("Does exist:" + oldChildren[j].val + " at: " + k)
-								exists = true
-								break
-							}
-						}
-						
-						// otherwise skip item in "oldChildren"
-						if(k === len) {
-							log("Unneeded:" + oldChildren[j].val)
-							j++
-						}
-						
-						// redo step with updated information about "oldChildren"
-						i--
-					}
-				}
-				
-				if(out.length)
-					tree.children = out
-				else
-					tree.children = null
-			}
-			
-			if(!this.tree)
-				this.tree = new LinkedTree("root")
-			
-			rec(this.tree, files, this.path)
-			
-			if(callback)
-				callback(this.tree)
-		})
-		
-		this.DEVCOUNTER++
-	}
 	/**
 	isStatToIgnore(stat, fname) {
 		return stat && (stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(fname)))
@@ -625,88 +534,6 @@ class Workspace2 {
 }
 
 /**
-	A class that holds data over a directory and updates it on request.
-	It main usage is to detect changes to the hierarchy correctly, while being silent when no changes
-	are detected and minimize the need of rebuilding everything everytime when the hierarchy is read out.
-*/
-class DirectoryWatcher {
-	constructor(path, fnOnInit) {
-		this.path = path
-		
-		this.update()
-		
-		this.onInit = fnOnInit
-	}
-	
-	update() {
-		// seperate into another thread
-		fs.readdir(this.path, (err, files) => {
-			if(err) {
-				error("Could not read workspace directory.", err)
-				return
-			}
-			
-			if(!this.tree)
-				this.tree = new LinkedTree("root")
-			
-			this.updateStep(this.tree, files, this.path)
-			
-			this.onInit(this.tree)
-		})
-	}
-	
-	updateStep(tree, fnames, dir_path) {
-		let len = fnames.length
-		
-		// log(fnames)
-		
-		// get old values from recent tree
-		let oldChildren = tree.children
-		let newChildren = []
-		
-		for(let i = 0; i < len; i++) {
-			let fname = fnames[i]
-			
-			let entryPath = path.join(dir_path, fname)
-			
-			let stat = fs.statSync(entryPath)
-			// check if file is to ignore?
-			// or at least for errors
-			
-			let idx = this.addFileInfo(new FileInfo(dir_path, stat, fname))
-			let branch = this.createEntryFromStat(idx)
-			
-			// invoke resursive call for subdirectories
-			if(stat.isDirectory()) {
-				let files = fs.readdirSync(entryPath)
-				
-				// error handling?
-				
-				this.updateStep(branch, files, entryPath)
-			}
-			
-			newChildren.push(branch)
-			
-			this.onCreation()
-			
-			tree.children = newChildren
-		}
-		
-		log(tree)
-	}
-	
-	createEntryFromStat(stat) {
-		let branch = new LinkedTree(stat)
-		
-		return branch
-	}
-	
-	onCreation() {
-		log("Created something")
-	}
-}
-
-/**
 	A Workspace instance holds information about a specific folder on the user's drive
 	and collects data about editable components in that folder.
 */
@@ -766,120 +593,6 @@ class Workspace {
 			view.root.innerHTML = ""
 		
 		this.views = null
-	}
-	
-	/**
-		Loads data of a directory into internal file info holder
-		and invokes a callback with a linked tree as paramter, which reperesents the file hiearchy
-		@param {string} dir_path Path of the directory
-		@param {function} callback - Callback that gets called when loading has finished.
-				Takes a LinkedTree as argument holding the hierarchy of the files
-				represented by the indices of their FileInfo objects.
-	*/
-	loadDirectory(dir_path, callback) {
-		// collect directory information
-		fs.readdir(dir_path, (err, files) => {console.time("asd")
-			if(err) {
-				error( "Could not list the directory.", err )
-				return
-			}
-			
-			// make a recursive call to iterate all directories and fill in the linked tree
-			let fn = (files, dir, tree) => {
-				for(let i = 0; i < files.length; i++) {
-										
-					let p = path.join(dir, files[i])
-					
-					let stat = fs.statSync(p)
-					if(!stat || !(stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(files[i]))))
-						continue
-					
-					// add information about the file to local info holder
-					// and save its array index into the linked tree
-					let idx = this.addFileInfo(new FileInfo(p, stat, files[i]))
-					let branch = new LinkedTree(idx)
-					tree.addChild(branch)
-					
-					// subdirectory to take a look into
-					if(stat.isDirectory()) {
-						
-						let subdir = path.join(dir, files[i])
-						
-						let items = fs.readdirSync(subdir)
-						
-						if(items)
-							fn(items, subdir, branch)
-						
-						// if there are no valid files found in subdirectory,
-						// still assign an Array to branch, so it gets recoginized as
-						// a parent tree item
-						if(!branch.children)
-							branch.children = []
-						// otherwise sort in an clonk typical manner
-						else
-							branch.children = this.sortFileIndicesByExt(branch.children)
-					}
-				}
-			}
-			
-			let tree = new LinkedTree("root")
-			fn(files, dir_path, tree)
-			tree.children = this.sortFileIndicesByExt(tree.children)
-			console.timeEnd("asd")
-			if(callback)
-				callback(tree)
-		})
-	}
-	
-	/**
-		Similar to loadDirectory() but with a single target
-		@param {string} p - path to file/directory
-		@param {number} parIdx - index of parent FileInfo object
-	*/
-	loadFile(p, parIdx) {
-		if(parIdx < -1)
-			throw new Error("loadFile parent index is not a valid input")
-		
-		fs.stat(p, (err, stat) => {
-			if(err)
-				return
-			
-			let branch = this.tree.getElementByVal(parIdx)
-			if(!branch)
-				branch = this.tree
-			
-			let idx = this.addFileInfo(new FileInfo(p, stat))
-			let tree = new LinkedTree(idx)
-			
-			branch.addChild(tree)
-			// update views
-			for(let view of this.views)
-				view.addItem(tree, parIdx)
-		})
-	}
-	
-	/**
-		Deletes a file or folder with all its descendants
-		@param {number} idx - Index of the FileInfo instance, which is to delete
-	*/
-	removeFile(idx) {
-		// sanity check
-		if(!this.finfo[idx])
-			return
-		
-		fs.remove(this.finfo[idx].path, e => {
-			this.finfo[idx] = undefined
-			// detach from tree
-			let branch = this.tree.removeElementOfVal(idx)
-			// dereference any file info object, which is referenced by the descendants
-			// of branch
-			branch.forEach((idx) => {
-				this.finfo[idx] = undefined
-			})
-			
-			for(let view of this.views)
-				view.removeItem(idx)
-		})
 	}
 	
 	/**
@@ -944,23 +657,6 @@ class Workspace {
 	*/
 	getName() {
 		return this.name
-	}
-	
-	/**
-		Pushes a FileInfo instance to the internal array and returns
-		its index in the array
-		@param {FileInfo} finfo - FileInfo instance to add
-	*/
-	addFileInfo(finfo) {
-		let idx = this.finfo.length
-		
-		this.finfo[idx] = finfo
-		
-		return idx
-	}
-	
-	getFileInfo(idx) {
-		return this.finfo[idx]
 	}
 	
 	/**
@@ -1117,9 +813,6 @@ class Workspace {
 		
 		return false
 	}
-	
-	// TODO: watcher: detecting removal or change of opened files and inform user (n++ style)
-	// (and show newly added files, could be checked when window gets the focused)
 }
 
 // create a global instance
@@ -1439,45 +1132,6 @@ class WorkspaceView {
 	
 	getWorkspace() {
 		return this.wspace
-	}
-}
-
-class WorkspaceView2 extends WorkspaceView {
-	/**
-		Check updated treelist against our ViewItemsTree
-	*/
-	update(tree) {
-		
-		if(!this.tree)
-			this.tree = new LinkedTree(this.rootEl)
-		
-		/**
-			fileItems - 
-			expItem - 
-		*/
-		let rec = (fileBranch, expBranch) => {
-			let fileItems = fileBranch.children
-			let expItems = expBranch.children
-			// ensure to remove view items which
-			// are not contained in the updated linked tree
-			if(!fileItems) {
-				if(expItem) {
-					for(let i = 0; i < expItems; i++)
-						expItems[i].onRemove()
-					
-					expBranch.removeChildren()
-				}
-				return
-			}
-			
-			// check if items have already been created
-			for(let i = 0; i < fileItems.length; i++) {
-				let fileItem = fileItems[i]
-				
-			}
-		}
-		
-		rec(tree, this.tree)
 	}
 }
 

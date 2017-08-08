@@ -47,6 +47,10 @@ class WorkspaceMaster {
 		return this.finfo[idx]
 	}
 	
+	removeFileInfo(idx) {
+		this.finfo[idx] = undefined
+	}
+	
 	/**
 		Deletes a file or folder with all its descendants
 		@param {number} idx - Index of the FileInfo instance, which is to delete
@@ -294,7 +298,7 @@ class Workspace2 {
 				if(Number.isNaN(this.DEVCOUNTER) || this.DEVCOUNTER === undefined)
 					this.DEVCOUNTER = 0
 				
-				if(this.DEVCOUNTER < 200) {
+				if(this.DEVCOUNTER < 100) {
 					log("updating directory data")
 					this.updateDirectoryData(fn)
 					this.DEVCOUNTER++
@@ -346,12 +350,11 @@ class Workspace2 {
 					
 					// check if the current pointer in the current and older file lists are different
 					if(!branch || !finfo || fname !== finfo.name) {
-						
 						// look ahead if the old entry we are comparing with
 						// will be needed
 						if(finfo && !pointedChildExists) {
 							for(let j = i + 1; j < len; j++) {
-								if(files[j] === finfo.name) {log("STILL THE MAIN")
+								if(files[j] === finfo.name) {
 									pointedChildExists = true
 									break
 								}
@@ -378,6 +381,19 @@ class Workspace2 {
 					else {
 						oldChildPointer++
 						pointedChildExists = false
+						
+						// detect packaging differences
+						if(stat.isDirectory() !== finfo._isDir) {
+							if(finfo._isDir) {
+								branch.forEach(idx => {
+									this.propagateRemoveItem(idx)
+									wmaster.removeFileInfo(idx)
+								})
+							}
+							
+							this.propagateSetItemDirState(idx, stat.isDirectory())
+							finfo._isDir = !finfo._isDir
+						}
 					}
 					
 					output.push(branch)
@@ -421,6 +437,11 @@ class Workspace2 {
 	propagateRemoveItem(idx) {
 		for(let view of this.views)
 			view.removeItem(idx)
+	}
+	
+	propagateSetItemDirState(idx, isDir) {
+		for(let view of this.views)
+			view.setItemDirState(idx, isDir)
 	}
 	
 	/**
@@ -835,6 +856,9 @@ class FileInfo {
 		this.stat = stat
 		this.name = name || path.basename(p)
 		this.ext = path.extname(this.name)
+		
+		// store this info to allow detecting changes
+		this._isDir = stat.isDirectory()
 	}
 	
 	/**
@@ -939,6 +963,14 @@ class WorkspaceView {
 			rec(tree.children, root)
 	}
 	
+	setItemDirState(idx, isDir) {
+		let item = this.items[idx]
+		if(!item)
+			throw new Error("Trying to remove unknown WorkspaceView entry")
+		
+		item.setDirState(isDir)
+	}
+	
 	createViewItem(idx, finfo, isDir) {
 		let item = new WorkspaceViewItem(idx, finfo, isDir)
 		item.bindEventHandlers(this)
@@ -1017,10 +1049,12 @@ class WorkspaceView {
 	
 	removeItem(idx) {
 		let item = this.items[idx]
-		if(!item)
+		if(!item) {
+			log(idx)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
+		}
 		
-		removeArrayItem(this.items, item)
+		this.items[idx] = undefined
 		item.onRemove()
 	}
 	
@@ -1144,17 +1178,29 @@ class WorkspaceViewItem {
 		let el = document.createElement("div")
 		el.className = "tree-item"
 		el.innerHTML = `<div class="tree-label">${this.parseLabelName(finfo.name)}</div><div class="tree-children"></div>`
+		this.el = el
 		
+		this.setDirState(isDir)
+		
+		this.childrenEl = el.lastChild
+	}
+	
+	setDirState(isDir) {
 		if(isDir) {
-			el.className += " tree-parent tree-collapsed"
-			el.firstChild.addEventListener('dblclick', (e) => {
-				Elem.toggleClass(el, 'tree-collapsed')
-			})
+			this.el.className += " tree-parent tree-collapsed"
+			this.el.firstChild.addEventListener('dblclick', this.toggleCollapsedClass.bind(this))
+		}
+		else {
+			Elem.removeClass(this.el, "tree-parent")
+			Elem.removeClass(this.el, "tree-collapsed")
+			this.el.firstChild.removeEventListener('dblclick', this.toggleCollapsedClass.bind(this))
 		}
 		
 		this.isDir = isDir
-		this.el = el
-		this.childrenEl = el.lastChild
+	}
+	
+	toggleCollapsedClass(e) {
+		Elem.toggleClass(this.el, 'tree-collapsed')
 	}
 	
 	update(idx, finfo) {

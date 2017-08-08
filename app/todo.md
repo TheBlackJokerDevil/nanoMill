@@ -14,7 +14,6 @@
 
 # Stable (v1.0)
 - Workspace settings (renaming, workspace specific c4group and ocexe)
-- Navigating between modules by using 1-9 keys
 - Controls to navigate in explorer and navigator with arrow keys
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping
 - Add options to main toolbar
@@ -27,3 +26,7 @@
 - Replacing c4group usage by nodejs gzip stream preceding a custom transform-stream (to make things valid for gzip) and vice versa
 - Xml based Documentation user-interface/any other way to create solid documentations for developers
 - Scroll past end of ace document to give some ergonomic space (https://github.com/ajaxorg/ace/wiki/Configuring-Ace)
+
+# Needed Hotkeys
+- Explorer: DEL -> Open Dialog for file removal
+- Explroer: CTRL+N -> Open Dialog for file creation

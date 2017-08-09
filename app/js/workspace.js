@@ -60,10 +60,7 @@ class WorkspaceMaster {
 		if(!this.finfo[idx])
 			return
 	
-		fs.remove(this.finfo[idx].path, e => {
-			// dereference file data
-			this.finfo[idx] = undefined
-		})
+		fs.remove(this.finfo[idx].path)
 	}
 	
 	/**
@@ -340,6 +337,18 @@ class Workspace {
 				return
 			}
 			
+			let changes = {
+				changed: false,
+				changeset: "",
+				count: 0
+			}
+			
+			let onChange = (str) => {
+				changes.changeset += str += "\n"
+				changes.changed = true
+				changes.count++
+			}
+			
 			// declare recursive function
 			let rec = (tree, files, dirPath, parIdx) => {
 				let output = []
@@ -380,7 +389,7 @@ class Workspace {
 						// look ahead if the old entry we are comparing with
 						// will be needed
 						if(finfo && !pointedChildExists) {
-							for(let j = i + 1; j < len; j++) {
+							for(let j = i; j < len; j++) {
 								if(files[j] === finfo.name) {
 									pointedChildExists = true
 									break
@@ -388,12 +397,16 @@ class Workspace {
 							}
 							
 							// skip item if its deprecated
-							if(!pointedChildExists) {log(finfo.name)
+							if(!pointedChildExists) {
 								oldChildPointer++
 								// remove from views
 								this.propagateRemoveItem(idx)
+								// remove from WorkspaceMaster
+								wmaster.removeFileInfo(idx)
 								// redo loop step with updated configurations
 								i--
+								
+								onChange("REMOVAL: " + finfo.name)
 								continue
 							}
 						}
@@ -402,6 +415,8 @@ class Workspace {
 						idx = wmaster.addFileInfo(new FileInfo(entryPath, stat, fname))
 						branch = new LinkedTree(idx)
 						this.propagateAddItem(branch, parIdx)
+						
+						onChange("ADDITION: " + wmaster.finfo[idx].name)
 					}
 					// otherwise assume its the file has not been updated, so do not do any
 					// fancy stuff then moving the pointer and reset the existence flag
@@ -417,6 +432,7 @@ class Workspace {
 									wmaster.removeFileInfo(idx)
 								})
 							}
+							onChange("DIRCHANGE: " + finfo.name)
 							
 							this.propagateSetItemDirState(idx, stat.isDirectory())
 							finfo._isDir = !finfo._isDir
@@ -440,6 +456,11 @@ class Workspace {
 				this.tree = new LinkedTree("root")
 			
 			rec(this.tree, files, this.path, -1)
+			
+			if(changes.changed && false) {
+				log(changes.count + " changes detected")
+				log(changes.changeset)
+			}
 			
 			callback(this.tree)
 		})

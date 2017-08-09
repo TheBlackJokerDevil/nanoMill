@@ -27,12 +27,12 @@ class TextEditor extends layout.DeckItem {
 		editor.$blockScrolling = Infinity
 		
         editor.setOptions({
-			fontSize: config.get("acefontsize") + "px" || "12px",
+			fontSize: config.get("acefontsize") + "px" || "14px",
             enableBasicAutocompletion: true,
             enableSnippets: true,
             enableLiveAutocompletion: true,
-            wrapBehavioursEnabled: true,
-			fontFamily: "SpaceMono"
+			// fontFamily: "SpaceMono",
+            wrapBehavioursEnabled: true
         })
 
         editor.getSession().setUseWrapMode(true)

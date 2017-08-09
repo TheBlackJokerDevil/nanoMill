@@ -952,7 +952,8 @@ class WorkspaceView {
 			label: "New file",
 			icon: "icon-plus",
 			onclick: _ => {
-				let dirEl = this.getNextValidDirectoryElement(par)
+				let dirEl = this.getNextValidDirectoryElement(item.el)
+				
 				let idx, tpath
 				if(!dirEl) {
 					idx = -1
@@ -1013,15 +1014,7 @@ class WorkspaceView {
 	*/
 	newFileDialog(tpath, parentfIndex) {
 		let Dialog_NewFile = require(path.join(__rootdir, "js", "dialogs", "newfile.js"))
-		new Dialog_NewFile(500, 300, tpath, (result) => {
-			// TODO: remove this and probably the callback too
-			if(!result)
-				return
-			
-			if(typeof result === "string") {
-				this.wspace.loadFile(result, parentfIndex)
-			}
-		})
+		new Dialog_NewFile(500, 300, tpath)
 	}
 	
 	getWorkspace() {
@@ -1039,6 +1032,7 @@ class WorkspaceViewItem {
 		el.className = "tree-item"
 		el.innerHTML = `<div class="tree-label">${this.parseLabelName(finfo.name)}</div><div class="tree-children"></div>`
 		this.el = el
+		this.el.dataset.value = idx
 		
 		this.setDirState(isDir)
 		

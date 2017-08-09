@@ -313,14 +313,7 @@ class Workspace {
 		let fn = tree => {
 			
 			setTimeout(_ => {
-				if(Number.isNaN(this.DEVCOUNTER) || this.DEVCOUNTER === undefined)
-					this.DEVCOUNTER = 0
-				
-				if(this.DEVCOUNTER < 100) {
-					log("updating directory data")
-					this.updateDirectoryData(fn)
-					this.DEVCOUNTER++
-				}
+				this.updateDirectoryData(fn)
 			},
 			// respect what the user has as update rate set
 			config.get("expUpdateRate"))

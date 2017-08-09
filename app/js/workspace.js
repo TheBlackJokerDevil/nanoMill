@@ -264,6 +264,27 @@ class WorkspaceMaster {
 	}
 	
 	/**
+		Renames the file of the given index
+		@param {number} idx - FileInfo index of the file
+		@param {string} fname - New name of the file
+	*/
+	renameFile(idx, fname) {
+		let finfo = this.finfo[idx]
+		
+		if(!finfo)
+			return
+		
+		let newPath = path.join(path.dirname(finfo.path), fname)
+		// check if file already exists
+		fs.stat(newPath, (err) => {
+			if(!err)
+				alert(`Such file already exists.\n${newPath}`)
+			else
+				fs.renameSync(finfo.path, newPath)
+		})
+	}
+	
+	/**
 		Checks if the given extension is one, that we want
 		to open in an EditoView
 		@param {string} ext - Extension to check. Must have preceding "."
@@ -367,7 +388,7 @@ class Workspace {
 							}
 							
 							// skip item if its deprecated
-							if(!pointedChildExists) {
+							if(!pointedChildExists) {log(finfo.name)
 								oldChildPointer++
 								// remove from views
 								this.propagateRemoveItem(idx)
@@ -880,7 +901,7 @@ class WorkspaceView {
 			log(idx)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
 		}
-		
+		log(item)
 		this.items[idx] = undefined
 		item.onRemove()
 	}
@@ -1057,7 +1078,7 @@ class WorkspaceViewItem {
 	}
 	
 	onRemove() {
-		this.el.parentNode.removeChild(this.el)
+		log(this.el.parentNode.removeChild(this.el))
 	}
 	
 	onSelect() {

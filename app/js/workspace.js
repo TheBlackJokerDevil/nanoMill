@@ -919,10 +919,8 @@ class WorkspaceView {
 	removeItem(idx) {
 		let item = this.items[idx]
 		if(!item) {
-			log(idx)
 			throw new Error("Trying to remove unknown WorkspaceView entry")
 		}
-		log(item)
 		this.items[idx] = undefined
 		item.onRemove()
 	}
@@ -1099,7 +1097,7 @@ class WorkspaceViewItem {
 	}
 	
 	onRemove() {
-		log(this.el.parentNode.removeChild(this.el))
+		this.el.parentNode.removeChild(this.el)
 	}
 	
 	onSelect() {

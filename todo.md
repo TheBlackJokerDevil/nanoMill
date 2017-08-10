@@ -1,4 +1,4 @@
-# Beta (v0.9)
+# Alpha (v0.9)
 - ~~Solid keybindings API~~
 - Saving and loading keybindings
 - Moving files within and across workspaces/Drag and Drop operations
@@ -13,7 +13,7 @@
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 
-# Stable (v1.0)
+# Official Beta (v1.0)
 - Workspace settings (renaming, workspace specific c4group and ocexe)
 - Controls to navigate in explorer and navigator with arrow keys
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping

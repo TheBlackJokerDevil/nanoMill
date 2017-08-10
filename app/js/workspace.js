@@ -985,6 +985,30 @@ class WorkspaceView {
 		}
 		
 		props.push({
+			label: "Insert",
+			icon: "icon-pencil",
+			onclick: () => {
+				
+			}
+		})
+		
+		props.push({
+			label: "Copy",
+			icon: "icon-pencil",
+			onclick: () => {
+				
+			}
+		})
+		
+		props.push({
+			label: "Cut",
+			icon: "icon-pencil",
+			onclick: () => {
+				
+			}
+		})
+		
+		props.push({
 			label: "Rename",
 			icon: "icon-pencil",
 			onclick: () => {				

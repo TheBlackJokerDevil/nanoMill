@@ -390,10 +390,10 @@ textarea::-webkit-input-placeholder {
     display: none; }
   .tree-item.tree-selected > .tree-label {
     background-color: rgba(50, 120, 210, 0.3);
-    outline: 1px solid steelblue; }
+    outline: 1px solid #1969ad; }
   .tree-item.tree-active > .tree-label {
     background-color: rgba(50, 120, 210, 0.45);
-    outline: 1px solid steelblue; }
+    outline: 1px solid #1969ad; }
 
 .sel-par {
   display: flex;

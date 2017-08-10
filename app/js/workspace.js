@@ -1166,7 +1166,7 @@ class WorkspaceViewItem {
 		
 		// attach contextmenu on right click
 		label.addEventListener("contextmenu", (e) =>  {
-			wview.selectItem(this, false)
+			wview.selectItem(this, e.ctrlKey)
 			new Contextmenu(e.pageX, e.pageY, wview.getTreeMenuProps(this))
 		})
 		

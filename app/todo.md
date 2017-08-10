@@ -1,14 +1,15 @@
 # Beta (v0.9)
 - ~~Solid keybindings API~~
 - Saving and loading keybindings
-- Moving files within and across workspaces
-- Keep sorting when renaming/creating new files
+- Moving files within and across workspaces/Drag and Drop operations
+- Implement Copy/Insert/Cut functionality (+icons, +hotkeys)
+- Add newly found files to its adjacent file in the tree structure
 - Ensure functions in main toolbar do work
 - ~~Display keybindings in contextmenus~~
 - ~~Some styling to deck-navigation of dialogs~~
 - Basic styling of Form components
 - ~~Fix navigating between pages in dialog wizards~~
-- Normalze config entries to lowercase-camel-case
+- Normalize config entries to lowercase-camel-case
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 

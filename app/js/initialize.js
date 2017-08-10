@@ -261,3 +261,47 @@ function runC4Group(args, fListenStdOut, callback) {
 	
 	return true
 }
+
+
+/**
+	Clipboard functions
+*/
+function readFileFromClipboard() {
+	// windows
+	if(process.platform === "win32") {
+		if(!clipboard.has("FileNameW"))
+			return null
+		else
+			return clipboard.read("FileNameW").replace(new RegExp(String.fromCharCode(0), 'g'), '')
+	}
+	// mac os
+	else if(process.platform === "darwin") {
+		if(!clipboard.has("public.file-url"))
+			return null
+		else
+			return clipboard.read("public.file-url").replace('file://', '')
+	}
+	// try linux stuff
+	else {
+		
+	}
+	
+	return null
+}
+
+function writeFileToClipboard(path) {
+	// windows
+	if(process.platform === "win32") {
+		clipboard.write({FileNameW: ""})
+	}
+	// mac os
+	else if(process.platform === "darwin") {
+		let o = {}
+		o["public.file-url"] = path
+		clipboard.write(o)
+	}
+	// try linux stuff
+	else {
+		
+	}
+}

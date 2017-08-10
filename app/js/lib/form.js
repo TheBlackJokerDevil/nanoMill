@@ -38,8 +38,14 @@ class Form extends EventEmitter {
 		
 		// wrap callback in form data collector
 		if(item.key) {
-			this.data[item.key] = item.value
 			let ridx = this.getRequirementIndex()
+			
+			// save initial data
+			if(this.isValidValue(item.type, item.value)) {
+				this.data[item.key] = item.value
+				
+				this.setRequirement(ridx, true)
+			}
 			
 			cb = v => {
 				if(v !== undefined)
@@ -102,8 +108,6 @@ class Form extends EventEmitter {
 			let mask = 1 << ridx
 			this.reqs &= ~mask
 		}
-		
-		
 	}
 	
 	getRequirementIndex() {
@@ -126,6 +130,41 @@ class Form extends EventEmitter {
 			data[key] = this.data[key]
 		
 		this.data = data
+	}
+	
+	isValidValue(type, value) {
+		switch(type) {
+			case "url":
+				return typeof value === "string" && value.length
+			break
+			
+			case "desc":
+				return typeof value === "string"
+			break
+			
+			case "number":
+				return typeof value === "number"
+			break
+			
+			case "switch":
+				return typeof value === "boolean"
+			break
+			
+			case "shorttext":
+				return typeof value === "string" && value.length
+			break
+			
+			case "select":
+				return typeof value === "number" && value !== -1
+			break
+			
+			case "keybinding":
+				// TODO
+				return true
+			break
+		}
+		
+		return false
 	}
 	
 	onReqChange() {}

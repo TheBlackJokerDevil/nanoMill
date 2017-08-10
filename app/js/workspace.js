@@ -357,8 +357,11 @@ class Workspace {
 					oldChildren = new Array(0)
 				
 				let len = files.length
+				let idxPreviousSibling = -1
 				
 				for(let i = 0; i < len; i++) {
+					// remember siblingl
+					
 					let fname = files[i]
 					let entryPath = path.join(dirPath, fname)
 					
@@ -410,7 +413,10 @@ class Workspace {
 						// add as new item
 						idx = wmaster.addFileInfo(new FileInfo(entryPath, stat, fname))
 						branch = new LinkedTree(idx)
-						this.propagateAddItem(branch, parIdx)
+						this.propagateAddItem(branch, parIdx, idxPreviousSibling)
+						
+						// remember sibling
+						idxPreviousSibling = idx
 						
 						onChange("ADDITION: " + wmaster.finfo[idx].name)
 					}
@@ -419,6 +425,9 @@ class Workspace {
 					else {
 						oldChildPointer++
 						pointedChildExists = false
+						
+						// remember sibling
+						idxPreviousSibling = idx
 						
 						// detect packaging differences
 						if(stat.isDirectory() !== finfo._isDir) {
@@ -468,9 +477,9 @@ class Workspace {
 		@param {LinkedTree} tree - LinkedTree holding FileInfo index as value
 		@param {number} parent - Index of the parent FileInfo
 	*/
-	propagateAddItem(tree, parent) {
+	propagateAddItem(tree, parent, idxPreviousSibling) {
 		for(let view of this.views)
-			view.addItem(tree, parent)
+			view.addItem(tree, parent, idxPreviousSibling)
 	}
 	
 	/**
@@ -789,7 +798,7 @@ class WorkspaceView {
 			this.addItem(wspace.tree, -1)
 	}
 	
-	addItem(tree, parIdx) {
+	addItem(tree, parIdx, prevIdx) {
 		// ignore root element
 		if(tree.value === "root") {
 			for(let i = 0; i < tree.children.length; i++)
@@ -802,12 +811,13 @@ class WorkspaceView {
 		let root = this.createViewItem(idx, finfo, finfo.stat.isDirectory())
 		
 		if(parIdx === -1)
-			root.setParent(this.rootItem)
+			root.setParent(this.rootItem, this.items[prevIdx])
 		else
-			root.setParent(this.items[parIdx])
+			root.setParent(this.items[parIdx], this.items[prevIdx])
 		
 		this.items[idx] = root
 		
+		/*
 		let rec = (children, par) => {
 			for(let i = 0; i < children.length; i++) {
 				let child = children[i]
@@ -826,6 +836,7 @@ class WorkspaceView {
 		
 		if(tree.children)
 			rec(tree.children, root)
+		*/
 	}
 	
 	setItemDirState(idx, isDir) {
@@ -1109,11 +1120,14 @@ class WorkspaceViewItem {
 		return this._par
 	}
 	
-	setParent(newPar) {
+	setParent(newPar, previousItem) {
 		if(newPar === this._par)
 			return
 		
-		newPar.childrenEl.appendChild(this.el)
+		if(previousItem)
+			Elem.insertAfter(newPar.childrenEl, this.el, previousItem.el)
+		else
+			newPar.childrenEl.appendChild(this.el)
 		
 		this._par = newPar
 	}

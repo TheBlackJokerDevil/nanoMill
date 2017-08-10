@@ -3,7 +3,7 @@
 - Saving and loading keybindings
 - Moving files within and across workspaces/Drag and Drop operations
 - Implement Copy/Insert/Cut functionality (+icons, +hotkeys)
-- Add newly found files to its adjacent file in the tree structure
+- ~~Add newly found files to its adjacent file in the tree structure~~
 - Ensure functions in main toolbar do work
 - ~~Display keybindings in contextmenus~~
 - ~~Some styling to deck-navigation of dialogs~~

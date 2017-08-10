@@ -16,6 +16,8 @@ process.on('uncaughtException', function (err) {
 let win
 let windata = {}
 
+let communicator, winopts
+
 function createWindow () {
 	
 	communicator = {

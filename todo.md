@@ -1,9 +1,7 @@
 # Alpha (v0.9)
-- Saving and loading keybindings
 - Moving files within and across workspaces/Drag and Drop operations
 - Implement Copy/Insert/Cut functionality (+icons, +hotkeys)
 - Ensure functions in main toolbar do work
-- Basic styling of Form components
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 - ~~Solid keybindings API~~
@@ -14,6 +12,8 @@
 - ~~Normalize config entries to lowercase-camel-case~~
 
 # Official Beta (v1.0)
+- Basic styling of Form components
+- Saving and loading keybindings
 - Workspace settings (renaming, workspace specific c4group and ocexe)
 - Controls to navigate in explorer and navigator with arrow keys
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping

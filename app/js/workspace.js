@@ -152,6 +152,9 @@ class WorkspaceMaster {
 		let ws = new Workspace(p, idx, name)
 		this.wspaces.push(ws)
 		
+		// save workspace across sessions
+		this.saveInConfig()
+		
 		return ws
 	}
 	

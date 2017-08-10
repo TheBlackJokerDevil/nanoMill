@@ -1185,6 +1185,8 @@ class WorkspaceViewItem {
 		
 		// attach contextmenu on right click
 		label.addEventListener("contextmenu", (e) =>  {
+			// perform selectItem(), even is its already selected
+			// to properly track item focus
 			wview.selectItem(this, e.ctrlKey || wview.isSelectedItem(this))
 			
 			new Contextmenu(e.pageX, e.pageY, wview.getTreeMenuProps(this))

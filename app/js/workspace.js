@@ -1011,6 +1011,7 @@ class WorkspaceView {
 			}
 		})
 		
+		// Rename file commands
 		props.push({
 			label: "Rename",
 			icon: "icon-pencil",
@@ -1024,10 +1025,16 @@ class WorkspaceView {
 			}
 		})
 		
+		// Delete file command
 		props.push({
 			label: "Delete",
 			icon: "icon-trashbin",
-			onclick: _ => {wmaster.removeFile(item.idx)}
+			onclick: _ => {
+				let selected = this.selected
+				this.deselectItems()
+				for(let i = 0; i < selected.length; i++)
+					wmaster.removeFile(selected[i].idx)
+			}
 		})
 		
 		return props
@@ -1186,7 +1193,7 @@ class WorkspaceViewItem {
 			isDragging = false
 		})
 		
-		label.addEventListener("drop", e => {log("dragend")
+		label.addEventListener("drop", e => {
 			if(currentDropTarget)
 				Elem.removeClass(currentDropTarget, "droptarget")
 			

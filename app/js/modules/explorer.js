@@ -2,6 +2,7 @@
 class Explorer extends layout.Module {
 	init(state) {
 		this.body.style.overflowY = "auto"
+		this.body.style.padding = "10px 0"
 		
 		// restore workspace from saved index of the previous session
 		if(state && state.workspace !== -1 && wmaster.getWorkspace(state.workspace))

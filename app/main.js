@@ -2,6 +2,12 @@ const {app, BrowserWindow, dialog} = require('electron')
 const fs = require('fs')
 const __appdata = app.getPath('userData')
 
+// fix having upscaled apps after packaging on windows
+if (process.platform === 'win32') {
+	// app.commandLine.appendSwitch('high-dpi-support', 'true')
+	app.commandLine.appendSwitch('force-device-scale-factor', '1')
+}
+
 let output = fs.createWriteStream(`${__appdata}/error.log`, {flags: "w", })
 
 output.write(`Detected platform: ${process.platform}\n`)

@@ -847,9 +847,10 @@ class WorkspaceView {
 		if(!multiSelect)
 			this.deselectItems(item)
 		
-		this.selected.push(item)
-		
-		item.onSelect()
+		if(!this.isSelectedItem(item)) {
+			this.selected.push(item)
+			item.onSelect()
+		}
 		
 		// loose active
 		if(this.activeItem)
@@ -891,6 +892,14 @@ class WorkspaceView {
 	
 	getSelectedItems() {
 		return this.selected
+	}
+	
+	isSelectedItem(item) {
+		for(let i = 0; i < this.selected.length; i++)
+			if(this.selected[i] === item)
+				return true
+		
+		return false
 	}
 	
 	getNextValidDirectoryElement(el) {
@@ -1151,12 +1160,15 @@ class WorkspaceViewItem {
 		// get label element
 		let label = this.el.firstChild
 		
-		// select on single click
+		// select on single, left click
 		label.addEventListener("mousedown", (e) => {
-			if(Elem.hasClass(this.el, "tree-selected") && e.ctrlKey)
-				wview.deselectItem(this)
-			else
-				wview.selectItem(this, e.ctrlKey)
+			// focus on left click
+			if(e.which === 1) {
+				if(Elem.hasClass(this.el, "tree-selected") && e.ctrlKey)
+					wview.deselectItem(this)
+				else
+					wview.selectItem(this, e.ctrlKey)
+			}
 		})
 		
 		// open editable files; expand/collapse directories on dblclick
@@ -1173,7 +1185,8 @@ class WorkspaceViewItem {
 		
 		// attach contextmenu on right click
 		label.addEventListener("contextmenu", (e) =>  {
-			wview.selectItem(this, e.ctrlKey)
+			wview.selectItem(this, e.ctrlKey || wview.isSelectedItem(this))
+			
 			new Contextmenu(e.pageX, e.pageY, wview.getTreeMenuProps(this))
 		})
 		

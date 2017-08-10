@@ -27,7 +27,7 @@ class TextEditor extends layout.DeckItem {
 		editor.$blockScrolling = Infinity
 		
         editor.setOptions({
-			fontSize: config.get("acefontsize") + "px" || "14px",
+			fontSize: config.get("aceFontSize") + "px" || "14px",
             enableBasicAutocompletion: true,
             enableSnippets: true,
             enableLiveAutocompletion: true,
@@ -52,7 +52,7 @@ class TextEditor extends layout.DeckItem {
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
 		
 		// set keyboard mode
-		this.setKeyBoardMode(config.get("acekbmode"))
+		this.setKeyBoardMode(config.get("aceKbMode"))
     }
 	
 	setFontSize(size) {

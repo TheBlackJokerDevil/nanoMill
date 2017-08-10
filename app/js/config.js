@@ -32,15 +32,15 @@ class Config {
 		Initializes config entries with default values
 	*/
 	regAll() {
-		this.reg("acefontsize", "number", 14)
-		this.reg("acekbmode", "string", "default")
+		this.reg("aceFontSize", "number", 14)
+		this.reg("aceKbMode", "string", "default")
 		this.reg("ocexe", "string", undefined)
 		this.reg("c4group", "string", undefined)
 		this.reg("pages", "array", null)
 		this.reg("author", "string", "Twonky")
 		this.reg("version", "string", "7.0")
 		this.reg("workspaces", "array", null)
-		this.reg("hidenonocfiles", "boolean", true)
+		this.reg("hideNonOcFiles", "boolean", true)
 		this.reg("expUpdateRate", "number", 800)
 	}
 	

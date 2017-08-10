@@ -602,7 +602,7 @@ class Workspace {
 	*/
 	static isAcceptedFileType(ext) {
 		
-		if(config.get("hidenonocfiles") === false)
+		if(config.get("hideNonOcFiles") === false)
 			return true
 		
 		switch(ext) {

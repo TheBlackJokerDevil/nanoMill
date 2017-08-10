@@ -9,7 +9,7 @@
 - ~~Some styling to deck-navigation of dialogs~~
 - Basic styling of Form components
 - ~~Fix navigating between pages in dialog wizards~~
-- Normalize config entries to lowercase-camel-case
+- ~~Normalize config entries to lowercase-camel-case~~
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 

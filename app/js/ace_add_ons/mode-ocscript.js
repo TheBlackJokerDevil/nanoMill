@@ -75,11 +75,11 @@ var OC_HiglightRules = function() {
 		// regexps are ordered -> the first match is used
 	   this.$rules = {
 			"start" : [
-				{
+				{/*
 					token : "comment.ocdoc", // doc comment
 					regex :  "\\/\\*(?=\\*)",	// /\/\*(?=\*)/g,
 					next  : "ocdoc",
-				},	{
+				},	{*/
 					token: "comment",
 					regex: "\\/\\*",
 					next: "comment",

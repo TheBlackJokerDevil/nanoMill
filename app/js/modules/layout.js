@@ -848,6 +848,8 @@ let mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		Elem.removeClass(prev, "flex-fill")
 
         requestAnimationFrame(fn)
+		
+		document.activeElement.blur()
 
         e.preventDefault()
         e.stopPropagation()

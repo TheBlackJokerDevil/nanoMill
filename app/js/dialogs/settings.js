@@ -25,20 +25,20 @@ class Dialog_Settings {
 			min: 10,
 			max: 22,
 			unit: "px",
-			value: config.get("acefontsize"),
+			value: config.get("aceFontSize"),
 			onchange: setAceFontSize
 		}, {
 			type: "select",
 			label: "Texteditor Keybindings",
 			options: ["default", "vim", "emacs"],
-			value: config.get("acekbmode"),
+			value: config.get("aceKbMode"),
 			onchange: setAceKbMode
 		}, {
-			/* uncomment this as updating the explorers is implemeted
+			/* uncomment this as updating the explorer is implemeted
 			type: "switch",
 			label: "Hide irrelevant files",
 			value: config.get("hidenonocfiles"),
-			onchange: v => config.set("hidenonocfiles", v)
+			onchange: v => config.set("hideNonOcFiles", v)
 		}, {*/
 			type: "desc",
 			text: "Autofill data"
@@ -69,12 +69,12 @@ class Dialog_Settings {
 }
 
 function setAceFontSize(v) {
-	config.set("acefontsize", v)
+	config.set("aceFontSize", v)
 	setTextEditorFontSize(v)
 }
 
 function setAceKbMode(v) {
-	config.set("acekbmode", v)
+	config.set("aceKbMode", v)
 	setTextEditorKbMode(v)
 }
 

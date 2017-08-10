@@ -33,6 +33,9 @@ class Explorer extends layout.Module {
 			this.wspace.removeView(this.view)
 			this.body.innerHTML = ''
 		}
+		// clear add workspace hint
+		else
+			this.body.innerHTML = ''
 		
 		if(wspace) {
 			this.wspace = wspace

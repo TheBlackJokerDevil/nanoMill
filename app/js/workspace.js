@@ -359,9 +359,7 @@ class Workspace {
 				let len = files.length
 				let idxPreviousSibling = -1
 				
-				for(let i = 0; i < len; i++) {
-					// remember siblingl
-					
+				for(let i = 0; i < len; i++) {					
 					let fname = files[i]
 					let entryPath = path.join(dirPath, fname)
 					
@@ -371,9 +369,15 @@ class Workspace {
 						stat = fs.statSync(entryPath)
 					}
 					catch(e) {
-						log(entryPath)
+						error(entryPath)
 						continue
 					}
+					
+					// skip files that are not important for development
+					/*
+					if(this.isStatToIgnore(stat, fname))
+						continue
+					*/
 					
 					let idx = -1, branch
 					if(oldChildren[oldChildPointer]) {
@@ -497,11 +501,10 @@ class Workspace {
 			view.setItemDirState(idx, isDir)
 	}
 	
-	/**
+	
 	isStatToIgnore(stat, fname) {
-		return stat && (stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(fname)))
+		return !stat || !(stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(fname)))
 	}
-	*/
 	
 	/**
 		Returns a new WorkspaceView() instance, that gets maintained

@@ -34,10 +34,10 @@ class Dialog_Settings {
 			value: config.get("aceKbMode"),
 			onchange: setAceKbMode
 		}, {
-			/* uncomment this as updating the explorer is implemeted
+			/*
 			type: "switch",
 			label: "Hide irrelevant files",
-			value: config.get("hidenonocfiles"),
+			value: config.get("hideNonOcFiles"),
 			onchange: v => config.set("hideNonOcFiles", v)
 		}, {*/
 			type: "desc",

@@ -1,8 +1,8 @@
 # Alpha (v0.9)
-- Moving files within and across workspaces/Drag and Drop operations
 - Ensure functions in main toolbar do work
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
+- ~~Moving files within and across workspaces/Drag and Drop operations~~
 - ~~Select items via shift in explorer~~
 - ~~Solid keybindings API~~
 - ~~Implement Copy/Paste/Cut functionality~~ (+icons, +hotkeys)

@@ -323,6 +323,17 @@ class WorkspaceMaster {
 		this.dragCache = idxList
 	}
 	
+	isInDragCache(idx) {
+		if(!this.dragCache)
+			return false
+		
+		for(let i = 0; i < this.dragCache.length; i++)
+			if(this.dragCache[i] === idx)
+				return true
+		
+		return false
+	}
+	
 	performDrag(destIdx) {
 		// sanity check
 		if(!this.dragCache || !this.dragCache.length)
@@ -1367,7 +1378,11 @@ class WorkspaceViewItem {
 			if(!isDragging)
 				return
 			
-			wmaster.performDrag(this.idx)
+			if(wmaster.isInDragCache(this.idx)) {
+				wmaster.setDragCache(null)
+			}
+			else
+				wmaster.performDrag(this.idx)
 			
 			isDragging = false
 			

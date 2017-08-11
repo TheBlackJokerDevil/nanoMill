@@ -1358,6 +1358,8 @@ class WorkspaceViewItem {
 		// dragging elements
 		label.draggable = true
 		
+		let draglevel = 0
+		
 		label.addEventListener("dragstart", e => {
 			isDragging = true
 			
@@ -1369,8 +1371,9 @@ class WorkspaceViewItem {
 		})
 		
 		label.addEventListener("drop", e => {
-			if(currentDropTarget)
-				Elem.removeClass(currentDropTarget, "droptarget")
+			
+			let tEl = document.getElementsByClassName("droptarget")[0]
+			Elem.removeClass(tEl, "droptarget")
 			
 			// don't react on non workspace drag events
 			if(!isDragging)
@@ -1398,11 +1401,13 @@ class WorkspaceViewItem {
 				par = wview.root
 			
 			//check if anything has changed
-			if(currentDropTarget === par)
-				return
-			
-			currentDropTarget = par
-			Elem.addClass(par, "droptarget")
+			if(currentDropTarget !== par) {
+				currentDropTarget = par
+				Elem.addClass(par, "droptarget")
+				
+				draglevel = 0
+			}			
+			draglevel++
 		})
 		
 		label.addEventListener("dragleave", e => {
@@ -1414,10 +1419,12 @@ class WorkspaceViewItem {
 				par = wview.root
 			
 			// check if anything has changed
-			if(currentDropTarget === par)
+			draglevel--
+			if(draglevel >= 0 && currentDropTarget === par)
 				return
 			
 			Elem.removeClass(par, "droptarget")
+			currentDropTarget = null
 		})
 	}
 }

@@ -1,10 +1,9 @@
 # Alpha (v0.9)
 - Ensure functions in main toolbar do work
-- Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 - Prevent renaming when Copy/Paste files is no change at all
-- Fix Drag'n'Drop Indicator of explorer
 - Fix trailing explorer items persistance
+- ~~Fix Drag'n'Drop Indicator of explorer~~
 - ~~Properly add explorer items, when creating view after startup~~
 - ~~Moving files within and across workspaces/Drag and Drop operations~~
 - ~~Select items via shift in explorer~~

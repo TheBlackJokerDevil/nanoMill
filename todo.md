@@ -1,5 +1,5 @@
 # Alpha (v0.9)
-- Add bare Folder.ocd template
+- ~~Add bare Folder.ocd template~~
 - ~~Fix trailing explorer items persistance~~
 - ~~Ensure functions in main toolbar do work~~
 - ~~Prevent renaming when Cut/Paste files is no change at all~~

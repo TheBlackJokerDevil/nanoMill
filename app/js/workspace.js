@@ -309,6 +309,9 @@ class WorkspaceMaster {
 			return
 		
 		let ncp = require('ncp').ncp
+		// remember option, as it will get reset before the callbacks
+		// of validateFilename() will trigger
+		let fCut = this.cutOnPaste
 		
 		for(let i = 0; i < this.clipboardData.length; i++) {
 			let idx = this.clipboardData[i]
@@ -327,16 +330,16 @@ class WorkspaceMaster {
 				}
 				
 				// paste via cut
-				if(this.cutOnPaste) {
-					ncp(finfo.path, validName, function (err) {
-						if (err)
+				if(fCut) {
+					fs.move(finfo.path, validName, err => {
+						if(err)
 							error(err)
 					})
 				}
 				// paste via copy
 				else {
-					fs.move(finfo.path, validName, err => {
-						if(err)
+					ncp(finfo.path, validName, function (err) {
+						if (err)
 							error(err)
 					})
 				}

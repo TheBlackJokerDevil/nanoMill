@@ -1,25 +1,30 @@
 # Alpha (v0.9)
-- Ensure functions in main toolbar do work
-- Inform about dirty-state of editable modules (mostly texteditor)
 - Fix trailing explorer items persistance
+- Add bare Folder.ocd template
+- ~~Ensure functions in main toolbar do work~~
 - ~~Prevent renaming when Cut/Paste files is no change at all~~
 - ~~Fix Drag'n'Drop Indicator of explorer~~
 - ~~Properly add explorer items, when creating view after startup~~
 - ~~Moving files within and across workspaces/Drag and Drop operations~~
 - ~~Select items via shift in explorer~~
 - ~~Solid keybindings API~~
-- ~~Implement Copy/Paste/Cut functionality~~ (+icons, +hotkeys)
+- ~~Implement Copy/Paste/Cut functionality~~
 - ~~Add newly found files to its adjacent file in the tree structure~~
 - ~~Display keybindings in contextmenus~~
 - ~~Some styling to deck-navigation of dialogs~~
 - ~~Fix navigating between pages in dialog wizards~~
 - ~~Normalize config entries to lowercase-camel-case~~
 
-# Official Beta (v1.0)
-- Add bare folder.ocd
+# Alpha (v0.9.5)
+- Inform about save-state of editable modules (e.g. texteditor)
 - validateFilename() take already existing trailing number into account
-- Basic styling of Form components
+- Show Workspace name in Module head
+- Contextmenu Icons for Cut/Copy/Paste
+- Hotkeys for Explorer Operations
+
+# Official Beta (v1.0)
 - Saving and loading keybindings
+- Basic styling of Form components
 - Workspace settings (renaming, workspace specific c4group and ocexe)
 - Controls to navigate in explorer and navigator with arrow keys
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping

@@ -902,7 +902,6 @@ class WorkspaceView {
 		
 		this.items[idx] = root
 		
-		/*
 		let rec = (children, par) => {
 			for(let i = 0; i < children.length; i++) {
 				let child = children[i]
@@ -921,7 +920,6 @@ class WorkspaceView {
 		
 		if(tree.children)
 			rec(tree.children, root)
-		*/
 	}
 	
 	setItemDirState(idx, isDir) {

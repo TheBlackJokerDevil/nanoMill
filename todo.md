@@ -20,7 +20,7 @@
 - validateFilename() take already existing trailing number into account
 - Show Workspace name in Module head
 - Contextmenu Icons for Cut/Copy/Paste
-- Hotkeys for Explorer Operations
+- Hotkeys for Explorer Operations (See below)
 - Image preview
 - Correctly free memory from unused FileInfos after packaging
 
@@ -28,19 +28,27 @@
 - Saving and loading keybindings
 - Basic styling of Form components
 - Workspace settings (renaming, workspace specific c4group and ocexe)
-- Controls to navigate in explorer and navigator with arrow keys
 - Remove move-module icon from module head and replace it by dragging modules over another one for swaping
 - Add options to main toolbar
 - Implement ocmapgen module (http://forum.openclonk.org/topic_show.pl?tid=3371)
 
 # Wishlist
-- Procedural explorer loading (to prevent even trying to load whole C:-drive at once, if specified as workspaces)
+- (Lazy explorer loading (to prevent even trying to load whole C:-drive at once, if specified as workspaces))
 - Formating whole script via hotkey
-- Support for multiple languages(Only the API part, the coherent translations have to be shipped by native speakers)
+- Multilanguage support(Only the API part, the coherent translations have to be shipped by native speakers)
 - Replacing c4group usage by nodejs gzip stream preceding a custom transform-stream (to make things valid for gzip) and vice versa
 - Xml based Documentation user-interface/any other way to create solid documentations for developers
 - Scroll past end of ace document to give some ergonomic space (https://github.com/ajaxorg/ace/wiki/Configuring-Ace)
 
 # Needed Hotkeys
 - Explorer: DEL -> Open Dialog for file removal
-- Explroer: CTRL+N -> Open Dialog for file creation
+- Explorer: CTRL+N -> Open Dialog for file creation
+- Explorer: CTRL+C
+- Explorer: CTRL+X
+- Explorer: CTRL+V
+- Explorer: Arrow-right: Expand folder
+- Explorer: Arrow-left: Collapse folder
+- Explorer: Arrow-down: Select bottom next item
+- Explorer: Arrow-up: Select up next item
+- Explorer: Enter: Open file or run scenario
+- Global: CTRL+R? Rerun most recent launched game

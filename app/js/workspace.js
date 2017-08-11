@@ -34,6 +34,8 @@ class WorkspaceMaster {
 		
 		// holder of FileInfo indices for Copy/Cut/Paste
 		this.clipboardData = null
+		// holder of Fileinfo indices for file drag'n'drop
+		this.dragCache = null
 	}
 	
 	/**
@@ -347,6 +349,41 @@ class WorkspaceMaster {
 		}
 		
 		this.cutOnPaste = false
+	}
+	
+	setDragCache(idxList) {
+		this.dragCache = idxList
+	}
+	
+	performDrag(destIdx) {
+		// sanity check
+		if(!this.dragCache || !this.dragCache.length)
+			return
+		
+		let destination = this.finfo[destIdx].path
+		
+		for(let i = 0; i < this.dragCache.length; i++) {
+			let idx = this.dragCache[i]
+			let finfo = this.finfo[idx]
+			// don't even try to access outdated FileInfos
+			if(!finfo)
+				continue
+			
+			let fileName = path.join(destination, finfo.name)
+			
+			validateFilename(fileName, validName => {
+				// prevent recursive copying
+				if(isChildPathOf(validName, finfo.path)) {
+					alert("Target-directory is subfolder of source-directory.")
+					return
+				}
+				
+				fs.move(finfo.path, validName, err => {
+					if(err)
+						error(err)
+				})
+			})
+		}
 	}
 	
 	/**
@@ -994,6 +1031,18 @@ class WorkspaceView {
 		wmaster.setClipboardData(a, fCut)
 	}
 	
+	selectionToDragCache() {
+		if(!this.selected)
+			return
+		
+		let a = []
+		
+		for(let i = 0; i < this.selected.length; i++)
+			a.push(this.selected[i].idx)
+		
+		wmaster.setDragCache(a)
+	}
+	
 	getNextValidDirectoryElement(el) {
 		if(Elem.hasClass(el, "tree-parent"))
 			return el
@@ -1334,11 +1383,8 @@ class WorkspaceViewItem {
 		
 		label.addEventListener("dragstart", e => {
 			isDragging = true
-			// TODO
-			return -1
-			// cache draginfo
-			let ws = wview.getWorkspace()
-			wspace.setDragStorage(ws, ws.getSelectedItems())
+			
+			wview.selectionToDragCache()
 		})
 		
 		label.addEventListener("dragend", e => {
@@ -1352,16 +1398,8 @@ class WorkspaceViewItem {
 			// don't react on non workspace drag events
 			if(!isDragging)
 				return
-			// and also check for operations to be only within the same workspace
-			// (for now)
-			/*
-			if(wview.wview.index !== sourcewview)
-				return
-			else
-				wview.wview.moveFileTo(sourceFileIndex, this.idx)
-			*/
 			
-			wspace.performDrag(wview.getWorkspace())
+			wmaster.performDrag(this.idx)
 			
 			isDragging = false
 			

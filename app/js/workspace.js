@@ -1,7 +1,9 @@
 let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 
 // maximum amount of tree recursion
-const MAX_RECURSION = 30
+// implement this properly as depth parameter
+// not bare counter
+const MAX_RECURSION = 100
 
 /**
 	The WorkspaceMaster manages and stores the single Workspace instances
@@ -429,7 +431,10 @@ class Workspace {
 				changes.changed = true
 				changes.count++
 			}
+			
+			// counter of recursion depth
 			let recCounter = 0
+			
 			// declare recursive function
 			let rec = (tree, files, dirPath, parIdx) => {
 				let output = []
@@ -459,8 +464,7 @@ class Workspace {
 					}
 					
 					// skip files that are not important for development
-					/*
-					if(this.isStatToIgnore(stat, fname))
+					/*if(this.isStatToIgnore(stat, fname))
 						continue
 					*/
 					
@@ -543,6 +547,14 @@ class Workspace {
 						rec(branch, subFiles, entryPath, idx)
 					}
 				}
+				
+				// check if unused files are left and remove them
+				for(; oldChildPointer < oldChildren.length; oldChildPointer++) {
+					let idx = oldChildren[oldChildPointer].value
+					this.propagateRemoveItem(idx)
+					wmaster.removeFileInfo(idx)
+				}
+					
 				
 				tree.children = output
 			}

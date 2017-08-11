@@ -1,5 +1,8 @@
 let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 
+// maximum amount of tree recursion
+const MAX_RECURSION = 30
+
 /**
 	The WorkspaceMaster manages and stores the single Workspace instances
 	and handles opening single files.
@@ -28,6 +31,9 @@ class WorkspaceMaster {
 		// storage of information to drag files
 		// around and across workspaces
 		this.dragStorage = null
+		
+		// holder of FileInfo indices for Copy/Cut/Paste
+		this.clipboardData = null
 	}
 	
 	/**
@@ -284,6 +290,62 @@ class WorkspaceMaster {
 		})
 	}
 	
+	
+	/**
+	*/
+	
+	setClipboardData(data, fCut) {
+		this.clipboardData = data
+		this.cutOnPaste = fCut
+	}
+	
+	hasClipboardData() {
+		return this.clipboardData && this.clipboardData.length
+	}
+	
+	performClipboardPaste(destination) {
+		
+		if(!this.clipboardData)
+			return
+		
+		let ncp = require('ncp').ncp
+		
+		for(let i = 0; i < this.clipboardData.length; i++) {
+			let idx = this.clipboardData[i]
+			let finfo = this.finfo[idx]
+			// don't even try to access outdated FileInfos
+			if(!finfo)
+				continue
+			
+			let fileName = path.join(destination, finfo.name)
+			
+			validateFilename(fileName, validName => {
+				// prevent recursive copying
+				if(isChildPathOf(validName, finfo.path)) {
+					alert("Target-directory is subfolder of source-directory.")
+					return
+				}
+				
+				// paste via cut
+				if(this.cutOnPaste) {
+					ncp(finfo.path, validName, function (err) {
+						if (err)
+							error(err)
+					})
+				}
+				// paste via copy
+				else {
+					fs.move(finfo.path, validName, err => {
+						if(err)
+							error(err)
+					})
+				}
+			})
+		}
+		
+		this.cutOnPaste = false
+	}
+	
 	/**
 		Checks if the given extension is one, that we want
 		to open in an EditoView
@@ -344,7 +406,7 @@ class Workspace {
 				changes.changed = true
 				changes.count++
 			}
-			
+			let recCounter = 0
 			// declare recursive function
 			let rec = (tree, files, dirPath, parIdx) => {
 				let output = []
@@ -451,7 +513,8 @@ class Workspace {
 					output.push(branch)
 					
 					// perform recursion for subfolders
-					if(stat.isDirectory()) {
+					if(stat.isDirectory() && recCounter < MAX_RECURSION) {
+						recCounter++
 						let subFiles = fs.readdirSync(entryPath)
 						// error handling?
 						rec(branch, subFiles, entryPath, idx)
@@ -916,6 +979,18 @@ class WorkspaceView {
 		return false
 	}
 	
+	selectionToClipboard(fCut = false) {
+		if(!this.selected)
+			return
+		
+		let a = []
+		
+		for(let i = 0; i < this.selected.length; i++)
+			a.push(this.selected[i].idx)
+		
+		wmaster.setClipboardData(a, fCut)
+	}
+	
 	getNextValidDirectoryElement(el) {
 		if(Elem.hasClass(el, "tree-parent"))
 			return el
@@ -1011,18 +1086,31 @@ class WorkspaceView {
 		}
 		
 		props.push({
-			label: "Insert",
+			label: "Paste",
 			icon: "icon-pencil",
 			onclick: () => {
+				let dirEl = this.getNextValidDirectoryElement(item.el)
 				
-			}
+				let idx, tpath
+				if(!dirEl) {
+					idx = -1
+					tpath = this.wspace.path
+				}
+				else {
+					idx = dirEl.dataset.value
+					tpath = wmaster.finfo[idx].path
+				}
+				
+				wmaster.performClipboardPaste(tpath)
+			},
+			onvalidate: _ => wmaster.hasClipboardData()
 		})
 		
 		props.push({
 			label: "Copy",
 			icon: "icon-pencil",
 			onclick: () => {
-				
+				this.selectionToClipboard()
 			}
 		})
 		
@@ -1030,7 +1118,7 @@ class WorkspaceView {
 			label: "Cut",
 			icon: "icon-pencil",
 			onclick: () => {
-				
+				this.selectionToClipboard(true)
 			}
 		})
 		

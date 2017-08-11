@@ -1,10 +1,10 @@
 # Alpha (v0.9)
 - Moving files within and across workspaces/Drag and Drop operations
-- Implement Copy/Insert/Cut functionality (+icons, +hotkeys)
 - Ensure functions in main toolbar do work
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
 - ~~Solid keybindings API~~
+-  ~~Implement Copy/Paste/Cut functionality~~ (+icons, +hotkeys)
 - ~~Add newly found files to its adjacent file in the tree structure~~
 - ~~Display keybindings in contextmenus~~
 - ~~Some styling to deck-navigation of dialogs~~

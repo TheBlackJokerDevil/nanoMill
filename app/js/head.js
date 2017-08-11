@@ -67,7 +67,7 @@ function removeArrayItems(ary, val) {
 	Checks if a file/or directory of the given path already
 	exists; if so it checks for alternative with a " - n" suffix.
 	Otherwise it returns the given path
-	@param {p} path of tile
+	@param {p} path of file
 	@param {callback} Callback executing when finding a valid name.
 			Has the resulting path as argument
 */
@@ -123,4 +123,8 @@ function validateFilenameSync(p) {
 	}
 	
 	return altp
+}
+
+function isChildPathOf(child, parent) {
+	return (child !== parent) && parent.split(path.sep).every((t, i) => child.split(path.sep)[i] === t)
 }

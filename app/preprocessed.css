@@ -938,6 +938,7 @@ textarea::-webkit-input-placeholder {
     color: #E2DD04; }
   .ace_mill .ace_variable {
     color: #d67d33;
+    color: #9e933b;
     font-weight: bold; }
   .ace_mill .ace_entity.ace_name.ace_function {
     color: #0000A2; }
@@ -965,6 +966,7 @@ textarea::-webkit-input-placeholder {
   .ace_mill .ace_keyword,
   .ace_mill .ace_meta.ace_tag {
     color: #D04B4B;
+    color: #4b92d0;
     font-weight: bold; }
   .ace_mill .ace_string.ace_regex {
     color: red; }

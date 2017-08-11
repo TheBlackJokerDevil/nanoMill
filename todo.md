@@ -2,8 +2,10 @@
 - Ensure functions in main toolbar do work
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
-- Fix Drag'n'Drop Indicator of explorer
 - Prevent renaming when Copy/Paste files is no change at all
+- Fix Drag'n'Drop Indicator of explorer
+- Properly add explorer items, when creating view after startup
+- Fix trailing explorer items persistance
 - ~~Moving files within and across workspaces/Drag and Drop operations~~
 - ~~Select items via shift in explorer~~
 - ~~Solid keybindings API~~
@@ -15,6 +17,7 @@
 - ~~Normalize config entries to lowercase-camel-case~~
 
 # Official Beta (v1.0)
+- Add bare folder.ocd
 - validateFilename() take already existing trailing number into account
 - Basic styling of Form components
 - Saving and loading keybindings

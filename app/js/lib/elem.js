@@ -126,7 +126,7 @@ class Elem {
 	}
 	
 	/**
-		Returns the neth child of a parent element
+		Returns the nth child of a parent element
 		@param {Element} par - the parent element
 		@param {number} n - the index of the element to look for
 	*/
@@ -143,5 +143,19 @@ class Elem {
 		}
 		
 		return el
+	}
+	
+	/**
+		Returns the index a child has in its parent element
+		@param {Element} child - the child element
+		@return {number} the child's index
+	*/
+	static getChildIndex(child) {
+		let idx = 0
+		
+		while((child = child.previousSibling) != null) 
+			idx++
+		
+		return idx
 	}
 }

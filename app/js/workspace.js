@@ -215,38 +215,6 @@ class WorkspaceMaster {
 		this.saveInConfig()
 	}
 	
-	setDragStorage(ws, items) {
-		this.dragStorage = { source: ws, items }
-	}
-	
-	getDragStorage() {
-		return this.dragStorage
-	}
-	
-	clearDragStorage() {
-		this.dragStorage = null
-	}
-	
-	/**
-		@param {Workspace} wsDesc - destination workspace
-		@param {WorkspaceViewItem} parItem - item to which the items will be moved
-	*/
-	performDrag(wsDest, refItem) {
-		let store = this.getDragstorage()
-		if(!store)
-			return
-		
-		// if source and desctination workspace are equal
-		if(wsDest === store.source) {
-			
-		}
-		else {
-			
-		}
-		
-		this.clearDragStorage()
-	}
-	
 	/**
 		Executes the c4group application to unpack a file
 		@param {number} idx - FileInfo index

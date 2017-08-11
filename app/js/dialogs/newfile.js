@@ -12,7 +12,7 @@ class Dialog_NewFile extends Dialog {
 	
 		this.footer.innerHTML = `<div id="overlay-cancel" class="btn flex-fill">Cancel</div>`
 		
-		let templateLoader = require(path.join(__rootdir, "js", "templateLoader.js")),
+		let templateLoader = require(path.join(__rootdir, "js", "templateloader.js")),
 			tmps = templateLoader.getTemplates()
 		
 		let SelectionList = require(path.join(__rootdir, "js", "lib", "sellist.js"))

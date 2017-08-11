@@ -301,6 +301,10 @@ class WorkspaceMaster {
 				
 				// paste via cut
 				if(fCut) {
+					// check for obsolete operation
+					if(path.dirname(finfo.path) === path.dirname(fileName))
+						return
+					
 					fs.move(finfo.path, validName, err => {
 						if(err)
 							error(err)
@@ -339,13 +343,13 @@ class WorkspaceMaster {
 		if(!this.dragCache || !this.dragCache.length)
 			return
 		
-		let destination = this.finfo[destIdx].path
+		let destination = path.dirname(this.finfo[destIdx].path)
 		
 		for(let i = 0; i < this.dragCache.length; i++) {
 			let idx = this.dragCache[i]
 			let finfo = this.finfo[idx]
 			// don't even try to access outdated FileInfos
-			if(!finfo)
+			if(!finfo || destination === path.dirname(finfo.path))
 				continue
 			
 			let fileName = path.join(destination, finfo.name)
@@ -1373,7 +1377,8 @@ class WorkspaceViewItem {
 		label.addEventListener("drop", e => {
 			
 			let tEl = document.getElementsByClassName("droptarget")[0]
-			Elem.removeClass(tEl, "droptarget")
+			if(tEl)
+				Elem.removeClass(tEl, "droptarget")
 			
 			// don't react on non workspace drag events
 			if(!isDragging)

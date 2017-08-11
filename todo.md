@@ -2,6 +2,8 @@
 - Ensure functions in main toolbar do work
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
+- Fix Drag'n'Drop Indicator of explorer
+- Prevent renaming when Copy/Paste files is no change at all
 - ~~Moving files within and across workspaces/Drag and Drop operations~~
 - ~~Select items via shift in explorer~~
 - ~~Solid keybindings API~~

@@ -67,10 +67,10 @@ let lyt
 				label: "Save ...",
 				onclick: _=> {},
 				keybinding: "Save file"
-			}, {
+			}, {/*
 				label: "Save all",
 				onclick: _=> {}
-			}, {
+			}, {*/
 				label: "Preferences",
 				onclick: _=> {
 					let Dialog_Settings = require(path.join(__rootdir, "js", "dialogs", "settings.js"))

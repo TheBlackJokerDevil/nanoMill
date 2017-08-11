@@ -1269,10 +1269,39 @@ class WorkspaceViewItem {
 		label.addEventListener("mousedown", (e) => {
 			// focus on left click
 			if(e.which === 1) {
-				if(Elem.hasClass(this.el, "tree-selected") && e.ctrlKey)
-					wview.deselectItem(this)
-				else
-					wview.selectItem(this, e.ctrlKey)
+				// select everything from last
+				if(e.shiftKey) {
+					if(!wview.activeItem || wview.activeItem.getParent() !== this.getParent())
+						wview.selectItem(this, e.ctrlKey)
+					else {
+						let idxStart = Elem.getChildIndex(wview.activeItem.el),
+							idxEnd = Elem.getChildIndex(this.el)
+						
+						let parent = this.getParent()
+						let children = parent.childrenEl.children
+						
+						if(idxStart > idxEnd) {
+							idxStart ^= idxEnd
+							idxEnd ^= idxStart
+							idxStart ^= idxEnd
+						}
+						
+						for(let i = idxStart; i < idxEnd; i++) {
+							let idx = children[i].dataset.value
+							let item = wview.items[idx]
+							wview.selectItem(item, true)
+						}
+						
+						// ensure element last clicked has focus
+						wview.selectItem(this, true)
+					}
+				}
+				else {
+					if(Elem.hasClass(this.el, "tree-selected") && e.ctrlKey)
+						wview.deselectItem(this)
+					else
+						wview.selectItem(this, e.ctrlKey)
+				}
 			}
 		})
 		

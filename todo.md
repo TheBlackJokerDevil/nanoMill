@@ -3,8 +3,9 @@
 - Ensure functions in main toolbar do work
 - Make selection effect in explorer more appealing
 - Inform about dirty-state of editable modules (mostly texteditor)
+- ~~Select items via shift in explorer~~
 - ~~Solid keybindings API~~
--  ~~Implement Copy/Paste/Cut functionality~~ (+icons, +hotkeys)
+- ~~Implement Copy/Paste/Cut functionality~~ (+icons, +hotkeys)
 - ~~Add newly found files to its adjacent file in the tree structure~~
 - ~~Display keybindings in contextmenus~~
 - ~~Some styling to deck-navigation of dialogs~~
@@ -12,6 +13,7 @@
 - ~~Normalize config entries to lowercase-camel-case~~
 
 # Official Beta (v1.0)
+- validateFilename() take already existing trailing number into account
 - Basic styling of Form components
 - Saving and loading keybindings
 - Workspace settings (renaming, workspace specific c4group and ocexe)

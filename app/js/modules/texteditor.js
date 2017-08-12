@@ -90,7 +90,7 @@ class TextEditor extends layout.DeckItem {
 		})
 	}
 	
-	focus() {
+	onFocus() {
 		this.editor.focus()
 	}
 	

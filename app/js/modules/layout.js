@@ -733,8 +733,6 @@ class Layout_DeckItem extends Layout_Element {
 	
 	save() {}
 	
-	onfocus() {}
-	
 	isSub() { return true }
 	
 	setup() {}
@@ -769,6 +767,8 @@ class Layout_DeckItem extends Layout_Element {
 	onClose() {}
 	
 	getSaveData() {}
+	
+	onFocus() {}
 	
 	getAlias() {
 		return this.constructor.def.alias

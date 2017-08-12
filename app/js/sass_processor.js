@@ -48,6 +48,9 @@ let sass_defs = [{
 			src: "../sass/mod_console.scss"
 		},
 		{
+			src: "../sass/mod_imagepreview.scss"
+		},
+		{
 			src: "../sass/mod_explorer.scss"
 		}
 	]}

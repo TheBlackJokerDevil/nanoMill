@@ -1048,5 +1048,9 @@ textarea::-webkit-input-placeholder {
 	}
 */ }
 
+.imgprev-main {
+  background-repeat: no-repeat;
+  background-position: center; }
+
 .droptarget {
   background-color: rgba(50, 100, 150, 0.2); }

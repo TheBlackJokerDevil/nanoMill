@@ -83,6 +83,13 @@ class EditorView extends layout.Deck {
                 mdlType = "texteditor"
             break
 			
+			case ".jpg":
+			case ".jpeg":
+			case ".png":
+			case ".bmp":
+				mdlType = "imagepreview"
+			break
+			
 			default:
 				return
         }
@@ -136,7 +143,7 @@ class EditorView extends layout.Deck {
 	}
 	
 	onChildShow(idx) {
-		this.children[idx].focus()
+		this.children[idx].onFocus()
 	}
 	
 	onClose() {

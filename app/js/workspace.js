@@ -381,6 +381,10 @@ class WorkspaceMaster {
 			ext === ".txt" ||
 			ext === ".ocm" ||
 			ext === ".glsl" ||
+			ext === ".jpg" ||
+			ext === ".jpeg" ||
+			ext === ".png" ||
+			ext === ".bmp" ||
 			ext === ".material")
 			return true
 		

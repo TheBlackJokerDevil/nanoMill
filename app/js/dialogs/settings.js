@@ -11,14 +11,14 @@ class Dialog_Settings {
 		},{
 			type: "url",
 			value: config.get("ocexe"),
-			onchange: v => conifg.set("ocexe", v)
+			onchange: v => config.set("ocexe", v)
 		},{
 			type: "desc",
 			text: "Fallback c4group(.exe)"
 		},{
 			type: "url",
 			value: config.get("c4group"),
-			onchange: v => conifg.set("c4group", v)
+			onchange: v => config.set("c4group", v)
 		}, {
 			type: "number",
 			label: "Texteditor fontsize",

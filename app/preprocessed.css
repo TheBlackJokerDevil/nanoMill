@@ -502,7 +502,7 @@ textarea::-webkit-input-placeholder {
   .dlg-modal .url {
     padding: 10px 15px;
     margin: 10px 0;
-    background-color: #1e2123;
+    background-color: #16191b;
     color: #83b4c5;
     -webkit-user-select: text;
     white-space: nowrap;
@@ -511,7 +511,7 @@ textarea::-webkit-input-placeholder {
   .dlg-modal .url-browse {
     padding: 10px 15px;
     margin: 10px 0;
-    background-color: #1e2123;
+    background-color: #16191b;
     color: #83b4c5; }
     .dlg-modal .url-browse:hover {
       background-color: #234861;
@@ -602,7 +602,7 @@ textarea::-webkit-input-placeholder {
 .form .url {
   padding: 10px 15px;
   margin: 10px 0;
-  background-color: #1e2123;
+  background-color: #16191b;
   color: #83b4c5;
   -webkit-user-select: text;
   white-space: nowrap;
@@ -612,7 +612,7 @@ textarea::-webkit-input-placeholder {
 .form .url-browse {
   padding: 10px 15px;
   margin: 10px 0;
-  background-color: #1e2123;
+  background-color: #16191b;
   color: #83b4c5; }
   .form .url-browse:hover {
     background-color: #234861;

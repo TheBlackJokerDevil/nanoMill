@@ -168,16 +168,21 @@ html, body {
 
 #titlebar {
   -webkit-app-region: drag;
-  padding: 5px;
   background-color: #171a1e;
-  border-bottom: 1px solid #1e1e1e; }
+  border-bottom: 1px solid #1e1e1e;
+  padding-left: 10px; }
+
+#logo-wrapper {
+  justify-content: center;
+  color: steelblue;
+  padding: 0 3px; }
 
 .hb-btn {
   color: slategray;
   cursor: default;
   font-size: 16px;
   text-shadow: 0 1px 0 #141414;
-  padding: 5px 8px;
+  padding: 8px 12px;
   -webkit-app-region: no-drag;
   line-height: 20px; }
   .hb-btn:hover {
@@ -325,17 +330,17 @@ textarea::-webkit-input-placeholder {
   0% {
     transform: rotate(0deg); }
   100% {
-    transform: rotate(360deg); } }
+    transform: rotate(720deg); } }
 
 @keyframes circle {
   0% {
     transform: scale(0); }
   25% {
     transform: scale(1); }
-  50% {
+  45% {
     transform: scale(0);
     opacity: 1; }
-  50.01% {
+  45.01% {
     opacity: 0; }
   100% {
     opacity: 0; } }
@@ -349,7 +354,7 @@ textarea::-webkit-input-placeholder {
     opacity: 1; } }
 
 .the-mill {
-  animation: windmill 3s;
+  animation: windmill 4s;
   transform-origin: center; }
   .the-mill path {
     animation: pop-up 3s;

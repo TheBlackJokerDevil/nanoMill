@@ -88,7 +88,7 @@ class WorkspaceMaster {
 			return false
 		
 		if(this.fileOpened(finfo.path)) {
-			hook.exec("onOpenedFileSelect", finfo)
+			hook.exec("onFileShow", finfo)
 			return true
 		}
 		
@@ -103,7 +103,7 @@ class WorkspaceMaster {
 		is already opened
 		@param {string} p - path to check
 	*/
-	fileOpened(p) {
+	fileOpened(p) {log()
 		let finfos = this.viewOpened.getValues()
 		for(let finfo of finfos)
 			if(finfo.path === p)

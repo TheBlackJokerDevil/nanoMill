@@ -10,7 +10,7 @@ class ImagePreview extends layout.DeckItem {
 		this.infoEl = el
 		this.root.appendChild(el)
 	}
-	setup(file, txt, mode) {
+	setup(file, mode, txt) {
 		let p = "file:///" + file.path.replace(/\\/gi, "/")
 		this.root.style.backgroundImage = "url(" + p + ")"
 		

@@ -110,10 +110,10 @@ class NaviView {
 		
 		// click the close button -> close the correpsonding file
 		el.lastElementChild.addEventListener("click", e => {
-			if(finfo.mod) {
+			if(finfo.mdl) {
 				// only close call hook.exec when the file actually has been closed
 				// and not prevented by mod.close()
-				if(finfo.mod.close())
+				if(finfo.mdl.close())
 					hook.exec("onFileClosed", finfo)
 			}
 			else

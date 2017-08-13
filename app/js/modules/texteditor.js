@@ -14,7 +14,7 @@ class TextEditor extends layout.DeckItem {
 		})
 	}
 
-    setup(file, txt, mode) {
+    setup(file, mode, txt) {
         if(!this.editor)
             this.editor = ace.edit("TE-"+this.tid)
 

@@ -1369,14 +1369,14 @@ class WorkspaceViewItem {
 		})
 		
 		label.addEventListener("dragend", e => {
+			let tEl = document.getElementsByClassName("droptarget")[0]
+			if(tEl)
+				Elem.removeClass(tEl, "droptarget")
+			
 			isDragging = false
 		})
 		
 		label.addEventListener("drop", e => {
-			
-			let tEl = document.getElementsByClassName("droptarget")[0]
-			if(tEl)
-				Elem.removeClass(tEl, "droptarget")
 			
 			// don't react on non workspace drag events
 			if(!isDragging)

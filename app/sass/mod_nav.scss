@@ -21,6 +21,12 @@
 			padding-left: 5px;
 		}
 	}
+	
+	&.unsaved {
+		.navi-view-item-label {
+			color: #b9b914;
+		}
+	}
 }
 
 .navi-view-item-label {
@@ -36,8 +42,7 @@
 	}
 	
 	&:active {
-		background-color: $bg-ui-active;
-		color: whitesmoke;
+		background-color: $hvr;
 	}
 }
 

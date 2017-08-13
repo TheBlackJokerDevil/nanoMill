@@ -29,6 +29,16 @@ class NaviList {
 			for(let view of this.views)
 				view.selectItemByIndex(idx)
 		})
+		
+		hook.in("onSaveStateChange", (finfo, saved) => {
+			let idx = this.getValueIndex(finfo)
+			
+			if(idx === -1)
+				return
+			
+			for(let view of this.views)
+				view.changeSaveState(idx, saved)
+		})
 	}
 	
 	getValueIndex(val) {
@@ -134,6 +144,16 @@ class NaviView {
 		let el = Elem.nthChild(this.root, idx)
 		if(el)
 			Elem.addClass(el, "shown")
+	}
+	
+	changeSaveState(idx, saved) {
+		let el = Elem.nthChild(this.root, idx)
+		if(el) {
+			if(saved)
+				Elem.removeClass(el, "unsaved")
+			else
+				Elem.addClass(el, "unsaved")
+		}
 	}
 	
 	removeItemByIndex(idx) {

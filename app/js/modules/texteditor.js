@@ -76,7 +76,7 @@ class TextEditor extends layout.DeckItem {
 		
 		this.isUnchanged = !this.isUnchanged
 		
-		hook.exec("onFileChangeStateChange", this.file, this.isUnchanged)
+		hook.exec("onSaveStateChange", this.file, this.isUnchanged)
 	}
 	
 	save() {

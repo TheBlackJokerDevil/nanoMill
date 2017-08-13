@@ -853,6 +853,8 @@ textarea::-webkit-input-placeholder {
     border-left: 5px solid steelblue; }
     .navi-view-item.shown .navi-view-item-label {
       padding-left: 5px; }
+  .navi-view-item.unsaved .navi-view-item-label {
+    color: #b9b914; }
 
 .navi-view-item-label {
   display: flex;
@@ -865,8 +867,7 @@ textarea::-webkit-input-placeholder {
   .navi-view-item-label:hover {
     background-color: #252c33; }
   .navi-view-item-label:active {
-    background-color: steelblue;
-    color: whitesmoke; }
+    background-color: #252c33; }
 
 .navi-view-item-close {
   visibility: hidden;

@@ -1,24 +1,18 @@
 
 $font-stack: $main-font, sans-serif;
 
-// $bg-main: rgb(38, 40, 43);
 $bg-main: #1c2025;
-// $lyt-split: rgb(29, 31, 34);
+$bg-main-darker: #171a1e;
 $lyt-split: #171a1f;
 
 $bg-ui-active: steelblue;
 
-$tb-bg: rgb(60, 60, 60);
-$tb-bg-hvr: rgb(120, 120, 120);
-$tb-brdr: 1px solid rgb(45, 45, 45);
-// $tb-clr: rgb(128, 128, 128);
-$tb-clr: grayslate;
-
 $hvr: #252c33;
-//$hvr: rgb(80, 80, 80);
 
 $font-clr: #98a2b7;
 $font-clr-subtle: #696d80;
+$font-clr-secondary: slategray;
+$font-clr-hvr: #b3b3b3;
 
 $red: rgb(215, 125, 50);
 $frame-action: steelblue;

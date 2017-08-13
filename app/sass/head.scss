@@ -1,8 +1,10 @@
 
 $font-stack: $main-font, sans-serif;
 
-$bg-main: rgb(38, 40, 43);
-$lyt-split: rgb(29, 31, 34);
+// $bg-main: rgb(38, 40, 43);
+$bg-main: #1c2025;
+// $lyt-split: rgb(29, 31, 34);
+$lyt-split: #171a1f;
 
 $bg-ui-active: steelblue;
 
@@ -78,6 +80,7 @@ html, body {
     padding: 0;
     background: $bg-main;
     color: rgb(220, 220, 220);
+	color: slategrey;
     font-family: $font-stack;
 	animation: fade-in 0.5s;
 	-webkit-user-select: none;

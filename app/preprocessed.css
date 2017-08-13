@@ -61,8 +61,9 @@ html, body {
   left: 0;
   margin: 0;
   padding: 0;
-  background: #26282b;
+  background: #1c2025;
   color: gainsboro;
+  color: slategrey;
   font-family: "Roboto", sans-serif;
   animation: fade-in 0.5s;
   -webkit-user-select: none;
@@ -231,7 +232,7 @@ textarea::-webkit-input-placeholder {
 ::-webkit-scrollbar > *,
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track-piece {
-  background-color: #26282b; }
+  background-color: #1c2025; }
 
 ::-webkit-scrollbar {
   padding: 0;
@@ -245,7 +246,7 @@ textarea::-webkit-input-placeholder {
   max-height: 12px;
   border: none;
   padding: 0px;
-  background-color: #26282b; }
+  background-color: #1c2025; }
 
 ::-webkit-scrollbar:vertical {
   width: 12px;
@@ -357,16 +358,21 @@ textarea::-webkit-input-placeholder {
 
 .tree-item {
   padding: 0 15px;
-  margin-left: 15px;
+  padding-left: 25px;
+  padding: 0;
   /** indicator for empty folders */ }
   .tree-item .tree-label {
-    padding: 2px 5px;
+    padding: 4px 25px 4px 35px;
     color: #c8c8c8;
+    color: #98a2b7;
     overflow-x: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; }
+    white-space: nowrap;
+    outline: none !important; }
     .tree-item .tree-label:hover {
       background-color: #505050; }
+  .tree-item .tree-item {
+    margin-left: 20px; }
   .tree-item.tree-parent > .tree-label:before {
     content: ">";
     display: block;
@@ -389,10 +395,10 @@ textarea::-webkit-input-placeholder {
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
   .tree-item.tree-selected > .tree-label {
-    background-color: rgba(50, 120, 210, 0.3);
+    background-color: rgba(32, 65, 107, 0.3);
     outline: 1px solid #1969ad; }
   .tree-item.tree-active > .tree-label {
-    background-color: rgba(50, 120, 210, 0.45);
+    background-color: rgba(32, 65, 107, 0.55);
     outline: 1px solid #1969ad; }
 
 .sel-par {
@@ -535,7 +541,7 @@ textarea::-webkit-input-placeholder {
 
 .dlg-container {
   align-self: center;
-  background: #26282b; }
+  background: #1c2025; }
 
 .dlg-body {
   padding: 20px;
@@ -724,18 +730,18 @@ textarea::-webkit-input-placeholder {
 .flex-col > .flex-splitter {
   height: 2px;
   cursor: ns-resize;
-  border-top: 2px solid #26282b;
-  border-bottom: 2px solid #26282b; }
+  border-top: 2px solid #1c2025;
+  border-bottom: 2px solid #1c2025; }
 
 .flex-row > .flex-splitter {
   width: 2px;
   cursor: ew-resize;
-  border-left: 2px solid #26282b;
-  border-right: 2px solid #26282b; }
+  border-left: 2px solid #1c2025;
+  border-right: 2px solid #1c2025; }
 
 .flex-splitter,
 .flex-splitter {
-  background-color: #1d1f22;
+  background-color: #171a1f;
   -webkit-user-select: none;
   user-select: none; }
   .flex-splitter.dragged,
@@ -751,7 +757,7 @@ textarea::-webkit-input-placeholder {
   min-width: 50px; }
 
 .mod-head {
-  background-color: #26282b;
+  background-color: #1c2025;
   color: gray;
   transition: background 0.2s; }
 
@@ -878,6 +884,7 @@ textarea::-webkit-input-placeholder {
 
 .ace_mill {
   color: #e6e6e6;
+  color: #c8d7e2;
   position: absolute;
   top: 0;
   right: 0;
@@ -887,7 +894,7 @@ textarea::-webkit-input-placeholder {
   max-width: 100%;
   font-variant-ligatures: none !important; }
   .ace_mill .ace_gutter {
-    background: #26282b;
+    background: #1c2025;
     border-right: none;
     color: #646464;
     overflow: hidden; }
@@ -1051,6 +1058,15 @@ textarea::-webkit-input-placeholder {
 .imgprev-main {
   background-repeat: no-repeat;
   background-position: center; }
+
+.imgprev-info-bar {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 10px 25px;
+  color: slategrey;
+  text-align: right; }
 
 .droptarget {
   background-color: rgba(50, 100, 150, 0.2); }

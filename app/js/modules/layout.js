@@ -40,7 +40,7 @@ class Layout extends Layout_Element {
 		let def = getModuleDef(mdlAlias)
 		
 		if(!def || !def.className)
-			return error(`createModule: module alias '${mdlAlias}' not registered.`)
+			throw new Error(`createModule: module alias '${mdlAlias}' not registered.`)
 
 		let mdl = new def.className(mdlId)
 

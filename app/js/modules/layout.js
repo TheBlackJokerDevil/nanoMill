@@ -40,7 +40,7 @@ class Layout extends Layout_Element {
 		let def = getModuleDef(mdlAlias)
 		
 		if(!def || !def.className)
-			return error(`createModule: module alias '${mdlAlias}' not registered.`)
+			throw new Error(`createModule: module alias '${mdlAlias}' not registered.`)
 
 		let mdl = new def.className(mdlId)
 
@@ -142,6 +142,13 @@ class Layout extends Layout_Element {
 		for(let i = 0; i < this.mdls.length; i++)
 			if(this.mdls[i].body === el)
 				return this.mdls[i]
+	}
+	
+	hasSingleModule() {
+		// check flexers direct children as well as the children of the first child
+		// because children aligned in cross direction to the root flexer will force
+		// having another flexer in the other direction in between
+		return this.flexer.children.length === 1 && this.flexer.children[0].children.length === 0
 	}
 	
 	static fromData(data) {
@@ -409,6 +416,10 @@ class Layout_Module extends Layout_Element {
 			for(let item of mdlDefs) {
 				let def = item[1]
 				
+				// don't show submodules
+				if(def.isSub)
+					continue
+				
 				props.push({
 					label: def.title,
 					onclick: _ => {
@@ -618,7 +629,7 @@ class Layout_Module extends Layout_Element {
 				icon: "icon-close",
 				onvalidate: _ => {
 					// do not close if this is the last module shown
-					return this.source.flexer.children.length !== 1
+					return !this.source.hasSingleModule()
 				},
 				onclick: _ => {
 					this.close()
@@ -733,8 +744,6 @@ class Layout_DeckItem extends Layout_Element {
 	
 	save() {}
 	
-	onfocus() {}
-	
 	isSub() { return true }
 	
 	setup() {}
@@ -769,6 +778,8 @@ class Layout_DeckItem extends Layout_Element {
 	onClose() {}
 	
 	getSaveData() {}
+	
+	onFocus() {}
 	
 	getAlias() {
 		return this.constructor.def.alias

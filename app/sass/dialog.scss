@@ -43,7 +43,7 @@
 	.url {
 		padding: 10px 15px;
 		margin: 10px 0;
-		background-color: #1e2123;
+		background-color: #16191b;
 		color: #83b4c5;
 		-webkit-user-select: text;
 		white-space: nowrap;                   
@@ -54,7 +54,7 @@
 	.url-browse {
 		padding: 10px 15px;
 		margin: 10px 0;
-		background-color: #1e2123;
+		background-color: #16191b;
 		color: #83b4c5;
 		
 		&:hover {
@@ -123,8 +123,8 @@
 }
 
 .dlg-head {
-	background-color: #1e2123;
-	color: rgb(180, 180, 180);
+	background-color: $bg-main-darker;
+	color: $font-clr-secondary;
 	
 	& > * > * {
 		border-bottom: 1px solid rgb(25, 25, 25);
@@ -133,14 +133,16 @@
 
 .dlg-tab {
 	padding: 5px 10px;
+	color: $font-clr-subtle;
 	
 	&:hover {
-		background-color: #3c3c3c;
-		color: #b3b3b3;
+		background-color: $hvr;
+		color: $font-clr-hvr;
 	}
 	
 	&.selected {
-		background-color: #26282b;
+		background-color: $hvr;
+		color: $font-clr-secondary;
 		border-bottom-color: transparent;
 		box-shadow: inset 0 1px 0 #333333;
 	}
@@ -178,7 +180,7 @@
 	.url {
 		padding: 10px 15px;
 		margin: 10px 0;
-		background-color: #1e2123;
+		background-color: #16191b;
 		color: #83b4c5;
 		-webkit-user-select: text;
 		white-space: nowrap;                   
@@ -189,7 +191,7 @@
 	.url-browse {
 		padding: 10px 15px;
 		margin: 10px 0;
-		background-color: #1e2123;
+		background-color: #16191b;
 		color: #83b4c5;
 		
 		&:hover {

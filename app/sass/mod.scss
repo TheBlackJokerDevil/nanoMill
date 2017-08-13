@@ -11,8 +11,7 @@
 
 .mod-head {
 	background-color: $bg-main;
-	color: $tb-clr;
-	transition: background 0.2s;
+	color: $font-clr-secondary;
 }
 
 .mod-button {
@@ -21,9 +20,9 @@
 	
 	&:hover,
 	&:active {
-		background-color: $tb-bg;
+		background-color: $hvr;
 		text-shadow: none;
-		color: #b3b3b3;
+		color: #8b9eb1;
 	}
 }
 
@@ -32,7 +31,7 @@
 	position: relative;
 	
 	&:hover {
-		color: #b3b3b3;
+		color: $font-clr-hvr;
 	}
 	
 	align-items: center;
@@ -48,12 +47,6 @@
 	
 	overflow: hidden;
 	white-space: nowrap;
-}
-
-.mod-active {
-	.mod-head {
-		background: linear-gradient(to right, #3e4146 0%,rgba(0,0,0,0) 45%);
-	}
 }
 
 .mod-body {
@@ -81,8 +74,8 @@
 	position: absolute;
 	max-width: 180px;
 	width: 180px;
-	background-color: $tb-bg;	
-	z-index: $z-mod + 1;
+	background-color: $bg-main;	
+	z-index: $z-mdl + 1;
 	
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
 }

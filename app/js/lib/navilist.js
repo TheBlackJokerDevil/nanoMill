@@ -29,6 +29,16 @@ class NaviList {
 			for(let view of this.views)
 				view.selectItemByIndex(idx)
 		})
+		
+		hook.in("onSaveStateChange", (finfo, saved) => {
+			let idx = this.getValueIndex(finfo)
+			
+			if(idx === -1)
+				return
+			
+			for(let view of this.views)
+				view.changeSaveState(idx, saved)
+		})
 	}
 	
 	getValueIndex(val) {
@@ -95,7 +105,7 @@ class NaviView {
 		
 		el.innerHTML = 
 			`<div class="navi-view-item-label">
-				<div class='navi-view-fdir'>${dirname}</div><span style="color: grey">/</span>${path.basename(finfo.path)}
+				<div class='navi-view-fdir'>${dirname}/</div>${path.basename(finfo.path)}
 			</div>
 			<div class="navi-view-item-close"><div class="icon-close"></div></div>`
 		
@@ -110,10 +120,10 @@ class NaviView {
 		
 		// click the close button -> close the correpsonding file
 		el.lastElementChild.addEventListener("click", e => {
-			if(finfo.mod) {
+			if(finfo.mdl) {
 				// only close call hook.exec when the file actually has been closed
 				// and not prevented by mod.close()
-				if(finfo.mod.close())
+				if(finfo.mdl.close())
 					hook.exec("onFileClosed", finfo)
 			}
 			else
@@ -134,6 +144,16 @@ class NaviView {
 		let el = Elem.nthChild(this.root, idx)
 		if(el)
 			Elem.addClass(el, "shown")
+	}
+	
+	changeSaveState(idx, saved) {
+		let el = Elem.nthChild(this.root, idx)
+		if(el) {
+			if(saved)
+				Elem.removeClass(el, "unsaved")
+			else
+				Elem.addClass(el, "unsaved")
+		}
 	}
 	
 	removeItemByIndex(idx) {

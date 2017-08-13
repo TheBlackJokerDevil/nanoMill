@@ -14,7 +14,7 @@ class TextEditor extends layout.DeckItem {
 		})
 	}
 
-    setup(file, txt, mode) {
+    setup(file, mode, txt) {
         if(!this.editor)
             this.editor = ace.edit("TE-"+this.tid)
 
@@ -76,7 +76,7 @@ class TextEditor extends layout.DeckItem {
 		
 		this.isUnchanged = !this.isUnchanged
 		
-		hook.exec("onFileChangeStateChange", this.file, this.isUnchanged)
+		hook.exec("onSaveStateChange", this.file, this.isUnchanged)
 	}
 	
 	save() {
@@ -90,7 +90,7 @@ class TextEditor extends layout.DeckItem {
 		})
 	}
 	
-	focus() {
+	onFocus() {
 		this.editor.focus()
 	}
 	

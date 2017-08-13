@@ -47,6 +47,8 @@ class Contextmenu {
 		// allow getting focused
 		div.tabIndex = -1
 		
+		let showIcons = false
+		
 		for(let i = 0; i < props.length; i++) {
 			let prop = props[i]
 			let item = document.createElement("div")
@@ -57,6 +59,10 @@ class Contextmenu {
 							<div class="flex-col flex-fill" style="justify-content: center">
 								<div class="ctx-menu-label">${prop.label}</div>
 							</div>`
+			
+			// track if icons are requsted
+			if(prop.icon)
+				showIcons = true
 			
 			// append keybinding indicator
 			if(prop.keybinding) {
@@ -107,6 +113,9 @@ class Contextmenu {
 			
 			div.appendChild(item)
 		}
+		
+		if(!showIcons)
+			div.className += " no-icons"
 	}
 }
 

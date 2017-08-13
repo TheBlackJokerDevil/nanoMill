@@ -88,7 +88,7 @@ class WorkspaceMaster {
 			return false
 		
 		if(this.fileOpened(finfo.path)) {
-			hook.exec("onOpenedFileSelect", finfo)
+			hook.exec("onFileShow", finfo)
 			return true
 		}
 		
@@ -110,13 +110,6 @@ class WorkspaceMaster {
 				return true
 		
 		return false
-	}
-	
-	/**
-		Returns the opened files
-	*/
-	getOpenedFiles() {
-		// return this.opened
 	}
 	
 	/**
@@ -377,14 +370,7 @@ class WorkspaceMaster {
 		@param {string} ext - Extension to check. Must have preceding "."
 	*/
 	static isEditableExt(ext) {
-		if( ext === ".c" ||
-			ext === ".txt" ||
-			ext === ".ocm" ||
-			ext === ".glsl" ||
-			ext === ".material")
-			return true
-		
-		return false
+		return EditorView && EditorView.isEditableExt(ext)
 	}
 }
 
@@ -1132,7 +1118,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Paste",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				let dirEl = this.getNextValidDirectoryElement(item.el)
 				
@@ -1153,7 +1139,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Copy",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				this.selectionToClipboard()
 			}
@@ -1161,7 +1147,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Cut",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				this.selectionToClipboard(true)
 			}
@@ -1269,7 +1255,7 @@ class WorkspaceViewItem {
 	}
 	
 	parseLabelName(fname) {
-		return fname.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
+		return fname.replace(/(\.[^.]+?$)/, `<span class="clr-subtle">$1</span>`)
 	}
 	
 	rename(fname) {		
@@ -1383,14 +1369,14 @@ class WorkspaceViewItem {
 		})
 		
 		label.addEventListener("dragend", e => {
+			let tEl = document.getElementsByClassName("droptarget")[0]
+			if(tEl)
+				Elem.removeClass(tEl, "droptarget")
+			
 			isDragging = false
 		})
 		
 		label.addEventListener("drop", e => {
-			
-			let tEl = document.getElementsByClassName("droptarget")[0]
-			if(tEl)
-				Elem.removeClass(tEl, "droptarget")
 			
 			// don't react on non workspace drag events
 			if(!isDragging)

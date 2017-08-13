@@ -1,5 +1,3 @@
-
-
 class EditorView extends layout.Deck {
 
 	init(state) {
@@ -7,15 +5,26 @@ class EditorView extends layout.Deck {
 		
 		this.hookIn("onFileOpen", (finfo) => {
 			
-			fs.readFile(finfo.path, 'utf8', (err, text) => {
-				if(err)
-					throw `Failed to read file in EditorView (${err})`
-				
-				if(this.openFileInModule(finfo, text)) {
+			let opts = EditorView.getEditorOptions(finfo.name, finfo.ext)
+			
+			if(!opts)
+				throw new Error(`Tried to open file${ext} without options declared`)
+			
+			if(opts.readData) {				
+				fs.readFile(finfo.path, 'utf8', (err, data) => {
+					if(err)
+						throw `Failed to read file in EditorView (${err})`
+					
+					this.openFileInModule(finfo, opts, data)
 					hook.exec("onFileOpened", finfo)
 					hook.exec("onFileShow", finfo)
-				}
-			})
+				})
+			}
+			else {
+				this.openFileInModule(finfo, opts)
+				hook.exec("onFileOpened", finfo)
+				hook.exec("onFileShow", finfo)
+			}
 			
 			// prevent furthur event execution
 			return true
@@ -47,64 +56,27 @@ class EditorView extends layout.Deck {
 		_dumped_editors = []
 	}
 
-    openFileInModule(finfo, text) {
-        let mod, modIdx = -1
-		let mode, mdlType
-        switch(finfo.ext){
-            case ".c":
-				mdlType = "texteditor"
-				mode = "ocscript"
-            break
-            case ".txt":
-				mode = "text"
-				
-				if( finfo.name === "DefCore.txt" ||
-					finfo.name === "Scenario.txt" ||
-					finfo.name === "ParameterDefs.txt" ||
-					finfo.name === "Teams.txt" ||
-					finfo.name === "Particle.txt" ||
-					finfo.name === "Objects.txt" ||
-					finfo.name === "PlayerControls.txt"
-				)
-					mode = "ini"
-				
-                mdlType = "texteditor"
-            break
-			case ".glsl":
-				mode = "glsl"
-                mdlType = "texteditor"
-            break
-			case ".material":
-                mode = "txt"
-                mdlType = "texteditor"
-            break
-			case ".ocm":
-                mode = "ini"
-                mdlType = "texteditor"
-            break
-			
-			default:
-				return
-        }
+    openFileInModule(finfo, opts, text) {
+        let mdl
 		
-		mod = this.source.createModule(mdlType)
-		this.registerChild(mod)
-		mod.setup(finfo, text, mode)
-		this.showChild(this.getChildIndex(mod))
+		mdl = this.source.createModule(opts.mdlAlias)
+		this.registerChild(mdl)
+		mdl.setup(finfo, opts.mode, text)
+		this.showChild(this.getChildIndex(mdl))
 		
 		this.hookIn("onFileClosed", (finfo) => {
 			finfo.editor = null
-			finfo.mod = null
+			finfo.mdl = null
 		})
 		
-		this.registerFile(finfo, mod)
+		this.registerFile(finfo, mdl)
 
         return true
     }
 	
-	registerFile(file, mod) {
+	registerFile(file, mdl) {
 		file.editor = this
-		file.mod = mod
+		file.mdl = mdl
 		
 		this.files.push(file)
 	}
@@ -126,7 +98,7 @@ class EditorView extends layout.Deck {
     }
 	
 	showFile(file) {
-		let idx = this.getChildIndex(file.mod)
+		let idx = this.getChildIndex(file.mdl)
 
 		if(idx === -1)
 			return
@@ -136,7 +108,7 @@ class EditorView extends layout.Deck {
 	}
 	
 	onChildShow(idx) {
-		this.children[idx].focus()
+		this.children[idx].onFocus()
 	}
 	
 	onClose() {
@@ -148,6 +120,75 @@ class EditorView extends layout.Deck {
 			document.getElementById("submod-buffer").appendChild(this.children[i].root)
 			_dumped_editors.push(this.children[i])
 		}
+	}
+	
+	static getEditorOptions(name, ext) {
+		// the readData property tells the EditorView
+		// weather to read out the file contents and then setup
+		// the module with the data as parameter
+		let opts = { readData: true }
+		
+		switch(ext){
+            case ".c":
+				opts.mdlAlias = "texteditor"
+				opts.mode = "ocscript"
+            break
+            case ".txt":
+				opts.mode = "text"
+				
+				if( name === "DefCore.txt" ||
+					name === "Scenario.txt" ||
+					name === "ParameterDefs.txt" ||
+					name === "Teams.txt" ||
+					name === "Particle.txt" ||
+					name === "Objects.txt" ||
+					name === "PlayerControls.txt"
+				)
+					opts.mode = "ini"
+				
+                opts.mdlAlias = "texteditor"
+            break
+			case ".glsl":
+				opts.mode = "glsl"
+                opts.mdlAlias = "texteditor"
+            break
+			case ".material":
+                opts.mode = "txt"
+                opts.mdlAlias = "texteditor"
+            break
+			case ".ocm":
+                opts.mode = "ini"
+                opts.mdlAlias = "texteditor"
+            break
+			
+			case ".jpg":
+			case ".jpeg":
+			case ".png":
+			case ".bmp":
+				opts.mdlAlias = "imagepreview"
+				opts.readData = false
+			break
+			
+			default:
+				return null
+        }
+		
+		return opts
+	}
+	
+	static isEditableExt(ext) {
+		if( ext === ".c" ||
+			ext === ".txt" ||
+			ext === ".ocm" ||
+			ext === ".glsl" ||
+			ext === ".jpg" ||
+			ext === ".jpeg" ||
+			ext === ".png" ||
+			ext === ".bmp" ||
+			ext === ".material")
+			return true
+		
+		return false
 	}
 }
 

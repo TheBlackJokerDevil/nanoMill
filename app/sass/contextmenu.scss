@@ -1,7 +1,7 @@
 
 .ctx-menu {
 	position: absolute;
-	background-color: rgb(31, 33, 37);
+	background-color: $bg-main-darker;
 	color: $font-clr;
 	z-index: $z-ctx-menu;
 	min-width: 200px;
@@ -28,11 +28,28 @@
 	
 	&.invalid {
 		color: grey;
+		
+		.ctx-menu-icon {
+			color: grey;
+		}
 	}
 }
 
 .ctx-menu-icon {
 	margin: 5px;
+	color: slategray;
+	min-width: 16px;
+	min-height: 16px;
+}
+
+.no-icons {
+	.ctx-menu-icon {
+		display: none;
+	}
+	
+	.ctx-menu-item {
+		padding-left: 10px;
+	}
 }
 
 .ctx-menu-indicator {

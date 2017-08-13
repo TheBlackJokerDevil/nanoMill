@@ -414,7 +414,7 @@ textarea::-webkit-input-placeholder {
 
 .ctx-menu {
   position: absolute;
-  background-color: #bg-main-darker;
+  background-color: #171a1e;
   color: #98a2b7;
   z-index: 51;
   min-width: 200px;

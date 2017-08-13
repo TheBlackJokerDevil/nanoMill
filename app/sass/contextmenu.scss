@@ -1,7 +1,7 @@
 
 .ctx-menu {
 	position: absolute;
-	background-color: #bg-main-darker;
+	background-color: $bg-main-darker;
 	color: $font-clr;
 	z-index: $z-ctx-menu;
 	min-width: 200px;

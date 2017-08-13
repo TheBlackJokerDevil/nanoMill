@@ -3,12 +3,21 @@ class ImagePreview extends layout.DeckItem {
 	init() {
 		this.root.innerHTML = ``
 		this.root.className += "abs-fill imgprev-main"
+		
+		// general image info
+		let el = document.createElement("div")
+		this.infoEl = el
+		this.root.appendChild(el)
 	}
 	setup(file, txt, mode) {
-		log(file.path)
-		let p = file.path.replace(/\\/gi, "/")
-		log(p)
-		this.root.style.backgroundImage = "url(file:///" + p + ")"
+		let p = "file:///" + file.path.replace(/\\/gi, "/")
+		this.root.style.backgroundImage = "url(" + p + ")"
+		
+		let img = new Image()
+		img.onload = _ => {
+			this.infoEl.innerHTML = "width: " + img.width + "   height: " + img.height
+		}
+		img.src = p
 	}
 }
 

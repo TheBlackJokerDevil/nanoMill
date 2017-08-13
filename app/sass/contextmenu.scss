@@ -28,6 +28,10 @@
 	
 	&.invalid {
 		color: grey;
+		
+		.ctx-menu-icon {
+			color: grey;
+		}
 	}
 }
 

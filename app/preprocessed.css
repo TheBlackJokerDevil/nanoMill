@@ -438,6 +438,8 @@ textarea::-webkit-input-placeholder {
     background-color: #252c33; }
   .ctx-menu-item.invalid {
     color: grey; }
+    .ctx-menu-item.invalid .ctx-menu-icon {
+      color: grey; }
 
 .ctx-menu-icon {
   margin: 5px;

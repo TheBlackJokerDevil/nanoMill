@@ -38,6 +38,33 @@ class ImagePreview extends layout.DeckItem {
 			
 			this.root.style.backgroundSize = (img.width*factor) + "px " + (img.height*factor) + "px"
 		})
+		
+		let dragging = false
+		let startX, startY
+		let oldX = 0, oldY = 0
+		
+		this.root.addEventListener("mousedown", (e) => {
+			dragging = true
+			
+			startX = e.screenX + oldX
+			startY = e.screenY + oldY
+		})
+		
+		this.root.addEventListener("mousemove", (e) => {
+			if(!dragging)
+				return
+			
+			oldX = startX - e.screenX
+			oldY = startY - e.screenY
+			
+			this.root.style.backgroundPositionX = "calc(50% - " + (startX - e.screenX) + "px)"
+			this.root.style.backgroundPositionY = "calc(50% - " + (startY - e.screenY) + "px)"
+		})
+		
+		document.addEventListener("mouseup", (e) => {
+			
+			dragging = false
+		})
 	}
 }
 

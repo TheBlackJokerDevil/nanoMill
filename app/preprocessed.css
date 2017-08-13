@@ -441,7 +441,15 @@ textarea::-webkit-input-placeholder {
 
 .ctx-menu-icon {
   margin: 5px;
-  color: slategray; }
+  color: slategray;
+  min-width: 16px;
+  min-height: 16px; }
+
+.no-icons .ctx-menu-icon {
+  display: none; }
+
+.no-icons .ctx-menu-item {
+  padding-left: 10px; }
 
 .ctx-menu-indicator {
   margin: 5px;

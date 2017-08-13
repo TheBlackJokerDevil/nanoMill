@@ -1136,7 +1136,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Paste",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				let dirEl = this.getNextValidDirectoryElement(item.el)
 				
@@ -1157,7 +1157,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Copy",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				this.selectionToClipboard()
 			}
@@ -1165,7 +1165,7 @@ class WorkspaceView {
 		
 		props.push({
 			label: "Cut",
-			icon: "icon-pencil",
+			icon: "",
 			onclick: () => {
 				this.selectionToClipboard(true)
 			}

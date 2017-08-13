@@ -144,6 +144,13 @@ class Layout extends Layout_Element {
 				return this.mdls[i]
 	}
 	
+	hasSingleModule() {
+		// check flexers direct children as well as the children of the first child
+		// because children aligned in cross direction to the root flexer will force
+		// having another flexer in the other direction in between
+		return this.flexer.children.length === 1 && this.flexer.children[0].children.length === 0
+	}
+	
 	static fromData(data) {
 		let lyts = []
 		let fn = (data, par, lyt) => {
@@ -618,7 +625,7 @@ class Layout_Module extends Layout_Element {
 				icon: "icon-close",
 				onvalidate: _ => {
 					// do not close if this is the last module shown
-					return this.source.flexer.children.length !== 1
+					return !this.source.hasSingleModule()
 				},
 				onclick: _ => {
 					this.close()

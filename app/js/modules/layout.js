@@ -416,6 +416,10 @@ class Layout_Module extends Layout_Element {
 			for(let item of mdlDefs) {
 				let def = item[1]
 				
+				// don't show submodules
+				if(def.isSub)
+					continue
+				
 				props.push({
 					label: def.title,
 					onclick: _ => {

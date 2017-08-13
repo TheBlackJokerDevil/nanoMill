@@ -95,7 +95,7 @@ class NaviView {
 		
 		el.innerHTML = 
 			`<div class="navi-view-item-label">
-				<div class='navi-view-fdir'>${dirname}</div><span style="color: grey">/</span>${path.basename(finfo.path)}
+				<div class='navi-view-fdir'>${dirname}/</div>${path.basename(finfo.path)}
 			</div>
 			<div class="navi-view-item-close"><div class="icon-close"></div></div>`
 		

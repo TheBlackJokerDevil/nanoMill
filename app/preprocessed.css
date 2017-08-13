@@ -70,6 +70,9 @@ html, body {
   cursor: default;
   overflow: hidden; }
 
+.clr-subtle {
+  color: #696d80; }
+
 @font-face {
   font-family: 'icomoon';
   src: url("sass/icomoon.ttf?-icmbrc") format("truetype");
@@ -170,7 +173,7 @@ html, body {
   border-bottom: 1px solid #1e1e1e; }
 
 .hb-btn {
-  color: gray;
+  color: grayslate;
   cursor: default;
   font-size: 16px;
   text-shadow: 0 1px 0 #141414;
@@ -357,20 +360,16 @@ textarea::-webkit-input-placeholder {
     animation-fill-mode: forwards; }
 
 .tree-item {
-  padding: 0 15px;
-  padding-left: 25px;
   padding: 0;
   /** indicator for empty folders */ }
   .tree-item .tree-label {
     padding: 4px 25px 4px 35px;
-    color: #c8c8c8;
     color: #98a2b7;
     overflow-x: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    outline: none !important; }
+    white-space: nowrap; }
     .tree-item .tree-label:hover {
-      background-color: #505050; }
+      background-color: #252c33; }
   .tree-item .tree-item {
     margin-left: 20px; }
   .tree-item.tree-parent > .tree-label:before {
@@ -385,8 +384,8 @@ textarea::-webkit-input-placeholder {
   .tree-item.tree-parent > .tree-children:empty:after {
     content: "empty";
     font-style: italic;
-    color: grey;
-    margin-left: 20px; }
+    color: #696d80;
+    margin-left: 55px; }
   .tree-item.tree-collapsed > .tree-label:before {
     content: ">";
     display: block;
@@ -395,11 +394,9 @@ textarea::-webkit-input-placeholder {
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
   .tree-item.tree-selected > .tree-label {
-    background-color: rgba(32, 65, 107, 0.3);
-    outline: 1px solid #1969ad; }
+    background-color: rgba(32, 65, 107, 0.3); }
   .tree-item.tree-active > .tree-label {
-    background-color: rgba(32, 65, 107, 0.55);
-    outline: 1px solid #1969ad; }
+    background-color: rgba(32, 65, 107, 0.55); }
 
 .sel-par {
   display: flex;
@@ -413,12 +410,13 @@ textarea::-webkit-input-placeholder {
   text-overflow: ellipsis;
   white-space: nowrap; }
   .sel-item:hover {
-    background-color: #505050; }
+    background-color: #252c33; }
 
 .ctx-menu {
   position: absolute;
   background-color: #1f2125;
-  color: #b4b4b4;
+  background-color: #171a1e;
+  color: #98a2b7;
   z-index: 51;
   min-width: 200px;
   /** when failing to load any items into menu, still show something
@@ -433,12 +431,13 @@ textarea::-webkit-input-placeholder {
   padding: 5px 5px;
   position: relative; }
   .ctx-menu-item:hover {
-    background-color: #505050; }
+    background-color: #252c33; }
   .ctx-menu-item.invalid {
     color: grey; }
 
 .ctx-menu-icon {
-  margin: 5px; }
+  margin: 5px;
+  color: slategray; }
 
 .ctx-menu-indicator {
   margin: 5px;
@@ -508,7 +507,7 @@ textarea::-webkit-input-placeholder {
     border: none;
     background: none;
     outline: none;
-    color: #b4b4b4;
+    color: #98a2b7;
     text-shadow: 1px 0px 0px steelblue;
     font-size: 1em;
     padding: 0;
@@ -523,7 +522,7 @@ textarea::-webkit-input-placeholder {
     -webkit-appearance: none;
     border: none;
     background: none;
-    color: #b4b4b4;
+    color: #98a2b7;
     text-shadow: 1px 0px 0px steelblue;
     font-size: 1em;
     outline: 1px solid grey;
@@ -608,7 +607,7 @@ textarea::-webkit-input-placeholder {
   border: none;
   background: none;
   outline: none;
-  color: #b4b4b4;
+  color: #98a2b7;
   text-shadow: 1px 0px 0px steelblue;
   font-size: 1em;
   padding: 0;
@@ -625,7 +624,7 @@ textarea::-webkit-input-placeholder {
   border: none;
   background: none;
   outline: none;
-  color: #b4b4b4;
+  color: #98a2b7;
   text-shadow: 1px 0px 0px steelblue;
   font-size: 1em;
   padding: 0;
@@ -648,7 +647,7 @@ textarea::-webkit-input-placeholder {
   -webkit-appearance: none;
   border: none;
   background: none;
-  color: #b4b4b4;
+  color: #98a2b7;
   text-shadow: 1px 0px 0px steelblue;
   font-size: 1em;
   outline: 1px solid grey;
@@ -758,7 +757,7 @@ textarea::-webkit-input-placeholder {
 
 .mod-head {
   background-color: #1c2025;
-  color: gray;
+  color: grayslate;
   transition: background 0.2s; }
 
 .mod-button {
@@ -766,8 +765,10 @@ textarea::-webkit-input-placeholder {
   padding: 5px; }
   .mod-button:hover, .mod-button:active {
     background-color: #3c3c3c;
+    background-color: #252c33;
     text-shadow: none;
-    color: #b3b3b3; }
+    color: #b3b3b3;
+    color: #8b9eb1; }
 
 .mod-sel {
   cursor: default;
@@ -784,9 +785,6 @@ textarea::-webkit-input-placeholder {
   pointer-events: none;
   overflow: hidden;
   white-space: nowrap; }
-
-.mod-active .mod-head {
-  background: linear-gradient(to right, #3e4146 0%, transparent 45%); }
 
 .mod-body {
   position: relative;
@@ -849,9 +847,10 @@ textarea::-webkit-input-placeholder {
   font-size: 14px;
   flex: 1;
   overflow-x: hidden;
-  padding: 5px 10px; }
+  padding: 5px 10px;
+  color: #98a2b7; }
   .navi-view-item-label:hover {
-    background-color: #505050; }
+    background-color: #252c33; }
   .navi-view-item-label:active {
     background-color: steelblue;
     color: whitesmoke; }
@@ -865,10 +864,10 @@ textarea::-webkit-input-placeholder {
   flex-direction: column;
   padding: 0 5px; }
   .navi-view-item-close:hover {
-    background-color: #505050; }
+    background-color: #252c33; }
 
 .navi-view-fdir {
-  color: grey;
+  color: #696d80;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
@@ -1015,7 +1014,7 @@ textarea::-webkit-input-placeholder {
   border: none;
   background: none;
   outline: none;
-  color: #b4b4b4;
+  color: #98a2b7;
   text-shadow: 1px 0px 0px steelblue;
   font-size: 14px;
   box-sizing: border-box;

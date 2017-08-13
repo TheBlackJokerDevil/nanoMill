@@ -11,11 +11,14 @@ $bg-ui-active: steelblue;
 $tb-bg: rgb(60, 60, 60);
 $tb-bg-hvr: rgb(120, 120, 120);
 $tb-brdr: 1px solid rgb(45, 45, 45);
-$tb-clr: rgb(128, 128, 128);
+// $tb-clr: rgb(128, 128, 128);
+$tb-clr: grayslate;
 
-$hvr: rgb(80, 80, 80);
+$hvr: #252c33;
+//$hvr: rgb(80, 80, 80);
 
-$font-clr: rgb(180, 180, 180);
+$font-clr: #98a2b7;
+$font-clr-subtle: #696d80;
 
 $red: rgb(215, 125, 50);
 $frame-action: steelblue;
@@ -87,4 +90,8 @@ html, body {
 	cursor: default;
 	
 	overflow: hidden;
+}
+
+.clr-subtle {
+	color: $font-clr-subtle;
 }

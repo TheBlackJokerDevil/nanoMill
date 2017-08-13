@@ -2,6 +2,7 @@
 .ctx-menu {
 	position: absolute;
 	background-color: rgb(31, 33, 37);
+	background-color: #171a1e;
 	color: $font-clr;
 	z-index: $z-ctx-menu;
 	min-width: 200px;
@@ -33,6 +34,7 @@
 
 .ctx-menu-icon {
 	margin: 5px;
+	color: slategray;
 }
 
 .ctx-menu-indicator {

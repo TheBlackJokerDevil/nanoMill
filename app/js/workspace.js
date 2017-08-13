@@ -1273,7 +1273,7 @@ class WorkspaceViewItem {
 	}
 	
 	parseLabelName(fname) {
-		return fname.replace(/(\.[^.]+?$)/, `<span style="color: #696d80">$1</span>`)
+		return fname.replace(/(\.[^.]+?$)/, `<span class="clr-subtle">$1</span>`)
 	}
 	
 	rename(fname) {		

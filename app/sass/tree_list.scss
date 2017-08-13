@@ -6,20 +6,16 @@
 		}
 		
 		padding: 4px 25px 4px 35px;
-		color: rgb(200, 200, 200);
-		color: #98a2b7;
+		color: $font-clr;
 		overflow-x: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		outline: none !important;
 	}
 	
 	.tree-item {
 		margin-left: 20px;
 	}
 	
-	padding: 0 15px;
-	padding-left: 25px;
 	padding: 0;
 	&.tree-parent > .tree-label{
 		
@@ -39,8 +35,8 @@
 	&.tree-parent > .tree-children:empty:after {
 		content: "empty";
 		font-style: italic;
-		color: grey;
-		margin-left: 20px;
+		color: #696d80;
+		margin-left: 55px;
 	}
 	
 	&.tree-collapsed > .tree-label {		
@@ -58,11 +54,9 @@
 	
 	&.tree-selected > .tree-label {
 		background-color: rgba(32, 65, 107, 0.3);
-		outline: 1px solid #1969ad;
 	}
 	
 	&.tree-active > .tree-label {
 		background-color: rgba(32, 65, 107, 0.55);
-		outline: 1px solid #1969ad;
 	}
 }

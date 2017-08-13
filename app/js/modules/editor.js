@@ -156,6 +156,21 @@ class EditorView extends layout.Deck {
 			_dumped_editors.push(this.children[i])
 		}
 	}
+	
+	static isEditableExt(ext) {
+		if( ext === ".c" ||
+			ext === ".txt" ||
+			ext === ".ocm" ||
+			ext === ".glsl" ||
+			ext === ".jpg" ||
+			ext === ".jpeg" ||
+			ext === ".png" ||
+			ext === ".bmp" ||
+			ext === ".material")
+			return true
+		
+		return false
+	}
 }
 
 EditorView.def = {

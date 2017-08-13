@@ -377,18 +377,7 @@ class WorkspaceMaster {
 		@param {string} ext - Extension to check. Must have preceding "."
 	*/
 	static isEditableExt(ext) {
-		if( ext === ".c" ||
-			ext === ".txt" ||
-			ext === ".ocm" ||
-			ext === ".glsl" ||
-			ext === ".jpg" ||
-			ext === ".jpeg" ||
-			ext === ".png" ||
-			ext === ".bmp" ||
-			ext === ".material")
-			return true
-		
-		return false
+		return EditorView && EditorView.isEditableExt(ext)
 	}
 }
 

@@ -103,20 +103,13 @@ class WorkspaceMaster {
 		is already opened
 		@param {string} p - path to check
 	*/
-	fileOpened(p) {log()
+	fileOpened(p) {
 		let finfos = this.viewOpened.getValues()
 		for(let finfo of finfos)
 			if(finfo.path === p)
 				return true
 		
 		return false
-	}
-	
-	/**
-		Returns the opened files
-	*/
-	getOpenedFiles() {
-		// return this.opened
 	}
 	
 	/**

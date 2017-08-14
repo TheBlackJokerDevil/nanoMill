@@ -1,7 +1,7 @@
 {
   "name": "nanoMill",
   "productName": "nanoMill",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "main.js",
   "dependencies": {
     "fs-extra": "^2.1.2",

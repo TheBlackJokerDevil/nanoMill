@@ -448,7 +448,7 @@ textarea::-webkit-input-placeholder {
   min-height: 16px; }
 
 .no-icons .ctx-menu-icon {
-  display: none; }
+  max-width: 0px; }
 
 .no-icons .ctx-menu-item {
   padding-left: 10px; }

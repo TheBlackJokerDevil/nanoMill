@@ -71,23 +71,32 @@ function removeArrayItems(ary, val) {
 	@param {callback} Callback executing when finding a valid name.
 			Has the resulting path as argument
 */
-function validateFilename(p, callback, i) {
-	if(typeof i === "number") {
-		let ext = path.extname(p)
-		p = p.substr(0, p.length - ext.length) + " - " + i + ext
+function validateFilename(p, callback) {
+	let i = 1
+	let ext = path.extname(p)
+	let basep = p.substr(0, p.length - ext.length)
+	
+	// check for already trailing "- xy" enumeration
+	let match = basep.match(/\s-\s\d+$/i)
+	if(match) {
+		i = parseInt(match[0].substring(2, match[0].length))
+		basep = basep.substr(0, basep.length - match[0].length)
 	}
 	
-	fs.stat(p, (err) => {
-		// an error means, that the file does not exists
-		if(err)
-			callback(p)
-		else {
-			if(!i)
-				validateFilename(p, callback, 1)
-			else
-				validateFilename(p, callback, i++)
-		}
-	})
+	let fn = (base, ext, i) => {
+		let p = base + " - " + i + ext
+		
+		fs.stat(p, (err) => {
+			// an error means, that the file does not exists
+			if(err)
+				callback(p)
+			else {
+				fn(base, ext, ++i)
+			}
+		})
+	}
+	
+	fn(basep, ext, i)
 }
 
 /**
@@ -110,6 +119,13 @@ function validateFilenameSync(p) {
 	let basep = p = p.substr(0, p.length - ext.length)
 	let altp
 	let i = 1
+	
+	// check for already trailing "- xy" enumeration
+	let match = basep.match(/\s-\s\d+$/i)
+	if(match) {
+		basep = basep.substr(0, basep.length - match[0].length)
+	}
+	
 	while(stat) {
 		altp = basep + " - " + i + ext
 		try {

@@ -110,6 +110,13 @@ function validateFilenameSync(p) {
 	let basep = p = p.substr(0, p.length - ext.length)
 	let altp
 	let i = 1
+	
+	// check for already trailing "- xy" enumeration
+	let match = basep.match(/\s-\s\d+$/i)
+	if(match) {
+		basep = basep.substr(0, basep.length - match[0].length)
+	}
+	
 	while(stat) {
 		altp = basep + " - " + i + ext
 		try {

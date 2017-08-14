@@ -16,10 +16,10 @@
 - ~~Normalize config entries to lowercase-camel-case~~
 
 # Alpha (v0.9.5)
-- validateFilename() take already existing trailing number into account
 - Show Workspace name in Module head
 - Contextmenu Icons for Cut/Copy/Paste
 - Hotkeys for Explorer Operations (See below)
+- ~~validateFilename() take already existing trailing number into account~~
 - Correctly free memory from unused FileInfos after packaging
 - ~~Inform about save-state of editable modules (e.g. texteditor)~~
 - ~~Image preview~~
